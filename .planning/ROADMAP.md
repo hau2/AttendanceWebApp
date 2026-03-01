@@ -30,7 +30,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. A user can log in with email and password, refresh the browser, and still be logged in
   4. A user can log out from any page and their session ends immediately
   5. No database query can return data belonging to a different company — enforced by Supabase Row Level Security, not application code
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — DB schema (companies, users, shifts), RLS policies, Supabase SDK integration for backend and frontend
+- [ ] 01-02-PLAN.md — Company registration + email/password auth (backend endpoints + frontend register/login pages + session middleware)
+- [ ] 01-03-PLAN.md — Company settings API, onboarding wizard (timezone → shift → first user), logout
 
 ### Phase 2: Workforce Configuration
 **Goal**: Admins can build out the company's user roster and define work shifts so every employee has a role, a manager, and an assigned shift before attendance tracking begins
@@ -85,7 +90,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
+| 1. Foundation | 0/3 | Planning complete | - |
 | 2. Workforce Configuration | 0/TBD | Not started | - |
 | 3. Attendance Core | 0/TBD | Not started | - |
 | 4. Admin Adjustments | 0/TBD | Not started | - |
@@ -94,3 +99,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 ---
 *Roadmap created: 2026-03-01*
 *Coverage: 53/53 v1 requirements mapped*
+*Phase 1 planned: 2026-03-01 — 3 plans, 3 waves*
