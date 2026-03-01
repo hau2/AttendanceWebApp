@@ -9,16 +9,16 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Onboarding (ONBD)
 
-- [ ] **ONBD-01**: Owner can register a new company (name, email, password) — system creates isolated tenant automatically
+- [x] **ONBD-01**: Owner can register a new company (name, email, password) — system creates isolated tenant automatically
 - [ ] **ONBD-02**: Owner is guided through setup wizard after registration (timezone → shift → first users)
 - [ ] **ONBD-03**: Owner/Admin can configure company timezone (required before any attendance tracking begins)
 - [ ] **ONBD-04**: Owner/Admin can configure IP restriction mode per company: log-only or enforce-block
 
 ### Authentication (AUTH)
 
-- [ ] **AUTH-01**: User can log in with email and password
-- [ ] **AUTH-02**: User session persists across browser refresh
-- [ ] **AUTH-03**: User can log out from any page
+- [x] **AUTH-01**: User can log in with email and password
+- [x] **AUTH-02**: User session persists across browser refresh
+- [x] **AUTH-03**: User can log out from any page
 
 ### User Management (USER)
 
@@ -134,13 +134,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| ONBD-01 | Phase 1 | Pending |
+| ONBD-01 | Phase 1 | Complete |
 | ONBD-02 | Phase 1 | Pending |
 | ONBD-03 | Phase 1 | Pending |
 | ONBD-04 | Phase 1 | Pending |
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
-| AUTH-03 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
+| AUTH-02 | Phase 1 | Complete |
+| AUTH-03 | Phase 1 | Complete |
 | SECU-01 | Phase 1 | Complete |
 | SECU-02 | Phase 1 | Complete |
 | USER-01 | Phase 2 | Pending |
