@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 **Plans**: 3 plans
 
 Plans:
-- [ ] 01-01-PLAN.md — DB schema (companies, users, shifts), RLS policies, Supabase SDK integration for backend and frontend
+- [x] 01-01-PLAN.md — DB schema (companies, users, shifts), RLS policies, Supabase SDK integration for backend and frontend
 - [ ] 01-02-PLAN.md — Company registration + email/password auth (backend endpoints + frontend register/login pages + session middleware)
 - [ ] 01-03-PLAN.md — Company settings API, onboarding wizard (timezone → shift → first user), logout
 
@@ -90,7 +90,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Planning complete | - |
+| 1. Foundation | 1/3 | In progress | - |
 | 2. Workforce Configuration | 0/TBD | Not started | - |
 | 3. Attendance Core | 0/TBD | Not started | - |
 | 4. Admin Adjustments | 0/TBD | Not started | - |

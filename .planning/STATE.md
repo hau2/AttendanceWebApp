@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 1 of 5 (Foundation)
-Plan: 0 of TBD in current phase
-Status: Ready to plan
-Last activity: 2026-03-01 — Roadmap created, all 53 v1 requirements mapped to 5 phases
+Plan: 1 of 3 in current phase
+Status: Executing
+Last activity: 2026-03-01 — Plan 01-01 complete: Supabase schema, RLS policies, and SDK integration
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░] 7%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 1
+- Average duration: 7 min
+- Total execution time: 7 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 01-foundation | 1 | 7 min | 7 min |
 
 **Recent Trend:**
-- Last 5 plans: —
-- Trend: —
+- Last 5 plans: 7 min
+- Trend: Baseline established
 
 *Updated after each plan completion*
 
@@ -48,17 +48,22 @@ Recent decisions affecting current work:
 - IP mode configurable per company (log-only vs enforce-block)
 - Photos visible to Admin and Manager only; employees see their own only
 - No face recognition in v1 — photo-as-evidence without AI
+- Service-role key on backend bypasses RLS — never exposed to frontend (01-01)
+- Anon key on frontend is subject to RLS — enforces tenant isolation at DB layer (01-01)
+- JWT app_metadata.company_id used as RLS claim — auth token issuance (Phase 1 Plan 02) must populate this (01-01)
+- SupabaseModule is @Global() — injectable anywhere in NestJS without re-import (01-01)
 
 ### Pending Todos
 
-None yet.
+- Apply SQL migrations to Supabase before running backend (manual step — see 01-01-SUMMARY.md)
+- Populate app_metadata.company_id in JWT when issuing tokens (required for RLS policies to work)
 
 ### Blockers/Concerns
 
-None yet.
+None.
 
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Roadmap written — 5 phases, 53/53 requirements covered. Ready to plan Phase 1.
+Stopped at: Completed 01-01-PLAN.md — DB schema, RLS, Supabase SDK wired into NestJS and NextJS
 Resume file: None

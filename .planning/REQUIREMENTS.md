@@ -90,8 +90,8 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Security (SECU)
 
-- [ ] **SECU-01**: Each company's data is fully isolated — no cross-tenant access possible
-- [ ] **SECU-02**: All database queries scoped by company_id via Supabase Row Level Security
+- [x] **SECU-01**: Each company's data is fully isolated — no cross-tenant access possible
+- [x] **SECU-02**: All database queries scoped by company_id via Supabase Row Level Security
 
 ## v2 Requirements
 
@@ -141,8 +141,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-01 | Phase 1 | Pending |
 | AUTH-02 | Phase 1 | Pending |
 | AUTH-03 | Phase 1 | Pending |
-| SECU-01 | Phase 1 | Pending |
-| SECU-02 | Phase 1 | Pending |
+| SECU-01 | Phase 1 | Complete |
+| SECU-02 | Phase 1 | Complete |
 | USER-01 | Phase 2 | Pending |
 | USER-02 | Phase 2 | Pending |
 | USER-03 | Phase 2 | Pending |
