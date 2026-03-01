@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 1 of 5 (Foundation)
-Plan: 3 of 3 in current phase
-Status: Ready — human verification of auth flow approved ("it works fine now, Approve")
-Last activity: 2026-03-01 — Plan 01-02 checkpoint approved; ready to execute 01-03 (onboarding wizard)
+Plan: 3 of 3 in current phase (implementation complete — pending human verification checkpoint)
+Status: Checkpoint — awaiting human verification of full onboarding wizard end-to-end flow
+Last activity: 2026-03-01 — Plan 01-03 implementation complete; backend and frontend built without errors
 
-Progress: [███░░░░░░░] 20%
+Progress: [████░░░░░░] 27%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 2
-- Average duration: 5 min
-- Total execution time: 10 min
+- Total plans completed: 3
+- Average duration: ~6 min
+- Total execution time: 17 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| 01-foundation | 2 | 10 min | 5 min |
+| 01-foundation | 3 | 17 min | ~6 min |
 
 **Recent Trend:**
-- Last 5 plans: 7 min, 3 min
-- Trend: Accelerating
+- Last 5 plans: 7 min, 3 min, 7 min
+- Trend: Consistent
 
 *Updated after each plan completion*
 
@@ -55,13 +55,17 @@ Recent decisions affecting current work:
 - Non-httpOnly cookie for access_token — Next.js Edge middleware cannot read httpOnly cookies (01-02)
 - Atomic registration uses sequential operations with manual rollback — Supabase Auth Admin API and DB are independent systems (01-02)
 - tsconfig @/* alias points to ./src/* — app/ is at root but source utilities live under src/ (01-02)
+- Timezone saved via PATCH /company/settings in step 1, POST /onboarding/complete handles shift + user + onboarding_complete flag (01-03)
+- OnboardingService manual rollback: if public.users insert fails, auth user is deleted to prevent orphaned records (01-03)
+- catch (err: unknown) pattern used throughout — TypeScript strict mode compliance (01-03)
 
 ### Pending Todos
 
 - Apply SQL migrations to Supabase before running backend (manual step — see 01-01-SUMMARY.md)
+- Run 002_shifts_table.sql migration in Supabase SQL editor before testing onboarding wizard
 - Copy backend/.env.example to backend/.env with Supabase credentials, JWT_SECRET, FRONTEND_URL
 - Copy frontend/.env.example to frontend/.env.local with Supabase credentials and NEXT_PUBLIC_API_URL
-- Auth flow verified by user (2026-03-01) — proceed to 01-03 onboarding wizard
+- Human verification of onboarding wizard end-to-end flow pending (01-03 checkpoint)
 
 ### Blockers/Concerns
 
@@ -70,5 +74,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-01
-Stopped at: Completed 01-02-PLAN.md — JWT auth endpoints, frontend auth pages, middleware — CHECKPOINT APPROVED by user
+Stopped at: 01-03-PLAN.md checkpoint:human-verify — onboarding wizard + company settings + logout implemented, awaiting user verification
 Resume file: None

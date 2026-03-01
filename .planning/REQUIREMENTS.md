@@ -10,9 +10,9 @@ Requirements for initial release. Each maps to a roadmap phase.
 ### Onboarding (ONBD)
 
 - [x] **ONBD-01**: Owner can register a new company (name, email, password) — system creates isolated tenant automatically
-- [ ] **ONBD-02**: Owner is guided through setup wizard after registration (timezone → shift → first users)
-- [ ] **ONBD-03**: Owner/Admin can configure company timezone (required before any attendance tracking begins)
-- [ ] **ONBD-04**: Owner/Admin can configure IP restriction mode per company: log-only or enforce-block
+- [x] **ONBD-02**: Owner is guided through setup wizard after registration (timezone → shift → first users)
+- [x] **ONBD-03**: Owner/Admin can configure company timezone (required before any attendance tracking begins)
+- [x] **ONBD-04**: Owner/Admin can configure IP restriction mode per company: log-only or enforce-block
 
 ### Authentication (AUTH)
 
@@ -135,9 +135,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | ONBD-01 | Phase 1 | Complete |
-| ONBD-02 | Phase 1 | Pending |
-| ONBD-03 | Phase 1 | Pending |
-| ONBD-04 | Phase 1 | Pending |
+| ONBD-02 | Phase 1 | Complete |
+| ONBD-03 | Phase 1 | Complete |
+| ONBD-04 | Phase 1 | Complete |
 | AUTH-01 | Phase 1 | Complete |
 | AUTH-02 | Phase 1 | Complete |
 | AUTH-03 | Phase 1 | Complete |
@@ -195,4 +195,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-01*
-*Last updated: 2026-03-01 after roadmap creation*
+*Last updated: 2026-03-01 after 01-03 execution — ONBD-02, ONBD-03, ONBD-04 marked complete*
