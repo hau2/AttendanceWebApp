@@ -1,12 +1,12 @@
-# Attendance Web App
+# Attendance SaaS
 
 ## What This Is
 
-A multi-tenant SaaS web application that allows companies to track employee attendance through check-in and check-out events, capturing photo evidence via device camera, detecting late/early/missing attendance, and providing managers and executives with reporting dashboards. Companies self-register and onboard through a guided setup wizard. This system handles time tracking only — no salary calculation.
+A multi-tenant SaaS web application that helps businesses track employee attendance transparently and accurately. Companies self-onboard in minutes, configure work shifts, add employees, and immediately start collecting daily check-in/check-out records with photo evidence. Built for the Vietnamese market but designed as a generic SaaS platform deployable to any business.
 
 ## Core Value
 
-Employees can check in and out with camera evidence, and managers can see who's on time, who's late, and who's missing — all scoped to their company with full audit trail.
+Employees can check in/out quickly with photo evidence captured at the moment of action — while managers and admins have real-time, accurate attendance data — deployed by any company in minutes with no IT support needed.
 
 ## Requirements
 
@@ -16,63 +16,103 @@ Employees can check in and out with camera evidence, and managers can see who's 
 
 ### Active
 
-- [ ] Multi-tenant isolation: all data scoped by `company_id` with RLS
-- [ ] Self-service company registration with guided setup wizard (timezone → shifts → users)
-- [ ] Five roles: ROOT, IT, MANAGER, EMPLOYEE, EXEC with enforced permission scopes
-- [ ] Employee check-in and check-out with mandatory camera capture (no file upload)
-- [ ] Late detection: grace period (5 min), `late_minutes`, `late_category` (none / within_grace / beyond_grace)
-- [ ] Early leave detection: `early_minutes` computed, note required
-- [ ] Mandatory note when late or checking out early
-- [ ] IP allowlist: store and flag `checkin_ip_in_allowlist` / `checkout_ip_in_allowlist` (MVP does not block — flags only)
-- [ ] One attendance record per user per day: unique `(company_id, user_id, work_date)`
-- [ ] Midnight cron job: auto-mark missing checkout as `status='missing'`, `source='system'`
-- [ ] Photo retention job: delete photos older than `retention_days` (company-configurable, default 180)
-- [ ] IT-only attendance adjustment with full audit trail (`attendance_adjustments` table)
-- [ ] Manager view: team attendance, filter by date, employee drill-down
-- [ ] Executive view: company-wide stats, top late employees, attendance rate
-- [ ] CSV export: attendance filtered by date range
-- [ ] CSV import: user bulk import
-- [ ] Employee self-view: own attendance history and submitted notes
+**Company Onboarding**
+- [ ] Owner can register a new company (name, email, password) — system creates an isolated tenant automatically
+- [ ] Owner is guided through a setup wizard after registration (timezone → shift → users)
+- [ ] Owner/Admin can configure company timezone (required — affects all late/early calculations)
+- [ ] Owner/Admin can configure IP restriction mode: log-only or enforce-block (optional setting)
+
+**User Management**
+- [ ] Admin can create users with roles: Owner, Admin, Manager, Employee, Executive
+- [ ] Admin can change a user's role
+- [ ] Admin can disable/enable a user account
+- [ ] Admin can import employees via CSV
+- [ ] Admin can assign a Manager to oversee specific employees
+
+**Shift Management**
+- [ ] Admin can create work shifts (start time, end time, grace period in minutes)
+- [ ] Admin can edit existing shifts
+- [ ] Admin can assign a shift to an employee with an effective date
+- [ ] Each employee has one active shift at a time
+
+**Employee Check-in/Out**
+- [ ] Employee sees a prominent CHECK-IN button on their home page
+- [ ] Check-in captures: timestamp, photo (camera only — no file upload), IP address
+- [ ] System calculates late status: on-time, within-grace, or late (with minutes late)
+- [ ] Employee must enter a reason if checking in late
+- [ ] Check-out captures: timestamp, photo, IP address
+- [ ] System calculates early-leave status and minutes early
+- [ ] Employee must enter a note if checking out early
+- [ ] System auto-marks records as "missing checkout" if midnight passes without checkout (source = system)
+
+**Evidence & Photos**
+- [ ] Photos are stored per attendance record and viewable by Admin and Manager in record detail
+- [ ] Photos captured from device camera only — no file upload allowed
+- [ ] Photos retained for 90–180 days per record
+
+**Attendance Adjustment (Admin)**
+- [ ] Admin can edit check-in/out times on any attendance record
+- [ ] Admin must provide a reason when editing a record
+- [ ] System stores full audit trail: who changed, when, before/after values — original data never deleted
+
+**Manager Monitoring**
+- [ ] Manager sees only employees assigned to them
+- [ ] Manager can view attendance by day or by month
+- [ ] Manager can filter by individual employee
+- [ ] Manager can view employee notes (late reasons, early-leave notes)
+- [ ] Manager can view photos embedded in attendance records
+- [ ] Manager can see team report: total lates, punctuality rate, monthly trend
+
+**Executive Dashboard**
+- [ ] Executive can view company-wide attendance rate
+- [ ] Executive can view top employees by late frequency
+- [ ] Executive can view monthly aggregated summaries
+- [ ] Executive can drill down to individual employee records
+- [ ] Executive has read-only access — no editing
+
+**Reports & Export**
+- [ ] Admin/Manager can generate monthly attendance reports
+- [ ] Admin/Manager can view late statistics
+- [ ] Admin/Manager can export attendance data as CSV
+
+**Security & Multi-tenancy**
+- [ ] Every company's data is isolated — no cross-tenant data access
+- [ ] All database queries scoped by company_id via Row Level Security (Supabase RLS)
 
 ### Out of Scope
 
-- Salary / payroll calculation — system is time tracking only, by design
-- Face recognition / biometric verification — post-MVP
-- Geo-fencing — post-MVP
-- Mobile native app — web-first, mobile later
-- Note approval workflow — MVP: manager can view notes, no approval flow
-- Real-time notifications — post-MVP
-- Device binding — post-MVP
-- Blocking check-in outside IP allowlist — MVP flags only, does not block
+- Payroll calculation — explicit v1 boundary; not an attendance system responsibility
+- Face recognition — photos stored as visual evidence only, no AI matching in v1
+- Native mobile app — web-first; mobile browser supported but no native app
+- GPS / geolocation check-in — IP-based restriction is sufficient for v1
+- In-system correction request workflow — employees notify Admin offline; Admin adjusts directly
+- Email / push notifications — Managers monitor via dashboard manually; deferred to v2
+- Per-day/per-week shift scheduling — one active shift per employee; complex scheduling deferred
 
 ## Context
 
-- **Tech stack is locked**: NestJS (API) + NextJS (frontend) + Supabase (Postgres + Auth + Storage) + Shadcn + TailwindCSS
-- **Supabase Auth** handles authentication; `users.id` = `auth.uid`
-- **RLS required** on all tenant-scoped tables — queries always filtered by `company_id`
-- **Timezone-aware**: all attendance calculations use the company's configured timezone (`companies.timezone`)
-- **Shift assignments** drive `work_date` resolution — each user has an active shift with `start_time`, `end_time`, `effective_from_date`
-- **Evidence capture**: camera only via browser MediaDevices API, preview before submit, front camera preferred on mobile
-- **Background jobs**: midnight job (per-company timezone) + daily photo retention cleanup — likely implemented as Supabase Edge Functions or NestJS scheduled tasks
-- **Onboarding wizard flow**: (1) Company settings → (2) Create initial shift → (3) Add/invite first users (CSV import optional) → company ready
+- **Market**: Vietnamese SMB/enterprise market initially; product designed as generic multi-tenant SaaS
+- **Codebase**: NestJS backend + NextJS frontend scaffolded (empty, no business features yet); Supabase as database and auth layer
+- **Photo storage**: Requires object storage for attendance photos (Supabase Storage or equivalent)
+- **Timezone sensitivity**: All late/early logic depends on the company's configured timezone — misconfiguration breaks all data accuracy; enforced in setup wizard
 
 ## Constraints
 
-- **Tech Stack**: NestJS + NextJS + Supabase — no substitutions
-- **Evidence**: Camera capture only — no file upload path anywhere in the UI
-- **Multi-tenancy**: Every DB query must be scoped by `company_id`; RLS enforces this at DB layer
-- **Audit**: IT adjustments must never silently overwrite — always create `attendance_adjustments` record and recompute metrics
-- **One record per day**: Unique constraint `(company_id, user_id, work_date)` — no duplicate records
+- **Tech Stack**: NestJS (backend) + NextJS (frontend) + Supabase (DB + Auth) + TailwindCSS + Shadcn — decided, not up for debate
+- **Scope boundary**: No payroll in v1 — any payroll-adjacent features deferred to a separate product or future milestone
+- **Photo capture**: Camera-only — no file upload — to reduce fraud risk
+- **Multi-tenancy**: Row Level Security enforced at DB layer — every query must include company_id scope
 
 ## Key Decisions
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Supabase Auth for auth | Simplifies multi-tenant auth, `auth.uid` = user identity | — Pending |
-| Camera-only evidence (no upload) | Prevents falsification of check-in photos | — Pending |
-| MVP: IP allowlist flags but does not block | Reduces false positives while building trust in data | — Pending |
-| Guided onboarding wizard (not manual setup) | ROOT needs a clear path from registration to live use | — Pending |
-| NestJS backend (not Supabase-only) | Complex business logic (timezone calculations, cron jobs, adjustment rules) benefits from an explicit API layer | — Pending |
+| One active shift per employee (not schedule-based) | Keeps v1 simple; complex scheduling deferred pending real customer demand | — Pending |
+| No in-system correction request flow | Admin adjusts directly with audit trail; offline notification sufficient for v1 | — Pending |
+| No notifications in v1 | Manual dashboard monitoring sufficient; notifications deferred to v2 | — Pending |
+| IP mode configurable per company (log-only vs enforce-block) | Different companies have different security needs; both modes needed from day 1 | — Pending |
+| Photos visible to Admin and Manager in records | Evidence available for routine monitoring and disputes without mandatory review workflow | — Pending |
+| No face recognition in v1 | Significant complexity and cost; photo-as-evidence achieves anti-fraud goal without AI | — Pending |
 
 ---
 *Last updated: 2026-03-01 after initialization*
