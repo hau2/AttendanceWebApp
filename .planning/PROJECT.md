@@ -99,6 +99,8 @@ Employees can check in/out quickly with photo evidence captured at the moment of
 ## Constraints
 
 - **Tech Stack**: NestJS (backend) + NextJS (frontend) + Supabase (DB + Auth) + TailwindCSS + Shadcn — decided, not up for debate
+- **Directory structure**: `./backend` (NestJS) · `./frontend` (NextJS) — both scaffolded, no business features yet
+- **Full-stack delivery**: Every phase must deliver end-to-end functionality — backend API + frontend UI together. No backend-only phases.
 - **Scope boundary**: No payroll in v1 — any payroll-adjacent features deferred to a separate product or future milestone
 - **Photo capture**: Camera-only — no file upload — to reduce fraud risk
 - **Multi-tenancy**: Row Level Security enforced at DB layer — every query must include company_id scope
@@ -115,4 +117,4 @@ Employees can check in/out quickly with photo evidence captured at the moment of
 | No face recognition in v1 | Significant complexity and cost; photo-as-evidence achieves anti-fraud goal without AI | — Pending |
 
 ---
-*Last updated: 2026-03-01 after initialization*
+*Last updated: 2026-03-01 after adding full-stack delivery constraint*
