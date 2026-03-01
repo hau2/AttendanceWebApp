@@ -12,7 +12,7 @@ The product is built in five sequential phases, each delivering a complete, veri
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Multi-tenant auth, company onboarding, and RLS security baseline
+- [x] **Phase 1: Foundation** - Multi-tenant auth, company onboarding, and RLS security baseline
 - [ ] **Phase 2: Workforce Configuration** - User management and shift definitions ready for attendance tracking
 - [ ] **Phase 3: Attendance Core** - Employee check-in/out with photo evidence and accurate late/early classification
 - [ ] **Phase 4: Admin Adjustments** - Admins can correct records with a full, immutable audit trail
@@ -90,7 +90,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 3/3 | Pending verification | 2026-03-01 |
+| 1. Foundation | 3/3 | Complete | 2026-03-02 |
 | 2. Workforce Configuration | 0/TBD | Not started | - |
 | 3. Attendance Core | 0/TBD | Not started | - |
 | 4. Admin Adjustments | 0/TBD | Not started | - |
