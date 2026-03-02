@@ -133,3 +133,28 @@ export async function listRecords(
   if (!res.ok) return [];
   return res.json();
 }
+
+export interface AdjustmentPayload {
+  check_in_at?: string;   // ISO 8601 timestamp, e.g. "2026-03-01T08:45:00.000Z"
+  check_out_at?: string;  // ISO 8601 timestamp
+  reason: string;
+}
+
+export async function adjustRecord(
+  recordId: string,
+  data: AdjustmentPayload,
+): Promise<AttendanceRecord> {
+  const res = await fetch(`${API_URL}/attendance/records/${recordId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${getToken()}`,
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to adjust record');
+  }
+  return res.json();
+}
