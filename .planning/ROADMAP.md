@@ -84,7 +84,11 @@ Plans:
   1. Admin can open any attendance record and edit the check-in or check-out time
   2. The system requires the Admin to provide a reason before saving any edit — saving without a reason is not possible
   3. After an edit, the audit trail shows who made the change, when, and the before/after values — and the original data is still visible and was never overwritten
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — attendance_adjustments SQL migration + NestJS adjustRecord() + PATCH /attendance/records/:id (admin/owner only)
+- [ ] 04-02-PLAN.md — AdjustAttendanceModal frontend component + Adjust button in detail modal + page refresh + E2E human verification
 
 ### Phase 5: Monitoring & Reporting
 **Goal**: Managers can monitor their assigned employees' attendance in real time, Executives can see company-wide trends, and Admin/Managers can export data
@@ -107,7 +111,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation | 3/3 | Complete    | 2026-03-01 |
 | 2. Workforce Configuration | 4/4 | Complete    | 2026-03-02 |
 | 3. Attendance Core | 6/6 | Complete    | 2026-03-02 |
-| 4. Admin Adjustments | 0/TBD | Not started | - |
+| 4. Admin Adjustments | 0/2 | Not started | - |
 | 5. Monitoring & Reporting | 0/TBD | Not started | - |
 
 ---
@@ -115,3 +119,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 *Coverage: 53/53 v1 requirements mapped*
 *Phase 1 planned: 2026-03-01 — 3 plans, 3 waves*
 *Phase 3 planned: 2026-03-02 — 6 plans, 4 waves*
+*Phase 4 planned: 2026-03-02 — 2 plans, 2 waves*
