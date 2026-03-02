@@ -9,6 +9,7 @@ interface UserTableProps {
   onRoleChange: (id: string, role: string) => void;
   onStatusToggle: (id: string, isActive: boolean) => void;
   onManagerChange: (id: string, managerId: string | null) => void;
+  onAssignShift: (user: User) => void;
 }
 
 export function UserTable({
@@ -16,6 +17,7 @@ export function UserTable({
   onRoleChange,
   onStatusToggle,
   onManagerChange,
+  onAssignShift,
 }: UserTableProps) {
   const managers = users.filter((u) => u.role === 'manager');
 
@@ -95,20 +97,28 @@ export function UserTable({
                 </button>
               </td>
               <td className="px-4 py-3 text-sm">
-                <select
-                  value={user.manager_id ?? ''}
-                  onChange={(e) =>
-                    onManagerChange(user.id, e.target.value || null)
-                  }
-                  className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  <option value="">No manager</option>
-                  {managers.map((mgr) => (
-                    <option key={mgr.id} value={mgr.id}>
-                      {mgr.full_name}
-                    </option>
-                  ))}
-                </select>
+                <div className="flex flex-col gap-2">
+                  <select
+                    value={user.manager_id ?? ''}
+                    onChange={(e) =>
+                      onManagerChange(user.id, e.target.value || null)
+                    }
+                    className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">No manager</option>
+                    {managers.map((mgr) => (
+                      <option key={mgr.id} value={mgr.id}>
+                        {mgr.full_name}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    onClick={() => onAssignShift(user)}
+                    className="text-xs text-indigo-600 hover:text-indigo-800 underline text-left"
+                  >
+                    Assign Shift
+                  </button>
+                </div>
               </td>
             </tr>
           ))}

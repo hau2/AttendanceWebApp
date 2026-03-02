@@ -11,6 +11,7 @@ import {
 import { UserTable } from './components/UserTable';
 import { CreateUserModal } from './components/CreateUserModal';
 import { CsvImportModal } from './components/CsvImportModal';
+import { AssignShiftModal } from './components/AssignShiftModal';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -18,6 +19,7 @@ export default function UsersPage() {
   const [error, setError] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showCsvModal, setShowCsvModal] = useState(false);
+  const [assigningUser, setAssigningUser] = useState<User | null>(null);
 
   const currentUser = getStoredUser();
   if (currentUser && !['owner', 'admin'].includes(currentUser.role)) {
@@ -126,6 +128,7 @@ export default function UsersPage() {
           onRoleChange={handleRoleChange}
           onStatusToggle={handleStatusToggle}
           onManagerChange={handleManagerChange}
+          onAssignShift={setAssigningUser}
         />
       )}
 
@@ -140,6 +143,13 @@ export default function UsersPage() {
         open={showCsvModal}
         onClose={() => setShowCsvModal(false)}
         onImported={refreshUsers}
+      />
+
+      <AssignShiftModal
+        open={!!assigningUser}
+        user={assigningUser}
+        onClose={() => setAssigningUser(null)}
+        onAssigned={refreshUsers}
       />
     </div>
   );

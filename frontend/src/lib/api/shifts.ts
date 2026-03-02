@@ -1,5 +1,26 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
+export interface ShiftAssignment {
+  id: string;
+  company_id: string;
+  user_id: string;
+  shift_id: string;
+  effective_date: string;
+  created_at: string;
+  shifts: {
+    name: string;
+    start_time: string;
+    end_time: string;
+    grace_period_minutes: number;
+  };
+}
+
+export interface AssignShiftData {
+  userId: string;
+  shiftId: string;
+  effectiveDate: string;
+}
+
 export interface Shift {
   id: string;
   company_id: string;
@@ -62,4 +83,37 @@ export async function updateShift(
     throw new Error((err as { message?: string }).message || 'Failed to update shift');
   }
   return res.json() as Promise<Shift>;
+}
+
+export async function assignShift(
+  token: string,
+  data: AssignShiftData,
+): Promise<ShiftAssignment> {
+  const res = await fetch(`${API_URL}/shifts/assign`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { message?: string }).message || 'Failed to assign shift');
+  }
+  return res.json() as Promise<ShiftAssignment>;
+}
+
+export async function getUserShiftInfo(
+  token: string,
+  userId: string,
+): Promise<{ activeShift: ShiftAssignment | null; history: ShiftAssignment[] }> {
+  const res = await fetch(`${API_URL}/shifts/assignments/${userId}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { message?: string }).message || 'Failed to get shift info');
+  }
+  return res.json() as Promise<{ activeShift: ShiftAssignment | null; history: ShiftAssignment[] }>;
 }
