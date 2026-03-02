@@ -9,6 +9,8 @@ import {
   setUserStatus,
 } from '@/lib/api/users';
 import { UserTable } from './components/UserTable';
+import { CreateUserModal } from './components/CreateUserModal';
+import { CsvImportModal } from './components/CsvImportModal';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -86,6 +88,8 @@ export default function UsersPage() {
     }
   }
 
+  const managers = users.filter((u) => u.role === 'manager');
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -125,33 +129,18 @@ export default function UsersPage() {
         />
       )}
 
-      {showCreateModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg p-6 shadow-xl max-w-md w-full mx-4">
-            <p className="text-gray-500 text-sm">Create User modal — loading...</p>
-            <button
-              onClick={() => setShowCreateModal(false)}
-              className="mt-4 text-sm text-blue-600 hover:underline"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+      <CreateUserModal
+        open={showCreateModal}
+        onClose={() => setShowCreateModal(false)}
+        onCreated={refreshUsers}
+        managers={managers}
+      />
 
-      {showCsvModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-lg p-6 shadow-xl max-w-md w-full mx-4">
-            <p className="text-gray-500 text-sm">CSV Import modal — loading...</p>
-            <button
-              onClick={() => setShowCsvModal(false)}
-              className="mt-4 text-sm text-blue-600 hover:underline"
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      )}
+      <CsvImportModal
+        open={showCsvModal}
+        onClose={() => setShowCsvModal(false)}
+        onImported={refreshUsers}
+      />
     </div>
   );
 }
