@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { getStoredUser, AuthUser } from '@/lib/api/auth';
 import { CheckInOutCard } from './components/CheckInOutCard';
 
@@ -30,7 +31,17 @@ export default function DashboardPage() {
       </div>
 
       {isAttendanceParticipant ? (
-        <CheckInOutCard />
+        <>
+          <CheckInOutCard />
+          <div className="mt-4 text-center">
+            <Link
+              href="/attendance/history"
+              className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+            >
+              View History
+            </Link>
+          </div>
+        </>
       ) : (
         <div className="bg-white rounded-xl shadow-md p-8 text-center">
           <p className="text-gray-500">Attendance tracking dashboard coming in Phase 5.</p>

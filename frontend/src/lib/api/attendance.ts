@@ -115,3 +115,21 @@ export async function getHistory(year: number, month: number): Promise<Attendanc
   if (!res.ok) return [];
   return res.json();
 }
+
+export interface AttendanceRecordWithUser extends AttendanceRecord {
+  users?: { full_name: string; email: string };
+}
+
+export async function listRecords(
+  year: number,
+  month: number,
+  userId?: string,
+): Promise<AttendanceRecordWithUser[]> {
+  const params = new URLSearchParams({ year: String(year), month: String(month) });
+  if (userId) params.set('userId', userId);
+  const res = await fetch(`${API_URL}/attendance/records?${params}`, {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  });
+  if (!res.ok) return [];
+  return res.json();
+}
