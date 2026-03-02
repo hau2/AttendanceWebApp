@@ -8,9 +8,10 @@ import { SupabaseModule } from './supabase/supabase.module';
 import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
 import { OnboardingModule } from './onboarding/onboarding.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), SupabaseModule, AuthModule, CompanyModule, OnboardingModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), SupabaseModule, AuthModule, CompanyModule, OnboardingModule, UsersModule],
   controllers: [AppController],
   providers: [
     AppService,
