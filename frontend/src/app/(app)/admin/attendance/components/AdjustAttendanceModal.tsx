@@ -10,24 +10,25 @@ interface Props {
 }
 
 /**
- * Convert an ISO timestamp to the value needed by <input type="datetime-local">.
- * datetime-local expects "YYYY-MM-DDTHH:MM" (no seconds, no timezone suffix).
+ * Convert a UTC ISO timestamp to the value needed by <input type="datetime-local">.
+ * datetime-local expects "YYYY-MM-DDTHH:MM" in the browser's local time.
  */
 function toDatetimeLocal(isoStr: string | null): string {
   if (!isoStr) return '';
-  // Slice to "YYYY-MM-DDTHH:MM"
-  return isoStr.slice(0, 16);
+  const d = new Date(isoStr);
+  // Adjust for local timezone offset so the slice represents local time
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 16);
 }
 
 /**
- * Convert datetime-local value back to full ISO string for the backend.
- * Appends ":00.000Z" to satisfy IsISO8601 validation.
- * Note: This assumes the admin is entering times in UTC context.
- * For v1 this is acceptable — admins understand their timezone offset.
+ * Convert a datetime-local value back to a UTC ISO string for the backend.
+ * new Date() treats a bare datetime string (no timezone) as local time,
+ * so toISOString() correctly converts it to UTC.
  */
 function fromDatetimeLocal(localStr: string): string {
   if (!localStr) return '';
-  return localStr + ':00.000Z';
+  return new Date(localStr).toISOString();
 }
 
 export function AdjustAttendanceModal({ record, onClose, onSaved }: Props) {
