@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
+import { AttendanceService } from './attendance.service';
+import { AttendanceController } from './attendance.controller';
 import { PhotoUploadController } from './photo-upload.controller';
-
-// NOTE: AttendanceService and AttendanceController are added by Plan 03-01.
-// This module is created by Plan 03-02 (photo storage) and extended by Plan 03-01 (check-in/out).
+import { ShiftsModule } from '../shifts/shifts.module';
 
 @Module({
-  imports: [],
-  providers: [],
-  controllers: [PhotoUploadController],
-  exports: [],
+  imports: [ShiftsModule], // provides ShiftAssignmentsService via DI
+  providers: [AttendanceService],
+  controllers: [AttendanceController, PhotoUploadController],
+  exports: [AttendanceService],
 })
 export class AttendanceModule {}
