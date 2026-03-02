@@ -25,6 +25,7 @@ export default function AdminAttendancePage() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState('');
 
   useEffect(() => {
     const user = getStoredUser();
@@ -36,6 +37,7 @@ export default function AdminAttendancePage() {
       router.replace('/dashboard');
       return;
     }
+    setUserRole(user.role);
     // Load users for filter dropdown
     const token = getStoredToken();
     if (token) {
@@ -64,6 +66,13 @@ export default function AdminAttendancePage() {
     if (m > 12) { m = 1; y++; }
     setMonth(m);
     setYear(y);
+  }
+
+  function handleAdjusted(updated: AttendanceRecordWithUser) {
+    setRecords((prev) =>
+      prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r))
+    );
+    setSelectedRecord((prev) => (prev ? { ...prev, ...updated } : prev));
   }
 
   const monthLabel = `${MONTH_NAMES[month - 1]} ${year}`;
@@ -129,7 +138,12 @@ export default function AdminAttendancePage() {
         )}
       </div>
 
-      <AttendanceRecordDetail record={selectedRecord} onClose={() => setSelectedRecord(null)} />
+      <AttendanceRecordDetail
+        record={selectedRecord}
+        onClose={() => setSelectedRecord(null)}
+        onAdjusted={handleAdjusted}
+        userRole={userRole}
+      />
     </div>
   );
 }

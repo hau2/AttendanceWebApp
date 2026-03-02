@@ -1,10 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import { AttendanceRecordWithUser } from '@/lib/api/attendance';
+import { AdjustAttendanceModal } from './AdjustAttendanceModal';
 
 interface Props {
   record: AttendanceRecordWithUser | null;
   onClose: () => void;
+  onAdjusted?: (updated: AttendanceRecordWithUser) => void;
+  userRole?: string;
 }
 
 function formatTime(isoStr: string | null): string {
@@ -28,8 +32,11 @@ function statusBadge(status: string | null) {
   return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${map[status] || 'bg-gray-100 text-gray-600'}`}>{status}</span>;
 }
 
-export function AttendanceRecordDetail({ record, onClose }: Props) {
+export function AttendanceRecordDetail({ record, onClose, onAdjusted, userRole }: Props) {
   if (!record) return null;
+
+  const [showAdjust, setShowAdjust] = useState(false);
+  const canAdjust = ['admin', 'owner'].includes(userRole ?? '');
 
   const employeeName = record.users?.full_name || 'Unknown Employee';
 
@@ -120,7 +127,17 @@ export function AttendanceRecordDetail({ record, onClose }: Props) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 flex justify-end">
+        <div className="px-6 py-4 border-t border-gray-200 flex justify-between items-center">
+          <div>
+            {canAdjust && (
+              <button
+                onClick={() => setShowAdjust(true)}
+                className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Adjust
+              </button>
+            )}
+          </div>
           <button
             onClick={onClose}
             className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
@@ -129,6 +146,17 @@ export function AttendanceRecordDetail({ record, onClose }: Props) {
           </button>
         </div>
       </div>
+
+      {showAdjust && (
+        <AdjustAttendanceModal
+          record={record}
+          onClose={() => setShowAdjust(false)}
+          onSaved={(updated) => {
+            setShowAdjust(false);
+            onAdjusted?.(updated);
+          }}
+        />
+      )}
     </div>
   );
 }
