@@ -98,6 +98,9 @@ Recent decisions affecting current work:
 - listRecords joins users table for full_name — admin view shows employee names without second query (03-01)
 - @Cron('5 0 * * *') at 00:05 UTC with eq(missing_checkout,false) idempotency guard; source='system' distinguishes auto-marks from admin adjustments (03-03)
 - Per-company timezone loop in cron: fetch all companies, compute todayInCompanyTz via toLocaleDateString('en-CA'), batch update per company — never a single global date (03-03)
+- Backend-driven late reason / early note: frontend attempts submission first; shows field only on 400 "requires a reason/note" — avoids duplicating classification logic in frontend (03-04)
+- facingMode: environment with fallback to { video: true } — supports mobile rear camera with desktop fallback (03-04)
+- getTodayRecord on mount restores button state so page refresh shows correct action (CHECK-IN vs CHECK-OUT vs done) (03-04)
 
 ### Pending Todos
 
@@ -118,5 +121,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Phase 3 Plan 03 (03-03) complete — AttendanceCronService missing checkout cron operational
+Stopped at: Phase 3 Plan 04 (03-04) complete — Dashboard CheckInOutCard UI with camera capture operational
 Resume file: None
