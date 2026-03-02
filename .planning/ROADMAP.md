@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Multi-tenant auth, company onboarding, and RLS security baseline
 - [x] **Phase 2: Workforce Configuration** - User management and shift definitions ready for attendance tracking
 - [x] **Phase 3: Attendance Core** - Employee check-in/out with photo evidence and accurate late/early classification
-- [ ] **Phase 4: Admin Adjustments** - Admins can correct records with a full, immutable audit trail
+- [x] **Phase 4: Admin Adjustments** - Admins can correct records with a full, immutable audit trail
 - [ ] **Phase 5: Monitoring & Reporting** - Manager monitoring, Executive dashboard, and CSV export
 
 ## Phase Details
@@ -88,7 +88,7 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md — attendance_adjustments SQL migration + NestJS adjustRecord() + PATCH /attendance/records/:id (admin/owner only)
-- [ ] 04-02-PLAN.md — AdjustAttendanceModal frontend component + Adjust button in detail modal + page refresh + E2E human verification
+- [x] 04-02-PLAN.md — AdjustAttendanceModal frontend component + Adjust button in detail modal + page refresh + E2E human verification
 
 ### Phase 5: Monitoring & Reporting
 **Goal**: Managers can monitor their assigned employees' attendance in real time, Executives can see company-wide trends, and Admin/Managers can export data
@@ -111,7 +111,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation | 3/3 | Complete    | 2026-03-01 |
 | 2. Workforce Configuration | 4/4 | Complete    | 2026-03-02 |
 | 3. Attendance Core | 6/6 | Complete    | 2026-03-02 |
-| 4. Admin Adjustments | 1/2 | In progress | - |
+| 4. Admin Adjustments | 2/2 | Complete    | 2026-03-02 |
 | 5. Monitoring & Reporting | 0/TBD | Not started | - |
 
 ---

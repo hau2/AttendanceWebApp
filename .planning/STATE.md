@@ -6,9 +6,9 @@ status: in-progress
 last_updated: "2026-03-02T15:24:08Z"
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 15
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 
 ## Current Position
 
-Phase: 4 of 5 (Admin Adjustments) — IN PROGRESS
-Plan: 1 of 2 complete — Plan 04-01 complete (2026-03-02)
-Status: Phase 4 plan 01 complete — attendance adjustments backend (migration + service + endpoint) delivered; plan 04-02 (frontend adjustment UI) is next
-Last activity: 2026-03-02 — Plan 04-01 (Admin Adjustments Backend) complete; attendance_adjustments table migration + PATCH /attendance/records/:id endpoint delivered
+Phase: 4 of 5 (Admin Adjustments) — COMPLETE
+Plan: 2 of 2 complete — Plan 04-02 complete (2026-03-02)
+Status: Phase 4 complete — all ADJT requirements delivered and E2E verified; Phase 5 Monitoring & Reporting is next
+Last activity: 2026-03-02 — Plan 04-02 (Admin Adjustments Frontend) complete; AdjustAttendanceModal + in-place record refresh + human verification approved
 
-Progress: [█████████████████] 80%
+Progress: [████████████████████] 88%
 
 ## Performance Metrics
 
@@ -43,7 +43,7 @@ Progress: [█████████████████] 80%
 | 01-foundation | 3 | 17 min | ~6 min |
 | 02-workforce-configuration | 4 | ~23 min | ~6 min |
 | 03-attendance-core | 6 | ~23 min | ~4 min |
-| 04-admin-adjustments | 1/2 | ~2 min | ~2 min |
+| 04-admin-adjustments | 2/2 | ~14 min | ~7 min |
 
 **Recent Trend:**
 - Last 5 plans: 8 min, 2 min, 5 min, 8 min, 8 min
@@ -108,6 +108,11 @@ Recent decisions affecting current work:
 - AttendanceRecordDetail uses plain Tailwind modal (fixed inset-0 + centered card) — consistent with Phase 2 modal pattern (03-05)
 - Phase 3 E2E human verification passed — all 22 verification steps confirmed; no code changes required post-verification (03-06)
 - Per-field audit rows in attendance_adjustments — one row per changed field preserves old/new values; attendance_records holds only current values (04-01)
+- datetime-local input sliced to YYYY-MM-DDTHH:MM for display; :00.000Z appendage replaced with proper local-to-UTC conversion — satisfies backend IsISO8601 and handles non-UTC admin timezones (04-02)
+- Save button requires non-empty reason AND at least one changed time — prevents accidental no-op adjustments (04-02)
+- AdjustAttendanceModal uses z-[60] to layer correctly over z-50 AttendanceRecordDetail parent modal (04-02)
+- onSaved merges { ...record, ...updated } to preserve users join data not returned by PATCH endpoint (04-02)
+- Phase 4 E2E human verification passed — all 10 test cases confirmed; timezone bug found and fixed during verification (04-02)
 - old_value nullable in audit table — supports setting check_out_at on missing_checkout records where previous value was NULL (04-01)
 - missing_checkout flag auto-cleared by service when check_out_at is adjusted by admin — prevents cron double-marking (04-01)
 - PATCH /attendance/records/:id restricted to admin and owner only (not manager) — managers can view but not correct records in v1 (04-01)
@@ -133,5 +138,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Phase 4 Plan 04-01 complete — admin adjustments backend delivered; ready for Plan 04-02 (frontend adjustment UI)
+Stopped at: Phase 4 complete — Plan 04-02 (Admin Adjustments Frontend) complete and E2E verified; ready for Phase 5 (Monitoring & Reporting)
 Resume file: None
