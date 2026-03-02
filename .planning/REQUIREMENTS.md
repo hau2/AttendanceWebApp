@@ -61,9 +61,9 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Admin Adjustments (ADJT)
 
-- [ ] **ADJT-01**: Admin can edit check-in or check-out times on any attendance record
-- [ ] **ADJT-02**: Admin must provide a reason when editing an attendance record
-- [ ] **ADJT-03**: System stores full audit trail per edit: who changed, when, before/after values — original data never deleted
+- [x] **ADJT-01**: Admin can edit check-in or check-out times on any attendance record
+- [x] **ADJT-02**: Admin must provide a reason when editing an attendance record
+- [x] **ADJT-03**: System stores full audit trail per edit: who changed, when, before/after values — original data never deleted
 
 ### Manager Monitoring (MNGR)
 
@@ -170,9 +170,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EVID-02 | Phase 3 | Complete |
 | EVID-03 | Phase 3 | Complete |
 | EVID-04 | Phase 3 | Complete |
-| ADJT-01 | Phase 4 | Pending |
-| ADJT-02 | Phase 4 | Pending |
-| ADJT-03 | Phase 4 | Pending |
+| ADJT-01 | Phase 4 | Complete |
+| ADJT-02 | Phase 4 | Complete |
+| ADJT-03 | Phase 4 | Complete |
 | MNGR-01 | Phase 5 | Pending |
 | MNGR-02 | Phase 5 | Pending |
 | MNGR-03 | Phase 5 | Pending |
@@ -195,4 +195,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-01*
-*Last updated: 2026-03-02 after 03-06 E2E verification — ATTN-01 and ATTN-10 marked complete; all Phase 3 requirements (ATTN-01–13, EVID-01–04) now complete*
+*Last updated: 2026-03-02 after 04-01 plan completion — ADJT-01, ADJT-02, ADJT-03 marked complete (backend implementation)*

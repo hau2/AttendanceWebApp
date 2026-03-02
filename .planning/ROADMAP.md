@@ -87,7 +87,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — attendance_adjustments SQL migration + NestJS adjustRecord() + PATCH /attendance/records/:id (admin/owner only)
+- [x] 04-01-PLAN.md — attendance_adjustments SQL migration + NestJS adjustRecord() + PATCH /attendance/records/:id (admin/owner only)
 - [ ] 04-02-PLAN.md — AdjustAttendanceModal frontend component + Adjust button in detail modal + page refresh + E2E human verification
 
 ### Phase 5: Monitoring & Reporting
@@ -111,7 +111,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation | 3/3 | Complete    | 2026-03-01 |
 | 2. Workforce Configuration | 4/4 | Complete    | 2026-03-02 |
 | 3. Attendance Core | 6/6 | Complete    | 2026-03-02 |
-| 4. Admin Adjustments | 0/2 | Not started | - |
+| 4. Admin Adjustments | 1/2 | In progress | - |
 | 5. Monitoring & Reporting | 0/TBD | Not started | - |
 
 ---

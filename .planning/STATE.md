@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-02T14:01:22.348Z"
+status: in-progress
+last_updated: "2026-03-02T15:24:08Z"
 progress:
-  total_phases: 3
+  total_phases: 5
   completed_phases: 3
-  total_plans: 13
-  completed_plans: 13
+  total_plans: 15
+  completed_plans: 14
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** Phase 3 - Attendance Core
+**Current focus:** Phase 4 - Admin Adjustments
 
 ## Current Position
 
-Phase: 3 of 5 (Attendance Core) — COMPLETE
-Plan: 6 of 6 — Plan 03-06 complete (2026-03-02)
-Status: Phase 3 complete — all 6 plans executed and human-verified; Phase 4 Admin Adjustments is next
-Last activity: 2026-03-02 — Plan 03-06 (E2E verification checkpoint) approved by human reviewer; all 22 verification steps passed; Phase 3 fully complete
+Phase: 4 of 5 (Admin Adjustments) — IN PROGRESS
+Plan: 1 of 2 complete — Plan 04-01 complete (2026-03-02)
+Status: Phase 4 plan 01 complete — attendance adjustments backend (migration + service + endpoint) delivered; plan 04-02 (frontend adjustment UI) is next
+Last activity: 2026-03-02 — Plan 04-01 (Admin Adjustments Backend) complete; attendance_adjustments table migration + PATCH /attendance/records/:id endpoint delivered
 
-Progress: [████████████████] 75%
+Progress: [█████████████████] 80%
 
 ## Performance Metrics
 
@@ -43,6 +43,7 @@ Progress: [████████████████] 75%
 | 01-foundation | 3 | 17 min | ~6 min |
 | 02-workforce-configuration | 4 | ~23 min | ~6 min |
 | 03-attendance-core | 6 | ~23 min | ~4 min |
+| 04-admin-adjustments | 1/2 | ~2 min | ~2 min |
 
 **Recent Trend:**
 - Last 5 plans: 8 min, 2 min, 5 min, 8 min, 8 min
@@ -106,6 +107,11 @@ Recent decisions affecting current work:
 - Admin attendance page has breadcrumb nav (Users / Shifts / Attendance Records) — consistent with Phase 2 admin area style (03-05)
 - AttendanceRecordDetail uses plain Tailwind modal (fixed inset-0 + centered card) — consistent with Phase 2 modal pattern (03-05)
 - Phase 3 E2E human verification passed — all 22 verification steps confirmed; no code changes required post-verification (03-06)
+- Per-field audit rows in attendance_adjustments — one row per changed field preserves old/new values; attendance_records holds only current values (04-01)
+- old_value nullable in audit table — supports setting check_out_at on missing_checkout records where previous value was NULL (04-01)
+- missing_checkout flag auto-cleared by service when check_out_at is adjusted by admin — prevents cron double-marking (04-01)
+- PATCH /attendance/records/:id restricted to admin and owner only (not manager) — managers can view but not correct records in v1 (04-01)
+- source field set to 'admin' on adjustment — distinguishes manual corrections from employee actions and system cron (04-01)
 
 ### Pending Todos
 
@@ -118,6 +124,7 @@ Recent decisions affecting current work:
 - Create Supabase Storage bucket 'attendance-photos' (private, 5MB limit) — see 005_photo_storage.sql
 - Run 004_attendance_records.sql migration in Supabase SQL editor before testing check-in/out endpoints
 - Run 003_attendance_rls.sql RLS policy in Supabase SQL editor before using attendance endpoints from frontend
+- Run 006_attendance_adjustments.sql migration in Supabase SQL editor before testing PATCH /attendance/records/:id endpoint
 
 ### Blockers/Concerns
 
@@ -126,5 +133,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Phase 3 complete (03-06 E2E verification approved) — all attendance core features human-verified; ready to begin Phase 4 Admin Adjustments
+Stopped at: Phase 4 Plan 04-01 complete — admin adjustments backend delivered; ready for Plan 04-02 (frontend adjustment UI)
 Resume file: None
