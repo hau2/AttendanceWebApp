@@ -31,8 +31,8 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Shift Management (SHFT)
 
-- [ ] **SHFT-01**: Admin can create work shifts (start time, end time, grace period in minutes)
-- [ ] **SHFT-02**: Admin can edit existing shifts
+- [x] **SHFT-01**: Admin can create work shifts (start time, end time, grace period in minutes)
+- [x] **SHFT-02**: Admin can edit existing shifts
 - [ ] **SHFT-03**: Admin can assign a shift to an employee with an effective date
 - [ ] **SHFT-04**: Each employee has exactly one active shift at any given time
 
