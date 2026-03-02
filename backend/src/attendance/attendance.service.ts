@@ -10,6 +10,7 @@ import { SupabaseService } from '../supabase/supabase.service';
 import { ShiftAssignmentsService, ShiftAssignmentWithShift } from '../shifts/shift-assignments.service';
 import { CheckInDto } from './dto/check-in.dto';
 import { CheckOutDto } from './dto/check-out.dto';
+import { AdjustRecordDto } from './dto/adjust-record.dto';
 
 @Injectable()
 export class AttendanceService {
@@ -450,5 +451,112 @@ export class AttendanceService {
     }
 
     return (data ?? []) as Record<string, unknown>[];
+  }
+
+  /**
+   * Admin adjusts check_in_at and/or check_out_at on an existing record.
+   * Stores one audit row per changed field in attendance_adjustments.
+   * Requires reason. Admin and Owner roles only (enforced in controller).
+   */
+  async adjustRecord(
+    companyId: string,
+    adminUserId: string,
+    recordId: string,
+    dto: AdjustRecordDto,
+  ): Promise<Record<string, unknown>> {
+    if (!dto.check_in_at && !dto.check_out_at) {
+      throw new BadRequestException('At least one of check_in_at or check_out_at must be provided');
+    }
+
+    const client = this.supabase.getClient();
+
+    // Fetch the record to verify it belongs to this company and to capture old values
+    const { data: record, error: fetchError } = await client
+      .from('attendance_records')
+      .select('id, company_id, check_in_at, check_out_at')
+      .eq('id', recordId)
+      .eq('company_id', companyId)
+      .maybeSingle();
+
+    if (fetchError) {
+      throw new InternalServerErrorException(`Failed to fetch record: ${fetchError.message}`);
+    }
+    if (!record) {
+      throw new NotFoundException('Attendance record not found');
+    }
+
+    // Build the update payload and audit rows
+    const updatePayload: Record<string, unknown> = {
+      source: 'admin',
+      updated_at: new Date().toISOString(),
+    };
+
+    const auditRows: Array<{
+      record_id: string;
+      company_id: string;
+      adjusted_by: string;
+      field_name: string;
+      old_value: string | null;
+      new_value: string;
+      reason: string;
+    }> = [];
+
+    if (dto.check_in_at) {
+      updatePayload.check_in_at = dto.check_in_at;
+      auditRows.push({
+        record_id: recordId,
+        company_id: companyId,
+        adjusted_by: adminUserId,
+        field_name: 'check_in_at',
+        old_value: (record.check_in_at as string | null) ?? null,
+        new_value: dto.check_in_at,
+        reason: dto.reason,
+      });
+    }
+
+    if (dto.check_out_at) {
+      updatePayload.check_out_at = dto.check_out_at;
+      // Clear missing_checkout flag if setting a checkout time
+      updatePayload.missing_checkout = false;
+      auditRows.push({
+        record_id: recordId,
+        company_id: companyId,
+        adjusted_by: adminUserId,
+        field_name: 'check_out_at',
+        old_value: (record.check_out_at as string | null) ?? null,
+        new_value: dto.check_out_at,
+        reason: dto.reason,
+      });
+    }
+
+    // Apply the update to attendance_records
+    const { data: updated, error: updateError } = await client
+      .from('attendance_records')
+      .update(updatePayload)
+      .eq('id', recordId)
+      .eq('company_id', companyId)
+      .select()
+      .single();
+
+    if (updateError || !updated) {
+      throw new InternalServerErrorException(
+        `Failed to update record: ${updateError?.message ?? 'unknown error'}`,
+      );
+    }
+
+    // Insert audit rows
+    if (auditRows.length > 0) {
+      const { error: auditError } = await client
+        .from('attendance_adjustments')
+        .insert(auditRows);
+
+      if (auditError) {
+        throw new InternalServerErrorException(
+          `Record updated but audit log failed: ${auditError.message}`,
+        );
+      }
+    }
+
+    return updated as Record<string, unknown>;
   }
 }

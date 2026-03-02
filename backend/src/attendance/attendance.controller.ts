@@ -2,8 +2,10 @@ import {
   Controller,
   Post,
   Get,
+  Patch,
   Body,
   Query,
+  Param,
   Request,
   UseGuards,
   ForbiddenException,
@@ -12,6 +14,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AttendanceService } from './attendance.service';
 import { CheckInDto } from './dto/check-in.dto';
 import { CheckOutDto } from './dto/check-out.dto';
+import { AdjustRecordDto } from './dto/adjust-record.dto';
 
 @Controller('attendance')
 @UseGuards(JwtAuthGuard)
@@ -65,5 +68,22 @@ export class AttendanceController {
     const y = parseInt(year) || new Date().getFullYear();
     const m = parseInt(month) || new Date().getMonth() + 1;
     return this.attendanceService.listRecords(companyId, y, m, userId);
+  }
+
+  /**
+   * Admin/Owner: adjust check_in_at and/or check_out_at on an existing record.
+   * Stores immutable audit rows in attendance_adjustments.
+   */
+  @Patch('records/:id')
+  async adjustRecord(
+    @Request() req: any,
+    @Param('id') recordId: string,
+    @Body() dto: AdjustRecordDto,
+  ) {
+    const { role, companyId, userId } = req.user;
+    if (!['admin', 'owner'].includes(role)) {
+      throw new ForbiddenException('Only admins can adjust attendance records');
+    }
+    return this.attendanceService.adjustRecord(companyId, userId, recordId, dto);
   }
 }
