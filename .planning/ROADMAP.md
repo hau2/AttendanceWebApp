@@ -13,7 +13,7 @@ The product is built in five sequential phases, each delivering a complete, veri
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Multi-tenant auth, company onboarding, and RLS security baseline
-- [ ] **Phase 2: Workforce Configuration** - User management and shift definitions ready for attendance tracking
+- [x] **Phase 2: Workforce Configuration** - User management and shift definitions ready for attendance tracking
 - [ ] **Phase 3: Attendance Core** - Employee check-in/out with photo evidence and accurate late/early classification
 - [ ] **Phase 4: Admin Adjustments** - Admins can correct records with a full, immutable audit trail
 - [ ] **Phase 5: Monitoring & Reporting** - Manager monitoring, Executive dashboard, and CSV export
@@ -47,7 +47,13 @@ Plans:
   3. Admin can import a list of employees by uploading a CSV file
   4. Admin can assign a Manager to oversee specific employees, and that Manager sees only those employees in all views
   5. Admin can create a shift with start time, end time, and grace period — then assign it to an employee with an effective date — and that employee has exactly one active shift at any given time
-**Plans**: TBD
+**Plans**: 4 plans (02-01 through 02-04)
+
+Plans:
+- [x] 02-01-PLAN.md — NestJS UsersModule (create, list, role change, disable/enable, manager assignment) + DB migration
+- [x] 02-02-PLAN.md — User Management UI (/admin/users page with all user CRUD, CSV import, manager assignment)
+- [x] 02-03-PLAN.md — NestJS ShiftsModule (create, list, update) + /admin/shifts page
+- [x] 02-04-PLAN.md — Shift assignment backend (POST /shifts/assign + active shift resolution) + AssignShiftModal on users page
 
 ### Phase 3: Attendance Core
 **Goal**: Employees can check in and check out each workday — the system captures a camera photo and IP at the moment of action, classifies the record accurately against the employee's active shift, and prevents fraud and duplicate submissions
@@ -91,7 +97,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete    | 2026-03-01 |
-| 2. Workforce Configuration | 3/TBD | In progress | - |
+| 2. Workforce Configuration | 4/4 | Complete     | 2026-03-02 |
 | 3. Attendance Core | 0/TBD | Not started | - |
 | 4. Admin Adjustments | 0/TBD | Not started | - |
 | 5. Monitoring & Reporting | 0/TBD | Not started | - |

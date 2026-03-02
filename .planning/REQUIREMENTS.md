@@ -33,8 +33,8 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 - [x] **SHFT-01**: Admin can create work shifts (start time, end time, grace period in minutes)
 - [x] **SHFT-02**: Admin can edit existing shifts
-- [ ] **SHFT-03**: Admin can assign a shift to an employee with an effective date
-- [ ] **SHFT-04**: Each employee has exactly one active shift at any given time
+- [x] **SHFT-03**: Admin can assign a shift to an employee with an effective date
+- [x] **SHFT-04**: Each employee has exactly one active shift at any given time
 
 ### Attendance (ATTN)
 
@@ -143,16 +143,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-03 | Phase 1 | Complete |
 | SECU-01 | Phase 1 | Complete |
 | SECU-02 | Phase 1 | Complete |
-| USER-01 | Phase 2 | Pending |
-| USER-02 | Phase 2 | Pending |
-| USER-03 | Phase 2 | Pending |
-| USER-04 | Phase 2 | Pending |
-| USER-05 | Phase 2 | Pending |
-| USER-06 | Phase 2 | Pending |
-| SHFT-01 | Phase 2 | Pending |
-| SHFT-02 | Phase 2 | Pending |
-| SHFT-03 | Phase 2 | Pending |
-| SHFT-04 | Phase 2 | Pending |
+| USER-01 | Phase 2 | Complete |
+| USER-02 | Phase 2 | Complete |
+| USER-03 | Phase 2 | Complete |
+| USER-04 | Phase 2 | Complete |
+| USER-05 | Phase 2 | Complete |
+| USER-06 | Phase 2 | Complete |
+| SHFT-01 | Phase 2 | Complete |
+| SHFT-02 | Phase 2 | Complete |
+| SHFT-03 | Phase 2 | Complete |
+| SHFT-04 | Phase 2 | Complete |
 | ATTN-01 | Phase 3 | Pending |
 | ATTN-02 | Phase 3 | Pending |
 | ATTN-03 | Phase 3 | Pending |
@@ -195,4 +195,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-01*
-*Last updated: 2026-03-01 after 01-03 execution — ONBD-02, ONBD-03, ONBD-04 marked complete*
+*Last updated: 2026-03-02 after 02-04 execution — all Phase 2 requirements (USER-01–06, SHFT-01–04) marked complete*

@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-03-02T02:36:00Z"
+last_updated: "2026-03-02T10:45:00Z"
 progress:
   total_phases: 5
-  completed_phases: 1
-  total_plans: 6
-  completed_plans: 6
+  completed_phases: 2
+  total_plans: 7
+  completed_plans: 7
 ---
 
 # Project State
@@ -18,21 +18,21 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** Phase 2 - Workforce Configuration
+**Current focus:** Phase 3 - Attendance Core
 
 ## Current Position
 
-Phase: 2 of 5 (Workforce Configuration) — IN PROGRESS
-Plan: 3 of TBD — Plan 02-03 complete (2026-03-02)
-Status: Phase 2 underway — 02-01 (UsersModule) + 02-02 (User Management UI) + 02-03 (ShiftsModule + Shifts UI) complete; next: shift assignment
-Last activity: 2026-03-02 — Plan 02-03 complete; shift management with NestJS API and Next.js admin page operational
+Phase: 2 of 5 (Workforce Configuration) — COMPLETE
+Plan: 4 of 4 — Plan 02-04 complete (2026-03-02)
+Status: Phase 2 complete — 02-01 (UsersModule) + 02-02 (User Management UI) + 02-03 (ShiftsModule + Shifts UI) + 02-04 (Shift Assignment) all delivered; Phase 3 ready
+Last activity: 2026-03-02 — Plan 02-04 complete; shift assignment with active shift resolution (effective_date <= today) operational; human verification passed (all 11 steps)
 
-Progress: [████████░░] 48%
+Progress: [██████████] 60%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 6
+- Total plans completed: 7
 - Average duration: ~5 min
 - Total execution time: 30 min
 
@@ -41,7 +41,7 @@ Progress: [████████░░] 48%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 17 min | ~6 min |
-| 02-workforce-configuration | 3 | 13 min | ~4 min |
+| 02-workforce-configuration | 4 | ~23 min | ~6 min |
 
 **Recent Trend:**
 - Last 5 plans: 7 min, 2 min, 8 min, 3 min
@@ -82,6 +82,11 @@ Recent decisions affecting current work:
 - ShiftsModule exports ShiftsService so plan 04 can inject it via DI without re-querying (02-03)
 - PATCH uses sparse update (only defined fields) — consistent with UsersModule pattern (02-03)
 - Frontend time inputs use type=time (browser-native HH:MM) — no custom picker needed (02-03)
+- Active shift = latest employee_shifts row with effective_date <= today (ORDER BY DESC LIMIT 1) — null returned when no assignment exists, not an error (02-04)
+- ShiftAssignmentsService exported from ShiftsModule; Phase 3 injects it directly for on-time/late classification at check-in (02-04)
+- Dual tenant guard before assignment insert: both shift and user verified to belong to companyId — prevents cross-tenant assignment (02-04)
+- ConflictException (409) on UNIQUE(user_id, effective_date) violation with message directing admin to choose a different date (02-04)
+- listAssignments returns full history descending — modal surfaces it as an audit trail; old assignments never deleted (02-04)
 
 ### Pending Todos
 
@@ -99,5 +104,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Phase 2 Plan 03 (02-03) complete — ShiftsModule and /admin/shifts page operational; ready for Phase 2 Plan 04 (shift assignment)
+Stopped at: Phase 2 Plan 04 (02-04) complete — Shift assignment fully operational; Phase 2 Workforce Configuration DONE; ready for Phase 3 Attendance Core
 Resume file: None
