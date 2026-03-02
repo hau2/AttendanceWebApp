@@ -44,6 +44,14 @@ export function CheckInOutCard() {
     }
   }, [todayRecord]);
 
+  // Attach stream to video element after React renders the camera-open state
+  useEffect(() => {
+    if (flowState === 'camera-open' && videoRef.current && streamRef.current) {
+      videoRef.current.srcObject = streamRef.current;
+      videoRef.current.play().catch(() => {/* already playing */});
+    }
+  }, [flowState]);
+
   function stopStream() {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
@@ -67,13 +75,7 @@ export function CheckInOutCard() {
         stream = await navigator.mediaDevices.getUserMedia({ video: true });
       }
       streamRef.current = stream;
-      setFlowState('camera-open');
-      // attach stream after state update
-      setTimeout(() => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
-        }
-      }, 0);
+      setFlowState('camera-open'); // stream attached via useEffect after render
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Camera access denied');
       setFlowState('error');
@@ -83,6 +85,11 @@ export function CheckInOutCard() {
   function capturePhoto() {
     if (!videoRef.current) return;
     const video = videoRef.current;
+    if (video.videoWidth === 0 || video.videoHeight === 0) {
+      setError('Camera is still loading — please wait a moment and try again');
+      setFlowState('error');
+      return;
+    }
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
