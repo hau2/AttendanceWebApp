@@ -22,12 +22,12 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### User Management (USER)
 
-- [ ] **USER-01**: Admin can create users with assigned roles (Owner, Admin, Manager, Employee, Executive)
-- [ ] **USER-02**: Admin can change a user's role
-- [ ] **USER-03**: Admin can disable or enable a user account
+- [x] **USER-01**: Admin can create users with assigned roles (Owner, Admin, Manager, Employee, Executive)
+- [x] **USER-02**: Admin can change a user's role
+- [x] **USER-03**: Admin can disable or enable a user account
 - [ ] **USER-04**: Admin can import employees via CSV
-- [ ] **USER-05**: Admin can assign a Manager to oversee specific employees
-- [ ] **USER-06**: Disabled users cannot log in or perform attendance actions
+- [x] **USER-05**: Admin can assign a Manager to oversee specific employees
+- [x] **USER-06**: Disabled users cannot log in or perform attendance actions
 
 ### Shift Management (SHFT)
 

@@ -91,7 +91,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete    | 2026-03-01 |
-| 2. Workforce Configuration | 0/TBD | Not started | - |
+| 2. Workforce Configuration | 1/TBD | In progress | - |
 | 3. Attendance Core | 0/TBD | Not started | - |
 | 4. Admin Adjustments | 0/TBD | Not started | - |
 | 5. Monitoring & Reporting | 0/TBD | Not started | - |
