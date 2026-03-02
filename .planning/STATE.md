@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-02T03:36:29Z"
+last_updated: "2026-03-02T03:43:00Z"
 progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 13
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 3 of 5 (Attendance Core) — IN PROGRESS
-Plan: 2 of 6 — Plan 03-02 complete (2026-03-02)
-Status: Phase 3 in progress — 03-02 (Photo Storage + signed URL endpoint) complete; 03-01 (check-in/out backend) running in parallel
-Last activity: 2026-03-02 — Plan 03-02 complete; Supabase Storage signed URL endpoint live; AttendanceModule registered in AppModule
+Plan: 2 of 6 — Plan 03-01 complete (2026-03-02)
+Status: Phase 3 in progress — 03-01 (check-in/out backend) + 03-02 (Photo Storage) both complete; 03-03 (Attendance UI) next
+Last activity: 2026-03-02 — Plan 03-01 complete; AttendanceModule with check-in/out/history/records endpoints operational; IP enforcement + shift classification + idempotency guards all implemented
 
-Progress: [████████████] 62%
+Progress: [█████████████] 65%
 
 ## Performance Metrics
 
@@ -91,6 +91,11 @@ Recent decisions affecting current work:
 - Private bucket (not public) — all access via signed URLs; service-role bypasses RLS for URL generation (03-02)
 - EVID-03 (90-180 day) photo retention deferred to v2 — v1 retains photos indefinitely (within spec) (03-02)
 - attendance.module.ts created as stub by Plan 03-02; Plan 03-01 extends it with AttendanceController/Service (03-02)
+- Empty IP allowlist treated as no restriction (withinAllowlist=true, blocked=false) — companies without IP policy must not block employees (03-01)
+- getWorkDate uses toLocaleDateString('en-CA', { timeZone }) — produces YYYY-MM-DD natively without date libraries (03-01)
+- Minute-based shift classification using toLocaleTimeString for timezone conversion — avoids manual UTC offset math (03-01)
+- Date range filter uses gte startDate + lt nextMonthStart — avoids date_trunc, Supabase/PostgREST compatible (03-01)
+- listRecords joins users table for full_name — admin view shows employee names without second query (03-01)
 
 ### Pending Todos
 
@@ -101,6 +106,8 @@ Recent decisions affecting current work:
 - Copy backend/.env.example to backend/.env with Supabase credentials, JWT_SECRET, FRONTEND_URL
 - Copy frontend/.env.example to frontend/.env.local with Supabase credentials and NEXT_PUBLIC_API_URL
 - Create Supabase Storage bucket 'attendance-photos' (private, 5MB limit) — see 005_photo_storage.sql
+- Run 004_attendance_records.sql migration in Supabase SQL editor before testing check-in/out endpoints
+- Run 003_attendance_rls.sql RLS policy in Supabase SQL editor before using attendance endpoints from frontend
 
 ### Blockers/Concerns
 
@@ -109,5 +116,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Phase 3 Plan 02 (03-02) complete — Photo Storage signed URL endpoint operational; Plan 03-01 running in parallel
+Stopped at: Phase 3 Plan 01 (03-01) complete — AttendanceModule with check-in/out endpoints fully operational
 Resume file: None
