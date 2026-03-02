@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Multi-tenant auth, company onboarding, and RLS security baseline
 - [x] **Phase 2: Workforce Configuration** - User management and shift definitions ready for attendance tracking
-- [ ] **Phase 3: Attendance Core** - Employee check-in/out with photo evidence and accurate late/early classification
+- [x] **Phase 3: Attendance Core** - Employee check-in/out with photo evidence and accurate late/early classification
 - [ ] **Phase 4: Admin Adjustments** - Admins can correct records with a full, immutable audit trail
 - [ ] **Phase 5: Monitoring & Reporting** - Manager monitoring, Executive dashboard, and CSV export
 
@@ -73,8 +73,8 @@ Plans:
 - [x] 03-02-PLAN.md — Supabase Storage photo bucket setup + POST /attendance/photo-upload-url signed URL endpoint
 - [x] 03-03-PLAN.md — Midnight cron job (AttendanceCronService) for auto-marking missing checkouts
 - [x] 03-04-PLAN.md — Employee dashboard check-in/out UI with camera capture (getUserMedia) + attendance API helpers
-- [ ] 03-05-PLAN.md — Employee history page (/attendance/history) + Admin/Manager attendance record view with inline photos (/admin/attendance)
-- [ ] 03-06-PLAN.md — Human verification checkpoint (full E2E attendance flow)
+- [x] 03-05-PLAN.md — Employee history page (/attendance/history) + Admin/Manager attendance record view with inline photos (/admin/attendance)
+- [x] 03-06-PLAN.md — Human verification checkpoint (full E2E attendance flow)
 
 ### Phase 4: Admin Adjustments
 **Goal**: Admins can correct any attendance record — and every correction is fully auditable, with original values preserved forever
@@ -106,7 +106,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete    | 2026-03-01 |
 | 2. Workforce Configuration | 4/4 | Complete    | 2026-03-02 |
-| 3. Attendance Core | 4/6 | In progress | - |
+| 3. Attendance Core | 6/6 | Complete    | 2026-03-02 |
 | 4. Admin Adjustments | 0/TBD | Not started | - |
 | 5. Monitoring & Reporting | 0/TBD | Not started | - |
 

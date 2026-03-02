@@ -38,8 +38,7 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Attendance (ATTN)
 
-- [ ] **ATTN-01**: Employee sees a prominent CHECK-IN button on their home page
-- [ ] **ATTN-01**: Employee sees a prominent CHECK-IN button on their home page
+- [x] **ATTN-01**: Employee sees a prominent CHECK-IN button on their home page
 - [x] **ATTN-02**: Check-in captures timestamp, photo (camera only), IP address, and late classification
 - [x] **ATTN-03**: System classifies check-in as on-time, within-grace, or late — with minutes late recorded
 - [x] **ATTN-04**: Employee must enter a reason if checking in late
@@ -48,7 +47,7 @@ Requirements for initial release. Each maps to a roadmap phase.
 - [x] **ATTN-07**: Employee must enter a note if checking out early
 - [x] **ATTN-08**: System auto-marks record as "missing checkout" after midnight (company timezone) if no checkout occurred
 - [x] **ATTN-09**: System enforces exactly one attendance record per employee per work_date
-- [ ] **ATTN-10**: Employee can view their own attendance history by month
+- [x] **ATTN-10**: Employee can view their own attendance history by month
 - [x] **ATTN-11**: System records whether each check-in/check-out IP is within the company's IP allowlist
 - [x] **ATTN-12**: When IP policy is enforce-block, check-in/out attempts from outside the allowlist are rejected with a clear user message
 - [x] **ATTN-13**: System prevents duplicate check-in or check-out submissions for the same work_date (idempotent behavior)
@@ -154,7 +153,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHFT-02 | Phase 2 | Complete |
 | SHFT-03 | Phase 2 | Complete |
 | SHFT-04 | Phase 2 | Complete |
-| ATTN-01 | Phase 3 | Pending |
+| ATTN-01 | Phase 3 | Complete |
 | ATTN-02 | Phase 3 | Complete |
 | ATTN-03 | Phase 3 | Complete |
 | ATTN-04 | Phase 3 | Complete |
@@ -163,7 +162,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ATTN-07 | Phase 3 | Complete |
 | ATTN-08 | Phase 3 | Complete |
 | ATTN-09 | Phase 3 | Complete |
-| ATTN-10 | Phase 3 | Pending |
+| ATTN-10 | Phase 3 | Complete |
 | ATTN-11 | Phase 3 | Complete |
 | ATTN-12 | Phase 3 | Complete |
 | ATTN-13 | Phase 3 | Complete |
@@ -196,4 +195,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-01*
-*Last updated: 2026-03-02 after 03-02 execution — EVID-01–04 marked complete (Supabase Storage photo bucket + signed URL endpoint)*
+*Last updated: 2026-03-02 after 03-06 E2E verification — ATTN-01 and ATTN-10 marked complete; all Phase 3 requirements (ATTN-01–13, EVID-01–04) now complete*
