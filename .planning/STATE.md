@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-02T03:11:33.664Z"
+last_updated: "2026-03-02T03:36:29Z"
 progress:
-  total_phases: 2
+  total_phases: 5
   completed_phases: 2
-  total_plans: 7
-  completed_plans: 7
+  total_plans: 13
+  completed_plans: 8
 ---
 
 # Project State
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 
 ## Current Position
 
-Phase: 2 of 5 (Workforce Configuration) — COMPLETE
-Plan: 4 of 4 — Plan 02-04 complete (2026-03-02)
-Status: Phase 2 complete — 02-01 (UsersModule) + 02-02 (User Management UI) + 02-03 (ShiftsModule + Shifts UI) + 02-04 (Shift Assignment) all delivered; Phase 3 ready
-Last activity: 2026-03-02 — Plan 02-04 complete; shift assignment with active shift resolution (effective_date <= today) operational; human verification passed (all 11 steps)
+Phase: 3 of 5 (Attendance Core) — IN PROGRESS
+Plan: 2 of 6 — Plan 03-02 complete (2026-03-02)
+Status: Phase 3 in progress — 03-02 (Photo Storage + signed URL endpoint) complete; 03-01 (check-in/out backend) running in parallel
+Last activity: 2026-03-02 — Plan 03-02 complete; Supabase Storage signed URL endpoint live; AttendanceModule registered in AppModule
 
-Progress: [██████████] 60%
+Progress: [████████████] 62%
 
 ## Performance Metrics
 
@@ -87,6 +87,10 @@ Recent decisions affecting current work:
 - Dual tenant guard before assignment insert: both shift and user verified to belong to companyId — prevents cross-tenant assignment (02-04)
 - ConflictException (409) on UNIQUE(user_id, effective_date) violation with message directing admin to choose a different date (02-04)
 - listAssignments returns full history descending — modal surfaces it as an audit trail; old assignments never deleted (02-04)
+- Storage path format {companyId}/{userId}/{timestamp}.jpg enforces tenant isolation at storage layer even without bucket RLS (03-02)
+- Private bucket (not public) — all access via signed URLs; service-role bypasses RLS for URL generation (03-02)
+- EVID-03 (90-180 day) photo retention deferred to v2 — v1 retains photos indefinitely (within spec) (03-02)
+- attendance.module.ts created as stub by Plan 03-02; Plan 03-01 extends it with AttendanceController/Service (03-02)
 
 ### Pending Todos
 
@@ -96,6 +100,7 @@ Recent decisions affecting current work:
 - Run 002_workforce_rls.sql RLS policy in Supabase SQL editor before using Users endpoints
 - Copy backend/.env.example to backend/.env with Supabase credentials, JWT_SECRET, FRONTEND_URL
 - Copy frontend/.env.example to frontend/.env.local with Supabase credentials and NEXT_PUBLIC_API_URL
+- Create Supabase Storage bucket 'attendance-photos' (private, 5MB limit) — see 005_photo_storage.sql
 
 ### Blockers/Concerns
 
@@ -104,5 +109,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Phase 2 Plan 04 (02-04) complete — Shift assignment fully operational; Phase 2 Workforce Configuration DONE; ready for Phase 3 Attendance Core
+Stopped at: Phase 3 Plan 02 (03-02) complete — Photo Storage signed URL endpoint operational; Plan 03-01 running in parallel
 Resume file: None

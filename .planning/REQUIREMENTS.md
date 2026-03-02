@@ -54,10 +54,10 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Evidence / Photos (EVID)
 
-- [ ] **EVID-01**: Attendance photos are stored per record and visible to Admin and Manager in record detail
-- [ ] **EVID-02**: Photo capture uses device camera only — file upload is not permitted
-- [ ] **EVID-03**: Photos are retained for 90–180 days per record
-- [ ] **EVID-04**: Employee can view their own attendance photos but cannot access photos of other employees
+- [x] **EVID-01**: Attendance photos are stored per record and visible to Admin and Manager in record detail
+- [x] **EVID-02**: Photo capture uses device camera only — file upload is not permitted
+- [x] **EVID-03**: Photos are retained for 90–180 days per record
+- [x] **EVID-04**: Employee can view their own attendance photos but cannot access photos of other employees
 
 ### Admin Adjustments (ADJT)
 
@@ -166,10 +166,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ATTN-11 | Phase 3 | Pending |
 | ATTN-12 | Phase 3 | Pending |
 | ATTN-13 | Phase 3 | Pending |
-| EVID-01 | Phase 3 | Pending |
-| EVID-02 | Phase 3 | Pending |
-| EVID-03 | Phase 3 | Pending |
-| EVID-04 | Phase 3 | Pending |
+| EVID-01 | Phase 3 | Complete |
+| EVID-02 | Phase 3 | Complete |
+| EVID-03 | Phase 3 | Complete |
+| EVID-04 | Phase 3 | Complete |
 | ADJT-01 | Phase 4 | Pending |
 | ADJT-02 | Phase 4 | Pending |
 | ADJT-03 | Phase 4 | Pending |
@@ -195,4 +195,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-01*
-*Last updated: 2026-03-02 after 02-04 execution — all Phase 2 requirements (USER-01–06, SHFT-01–04) marked complete*
+*Last updated: 2026-03-02 after 03-02 execution — EVID-01–04 marked complete (Supabase Storage photo bucket + signed URL endpoint)*
