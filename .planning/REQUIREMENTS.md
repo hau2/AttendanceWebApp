@@ -46,7 +46,7 @@ Requirements for initial release. Each maps to a roadmap phase.
 - [x] **ATTN-05**: Check-out captures timestamp, photo, and IP address
 - [x] **ATTN-06**: System classifies checkout as on-time or early — with minutes early recorded
 - [x] **ATTN-07**: Employee must enter a note if checking out early
-- [ ] **ATTN-08**: System auto-marks record as "missing checkout" after midnight (company timezone) if no checkout occurred
+- [x] **ATTN-08**: System auto-marks record as "missing checkout" after midnight (company timezone) if no checkout occurred
 - [x] **ATTN-09**: System enforces exactly one attendance record per employee per work_date
 - [ ] **ATTN-10**: Employee can view their own attendance history by month
 - [x] **ATTN-11**: System records whether each check-in/check-out IP is within the company's IP allowlist
@@ -161,7 +161,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ATTN-05 | Phase 3 | Complete |
 | ATTN-06 | Phase 3 | Complete |
 | ATTN-07 | Phase 3 | Complete |
-| ATTN-08 | Phase 3 | Pending |
+| ATTN-08 | Phase 3 | Complete |
 | ATTN-09 | Phase 3 | Complete |
 | ATTN-10 | Phase 3 | Pending |
 | ATTN-11 | Phase 3 | Complete |

@@ -8,7 +8,7 @@ progress:
   total_phases: 5
   completed_phases: 2
   total_plans: 13
-  completed_plans: 9
+  completed_plans: 10
 ---
 
 # Project State
@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 3 of 5 (Attendance Core) — IN PROGRESS
-Plan: 2 of 6 — Plan 03-01 complete (2026-03-02)
-Status: Phase 3 in progress — 03-01 (check-in/out backend) + 03-02 (Photo Storage) both complete; 03-03 (Attendance UI) next
-Last activity: 2026-03-02 — Plan 03-01 complete; AttendanceModule with check-in/out/history/records endpoints operational; IP enforcement + shift classification + idempotency guards all implemented
+Plan: 4 of 6 — Plan 03-04 complete (2026-03-02)
+Status: Phase 3 in progress — 03-01 through 03-04 complete; 03-05 (history + admin attendance view) next
+Last activity: 2026-03-02 — Plan 03-04 complete; employee dashboard check-in/out UI with getUserMedia camera capture, signed-URL photo upload, and backend-driven late/early reason prompting implemented
 
 Progress: [█████████████] 65%
 
@@ -96,6 +96,8 @@ Recent decisions affecting current work:
 - Minute-based shift classification using toLocaleTimeString for timezone conversion — avoids manual UTC offset math (03-01)
 - Date range filter uses gte startDate + lt nextMonthStart — avoids date_trunc, Supabase/PostgREST compatible (03-01)
 - listRecords joins users table for full_name — admin view shows employee names without second query (03-01)
+- @Cron('5 0 * * *') at 00:05 UTC with eq(missing_checkout,false) idempotency guard; source='system' distinguishes auto-marks from admin adjustments (03-03)
+- Per-company timezone loop in cron: fetch all companies, compute todayInCompanyTz via toLocaleDateString('en-CA'), batch update per company — never a single global date (03-03)
 
 ### Pending Todos
 
@@ -116,5 +118,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-02
-Stopped at: Phase 3 Plan 01 (03-01) complete — AttendanceModule with check-in/out endpoints fully operational
+Stopped at: Phase 3 Plan 03 (03-03) complete — AttendanceCronService missing checkout cron operational
 Resume file: None
