@@ -25,8 +25,8 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
   useEffect(() => {
     if (shift) {
       setName(shift.name);
-      setStartTime(shift.start_time);
-      setEndTime(shift.end_time);
+      setStartTime(shift.start_time.slice(0, 5));
+      setEndTime(shift.end_time.slice(0, 5));
       setGracePeriodMinutes(shift.grace_period_minutes);
     } else {
       setName('');
