@@ -1,0 +1,91 @@
+'use client';
+
+import { AttendanceRecordWithUser } from '@/lib/api/attendance';
+
+interface Props {
+  records: AttendanceRecordWithUser[];
+  onSelectRecord: (r: AttendanceRecordWithUser) => void;
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+}
+
+function formatTime(isoStr: string | null): string {
+  if (!isoStr) return '—';
+  return new Date(isoStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+function statusBadge(status: string | null) {
+  const map: Record<string, string> = {
+    'on-time': 'bg-green-100 text-green-800',
+    'within-grace': 'bg-yellow-100 text-yellow-800',
+    'late': 'bg-red-100 text-red-800',
+    'early': 'bg-orange-100 text-orange-800',
+  };
+  if (!status) return <span className="text-gray-400">—</span>;
+  return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${map[status] || 'bg-gray-100 text-gray-600'}`}>{status}</span>;
+}
+
+export function AttendanceRecordTable({ records, onSelectRecord }: Props) {
+  if (records.length === 0) {
+    return <p className="text-gray-500 text-center py-10">No attendance records for this period.</p>;
+  }
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b border-gray-200 text-left text-gray-500">
+            <th className="pb-3 px-4 font-medium">Employee</th>
+            <th className="pb-3 px-4 font-medium">Date</th>
+            <th className="pb-3 px-4 font-medium">Check-in</th>
+            <th className="pb-3 px-4 font-medium">In Status</th>
+            <th className="pb-3 px-4 font-medium">Check-out</th>
+            <th className="pb-3 px-4 font-medium">Out Status</th>
+            <th className="pb-3 px-4 font-medium"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {records.map((r) => (
+            <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50">
+              <td className="py-3 px-4 text-gray-900 font-medium">
+                {r.users?.full_name || 'Unknown'}
+              </td>
+              <td className="py-3 px-4 text-gray-700">{formatDate(r.work_date)}</td>
+              <td className="py-3 px-4 text-gray-700">{formatTime(r.check_in_at)}</td>
+              <td className="py-3 px-4">{statusBadge(r.check_in_status)}</td>
+              <td className="py-3 px-4">
+                {r.check_in_at ? (
+                  r.missing_checkout ? (
+                    <span className="text-red-600 font-medium">Missing</span>
+                  ) : (
+                    <span className="text-gray-700">{formatTime(r.check_out_at)}</span>
+                  )
+                ) : (
+                  <span className="text-gray-400">—</span>
+                )}
+              </td>
+              <td className="py-3 px-4">
+                {r.missing_checkout ? (
+                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Missing checkout</span>
+                ) : (
+                  statusBadge(r.check_out_status)
+                )}
+              </td>
+              <td className="py-3 px-4">
+                <button
+                  onClick={() => onSelectRecord(r)}
+                  className="px-3 py-1 text-xs bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors font-medium"
+                >
+                  View
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
