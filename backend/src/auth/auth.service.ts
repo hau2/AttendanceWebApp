@@ -72,11 +72,16 @@ export class AuthService {
   async login(dto: LoginDto): Promise<{ accessToken: string; user: object; company: object }> {
     const client = this.supabase.getClient();
 
-    // Verify credentials via Supabase Auth
-    const { data: authData, error: authError } = await client.auth.signInWithPassword({
-      email: dto.email,
-      password: dto.password,
-    });
+    // Verify credentials via a fresh anon client — never use the shared service
+    // role client for signInWithPassword, as it would overwrite the in-memory
+    // session on the singleton and cause subsequent service-role operations to
+    // fail RLS checks.
+    const { data: authData, error: authError } = await this.supabase
+      .createUserClient()
+      .auth.signInWithPassword({
+        email: dto.email,
+        password: dto.password,
+      });
 
     if (authError || !authData.user) {
       throw new UnauthorizedException('Invalid email or password');
