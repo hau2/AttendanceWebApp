@@ -56,6 +56,7 @@ Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
 - One active shift per employee (not schedule-based) — keeps v1 simple
+- Manager is also an attendance participant — any user with an assigned shift (incl. Managers) can check-in/out; Manager is a permission role layered on top of attendance capability (Phase 3 must allow check-in for all roles with a shift, not just 'employee')
 - No in-system correction request flow — Admin adjusts directly with audit trail
 - No notifications in v1 — manual dashboard monitoring sufficient
 - IP mode configurable per company (log-only vs enforce-block)
