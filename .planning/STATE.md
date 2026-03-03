@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Division, Acknowledgment & Remote Work
 status: roadmap_ready
-last_updated: "2026-03-03T14:04:00Z"
+last_updated: "2026-03-03T16:39:00Z"
 progress:
   total_phases: 5
   completed_phases: 2
@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 
 ## Current Position
 
-Phase: Phase 7 - Employee Lifecycle + Per-User Timezone (COMPLETE)
-Plan: 07-05 (human verification — approved)
-Status: Phase 7 complete — all 5 plans delivered and human-verified. Key fixes during verification: soft-delete uses auth ban + deleted_at column (not auth.deleteUser which cascades); EMPL-03 revised — only Admin/Owner creates users (manager access to /admin/users removed); timezone field is grouped select dropdown.
-Last activity: 2026-03-03 — Phase 7 human verification approved
+Phase: Phase 8 - Remote Work + Acknowledgment Flow (In progress)
+Plan: 08-01 (DB migration — complete)
+Status: 08-01 complete — migration 010_remote_acknowledgment.sql written with is_remote + 4 acknowledgment columns. Phase 7 was completed and human-verified. Now starting Phase 8.
+Last activity: 2026-03-03 — 08-01 DB migration complete
 
 Progress: [██████████████░░░░░░] 40% (2/5 v2.0 phases)
 
@@ -166,6 +166,10 @@ Recent decisions affecting current work:
 - window.confirm used for delete confirmation — consistent with plain Tailwind modal pattern; Shadcn Dialog not added (07-04)
 - Manager role in UserTable sees static role span instead of role select — manager cannot change roles, only create employees (07-04)
 - availableDivisions computed in CreateUserModal: divisions.filter(d => d.manager_id === currentUserId) when currentUserRole === 'manager' (07-04)
+- is_remote BOOLEAN NOT NULL DEFAULT FALSE on attendance_records — no backfill required; existing rows default to in-person (false) (08-01)
+- acknowledged_by/remote_acknowledged_by use ON DELETE SET NULL — timestamp (acknowledged_at) survives manager account deletion; audit trail preserved with who-pointer cleared (08-01)
+- NULL acknowledged_at = unacknowledged state — no separate boolean status column needed; presence of timestamp is the status (08-01)
+- Acknowledgment pair pattern: *_at TIMESTAMPTZ (when) + *_by UUID FK (who) — both nullable, both set atomically in one UPDATE (08-01)
 
 ### Pending Todos
 
@@ -182,6 +186,7 @@ Recent decisions affecting current work:
 - Run 007_divisions.sql migration in Supabase SQL editor before testing Division endpoints (Phase 6)
 - Run 004_divisions_rls.sql RLS policy in Supabase SQL editor AFTER running 007_divisions.sql (Phase 6)
 - Run 008_employee_lifecycle.sql migration in Supabase SQL editor before testing Phase 7 endpoints (adds users.timezone column)
+- Run 010_remote_acknowledgment.sql migration in Supabase SQL editor before testing Phase 8 endpoints (adds is_remote + 4 ack columns)
 
 ### Blockers/Concerns
 
@@ -190,7 +195,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Completed 07-04-PLAN.md — employee lifecycle frontend (Delete, EditUserModal, Manager column, manager-scoped Create)
+Stopped at: Completed 08-01-PLAN.md — DB migration 010_remote_acknowledgment.sql (is_remote + 4 ack columns)
 Resume file: None
-Next: Phase 8 — Remote work flag + acknowledgment workflow
-Next: 07-04-PLAN.md — Frontend: EditUserModal (name/division/timezone), Delete button + confirmation, Manager-scoped Create, Manager column in UserTable
+Next: 08-02-PLAN.md — Backend: CheckInDto is_remote field, acknowledgeRecord() + acknowledgeRemote() service methods
