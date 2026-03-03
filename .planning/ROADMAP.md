@@ -19,7 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Attendance Core** - Employee check-in/out with photo evidence and accurate late/early classification
 - [x] **Phase 4: Admin Adjustments** - Admins can correct records with a full, immutable audit trail
 - [x] **Phase 5: Monitoring & Reporting** - Manager monitoring, Executive dashboard, and CSV export
-- [ ] **Phase 6: Division Architecture** - DB schema + backend module + full Division Management UI; User Management updated to carry division_id
+- [x] **Phase 6: Division Architecture** - DB schema + backend module + full Division Management UI; User Management updated to carry division_id (completed 2026-03-03)
 - [ ] **Phase 7: Employee Lifecycle + Per-User Timezone** - Delete employee (retain history), edit name/division/timezone, Manager creates employees in their divisions, per-user timezone in classification
 - [ ] **Phase 8: Remote Work + Acknowledgment Flow** - Remote Work check-in option, Manager Acknowledge button for late/early/remote records, Employee sees acknowledgment status
 - [ ] **Phase 9: Advanced Monitoring** - Manual Data Refresh job (absent/absent-morning statuses), advanced status filters (5 filter types) in attendance tables
@@ -132,7 +132,7 @@ Plans:
 - [x] 06-03-PLAN.md — Manager scope migration (attendance service uses division membership instead of manager_id) + divisionId in UpdateUserDto
 - [x] 06-04-PLAN.md — Division Management UI (/admin/divisions page with Create/Edit/Delete modals + nav link)
 - [x] 06-05-PLAN.md — User Management updates (Division column, assignment dropdown, division in Create User form)
-- [ ] 06-06-PLAN.md — Human verification checkpoint (full E2E: Division CRUD, assignment, manager scope, admin/exec scope)
+- [x] 06-06-PLAN.md — Human verification checkpoint (full E2E: Division CRUD, assignment, manager scope, admin/exec scope)
 
 ### Phase 7: Employee Lifecycle + Per-User Timezone
 **Goal**: Admins and Managers can manage the full employee lifecycle — including soft-deleting departed employees while preserving their attendance history — and employees working abroad get accurate late/early classification using their personal timezone instead of the company default
@@ -192,7 +192,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Attendance Core | 6/6 | Complete    | 2026-03-02 |
 | 4. Admin Adjustments | 2/2 | Complete    | 2026-03-02 |
 | 5. Monitoring & Reporting | 5/5 | Complete    | 2026-03-03 |
-| 6. Division Architecture | 5/6 | In progress | - |
+| 6. Division Architecture | 6/6 | Complete   | 2026-03-03 |
 | 7. Employee Lifecycle + Per-User Timezone | 0/? | Not started | - |
 | 8. Remote Work + Acknowledgment Flow | 0/? | Not started | - |
 | 9. Advanced Monitoring | 0/? | Not started | - |
