@@ -187,4 +187,36 @@ export class AttendanceController {
     }
     return this.attendanceService.adjustRecord(companyId, userId, recordId, dto);
   }
+
+  /**
+   * Manager: acknowledge a late/early-leave event on an attendance record.
+   * Only accessible to managers, admins, and owners.
+   */
+  @Post('records/:id/acknowledge')
+  async acknowledgeRecord(
+    @Request() req: any,
+    @Param('id') recordId: string,
+  ) {
+    const { role, companyId, userId } = req.user;
+    if (!['manager', 'admin', 'owner'].includes(role)) {
+      throw new ForbiddenException('Only managers can acknowledge attendance events');
+    }
+    return this.attendanceService.acknowledgeRecord(companyId, userId, recordId);
+  }
+
+  /**
+   * Manager: acknowledge a Remote Work check-in on an attendance record.
+   * Only accessible to managers, admins, and owners.
+   */
+  @Post('records/:id/acknowledge-remote')
+  async acknowledgeRemote(
+    @Request() req: any,
+    @Param('id') recordId: string,
+  ) {
+    const { role, companyId, userId } = req.user;
+    if (!['manager', 'admin', 'owner'].includes(role)) {
+      throw new ForbiddenException('Only managers can acknowledge remote work events');
+    }
+    return this.attendanceService.acknowledgeRemote(companyId, userId, recordId);
+  }
 }

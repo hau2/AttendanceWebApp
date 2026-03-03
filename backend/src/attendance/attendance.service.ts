@@ -1092,4 +1092,128 @@ export class AttendanceService {
 
     return updated as Record<string, unknown>;
   }
+
+  /**
+   * Manager acknowledges a late/early-leave event on an attendance record.
+   * Sets acknowledged_at and acknowledged_by on the record.
+   * Only applicable when check_in_status = 'late' or check_out_status = 'early'.
+   * Returns the updated record.
+   */
+  async acknowledgeRecord(
+    companyId: string,
+    managerId: string,
+    recordId: string,
+  ): Promise<Record<string, unknown>> {
+    const client = this.supabase.getClient();
+
+    // Fetch and tenant-verify the record
+    const { data: record, error: fetchError } = await client
+      .from('attendance_records')
+      .select('id, company_id, check_in_status, check_out_status, acknowledged_at')
+      .eq('id', recordId)
+      .eq('company_id', companyId)
+      .maybeSingle();
+
+    if (fetchError) {
+      throw new InternalServerErrorException(`Failed to fetch record: ${fetchError.message}`);
+    }
+    if (!record) {
+      throw new NotFoundException('Attendance record not found');
+    }
+
+    // Only late/early records can be acknowledged
+    const isLate = record.check_in_status === 'late';
+    const isEarly = record.check_out_status === 'early';
+    if (!isLate && !isEarly) {
+      throw new BadRequestException('Record has no late or early-leave event to acknowledge');
+    }
+
+    // Idempotent: already acknowledged — return current state
+    if (record.acknowledged_at) {
+      const { data: current } = await client
+        .from('attendance_records')
+        .select('*')
+        .eq('id', recordId)
+        .single();
+      return (current ?? {}) as Record<string, unknown>;
+    }
+
+    const now = new Date().toISOString();
+    const { data: updated, error: updateError } = await client
+      .from('attendance_records')
+      .update({ acknowledged_at: now, acknowledged_by: managerId, updated_at: now })
+      .eq('id', recordId)
+      .eq('company_id', companyId)
+      .select()
+      .single();
+
+    if (updateError || !updated) {
+      throw new InternalServerErrorException(
+        `Failed to acknowledge record: ${updateError?.message ?? 'unknown error'}`,
+      );
+    }
+
+    return updated as Record<string, unknown>;
+  }
+
+  /**
+   * Manager acknowledges a Remote Work check-in on an attendance record.
+   * Sets remote_acknowledged_at and remote_acknowledged_by on the record.
+   * Only applicable when is_remote = true.
+   * Returns the updated record.
+   */
+  async acknowledgeRemote(
+    companyId: string,
+    managerId: string,
+    recordId: string,
+  ): Promise<Record<string, unknown>> {
+    const client = this.supabase.getClient();
+
+    // Fetch and tenant-verify the record
+    const { data: record, error: fetchError } = await client
+      .from('attendance_records')
+      .select('id, company_id, is_remote, remote_acknowledged_at')
+      .eq('id', recordId)
+      .eq('company_id', companyId)
+      .maybeSingle();
+
+    if (fetchError) {
+      throw new InternalServerErrorException(`Failed to fetch record: ${fetchError.message}`);
+    }
+    if (!record) {
+      throw new NotFoundException('Attendance record not found');
+    }
+
+    // Only remote records can be remote-acknowledged
+    if (!record.is_remote) {
+      throw new BadRequestException('Record is not a Remote Work check-in');
+    }
+
+    // Idempotent: already acknowledged — return current state
+    if (record.remote_acknowledged_at) {
+      const { data: current } = await client
+        .from('attendance_records')
+        .select('*')
+        .eq('id', recordId)
+        .single();
+      return (current ?? {}) as Record<string, unknown>;
+    }
+
+    const now = new Date().toISOString();
+    const { data: updated, error: updateError } = await client
+      .from('attendance_records')
+      .update({ remote_acknowledged_at: now, remote_acknowledged_by: managerId, updated_at: now })
+      .eq('id', recordId)
+      .eq('company_id', companyId)
+      .select()
+      .single();
+
+    if (updateError || !updated) {
+      throw new InternalServerErrorException(
+        `Failed to acknowledge remote record: ${updateError?.message ?? 'unknown error'}`,
+      );
+    }
+
+    return updated as Record<string, unknown>;
+  }
 }
