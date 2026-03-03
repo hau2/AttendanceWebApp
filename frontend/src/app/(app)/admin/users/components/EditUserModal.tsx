@@ -40,7 +40,7 @@ export function EditUserModal({ open, user, divisions, onClose, onSaved }: EditU
       await updateUser(token, user.id, {
         fullName: fullName.trim(),
         divisionId: divisionId || undefined,
-        timezone: timezone.trim() || null,
+        timezone: timezone || null,
       });
       onSaved();
       onClose();
@@ -91,14 +91,61 @@ export function EditUserModal({ open, user, divisions, onClose, onSaved }: EditU
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Personal Timezone <span className="text-gray-400 font-normal">(optional — overrides company timezone)</span>
             </label>
-            <input
-              type="text"
+            <select
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
-              placeholder="e.g. America/New_York, Asia/Tokyo"
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <p className="mt-1 text-xs text-gray-400">Leave empty to use company timezone</p>
+            >
+              <option value="">Use company timezone</option>
+              <optgroup label="Asia">
+                <option value="Asia/Ho_Chi_Minh">Asia/Ho_Chi_Minh (Vietnam)</option>
+                <option value="Asia/Bangkok">Asia/Bangkok (Thailand)</option>
+                <option value="Asia/Singapore">Asia/Singapore</option>
+                <option value="Asia/Jakarta">Asia/Jakarta (Indonesia WIB)</option>
+                <option value="Asia/Makassar">Asia/Makassar (Indonesia WITA)</option>
+                <option value="Asia/Jayapura">Asia/Jayapura (Indonesia WIT)</option>
+                <option value="Asia/Manila">Asia/Manila (Philippines)</option>
+                <option value="Asia/Kuala_Lumpur">Asia/Kuala_Lumpur (Malaysia)</option>
+                <option value="Asia/Yangon">Asia/Yangon (Myanmar)</option>
+                <option value="Asia/Phnom_Penh">Asia/Phnom_Penh (Cambodia)</option>
+                <option value="Asia/Vientiane">Asia/Vientiane (Laos)</option>
+                <option value="Asia/Shanghai">Asia/Shanghai (China)</option>
+                <option value="Asia/Hong_Kong">Asia/Hong_Kong</option>
+                <option value="Asia/Taipei">Asia/Taipei (Taiwan)</option>
+                <option value="Asia/Tokyo">Asia/Tokyo (Japan)</option>
+                <option value="Asia/Seoul">Asia/Seoul (South Korea)</option>
+                <option value="Asia/Kolkata">Asia/Kolkata (India)</option>
+                <option value="Asia/Dhaka">Asia/Dhaka (Bangladesh)</option>
+                <option value="Asia/Karachi">Asia/Karachi (Pakistan)</option>
+                <option value="Asia/Dubai">Asia/Dubai (UAE)</option>
+                <option value="Asia/Riyadh">Asia/Riyadh (Saudi Arabia)</option>
+              </optgroup>
+              <optgroup label="Australia &amp; Pacific">
+                <option value="Australia/Sydney">Australia/Sydney</option>
+                <option value="Australia/Melbourne">Australia/Melbourne</option>
+                <option value="Australia/Brisbane">Australia/Brisbane</option>
+                <option value="Australia/Perth">Australia/Perth</option>
+                <option value="Pacific/Auckland">Pacific/Auckland (New Zealand)</option>
+              </optgroup>
+              <optgroup label="Europe">
+                <option value="Europe/London">Europe/London (UK)</option>
+                <option value="Europe/Paris">Europe/Paris (France)</option>
+                <option value="Europe/Berlin">Europe/Berlin (Germany)</option>
+                <option value="Europe/Moscow">Europe/Moscow (Russia)</option>
+              </optgroup>
+              <optgroup label="Americas">
+                <option value="America/New_York">America/New_York (US Eastern)</option>
+                <option value="America/Chicago">America/Chicago (US Central)</option>
+                <option value="America/Denver">America/Denver (US Mountain)</option>
+                <option value="America/Los_Angeles">America/Los_Angeles (US Pacific)</option>
+                <option value="America/Sao_Paulo">America/Sao_Paulo (Brazil)</option>
+              </optgroup>
+              <optgroup label="Africa">
+                <option value="Africa/Cairo">Africa/Cairo (Egypt)</option>
+                <option value="Africa/Nairobi">Africa/Nairobi (Kenya)</option>
+                <option value="Africa/Lagos">Africa/Lagos (Nigeria)</option>
+              </optgroup>
+            </select>
           </div>
         </div>
 

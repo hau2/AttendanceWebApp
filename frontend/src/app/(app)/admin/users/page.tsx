@@ -27,10 +27,10 @@ export default function UsersPage() {
   const [editingUser, setEditingUser] = useState<User | null>(null);
 
   const currentUser = getStoredUser();
-  if (currentUser && !['owner', 'admin', 'manager'].includes(currentUser.role)) {
+  if (currentUser && !['owner', 'admin'].includes(currentUser.role)) {
     return (
       <div className="p-8 text-center text-red-600 font-medium">
-        Access denied. Admin, Owner, or Manager role required.
+        Access denied. Admin or Owner role required.
       </div>
     );
   }
@@ -121,26 +121,23 @@ export default function UsersPage() {
   }
 
   const managers = users.filter((u) => u.role === 'manager');
-  const isManager = currentUser?.role === 'manager';
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
         <div className="flex gap-3">
-          {!isManager && (
-            <button
-              onClick={() => setShowCsvModal(true)}
-              className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              Import CSV
-            </button>
-          )}
+          <button
+            onClick={() => setShowCsvModal(true)}
+            className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            Import CSV
+          </button>
           <button
             onClick={() => setShowCreateModal(true)}
             className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
-            {isManager ? 'Add Employee' : 'Add User'}
+            Add User
           </button>
         </div>
       </div>
@@ -177,7 +174,7 @@ export default function UsersPage() {
         managers={managers}
         divisions={divisions}
         currentUserId={currentUser?.id ?? ''}
-        currentUserRole={currentUser?.role ?? ''}
+        currentUserRole={currentUser?.role ?? 'admin'}
       />
 
       <CsvImportModal

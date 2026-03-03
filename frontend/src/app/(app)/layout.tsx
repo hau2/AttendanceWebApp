@@ -34,7 +34,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
             {['employee', 'manager', 'admin', 'owner'].includes(userRole) && (
               <Link href="/attendance" className={navLinkClass('/attendance')}>Attendance</Link>
             )}
-            {['admin', 'owner', 'manager'].includes(userRole) && (
+            {['admin', 'owner'].includes(userRole) && (
               <Link href="/admin/users" className={navLinkClass('/admin/users')}>Users</Link>
             )}
             {['admin', 'owner'].includes(userRole) && (

@@ -39,27 +39,13 @@ export class UsersController {
    */
   @Post()
   async createUser(
-    @Request() req: { user: { companyId: string; userId: string; role: string } },
+    @Request() req: { user: { companyId: string; role: string } },
     @Body() dto: CreateUserDto,
   ) {
-    const { companyId, userId, role } = req.user;
-
-    if (role === 'manager') {
-      // Managers can only create employees (not admins, managers, execs, owners)
-      if (dto.role !== 'employee') {
-        throw new ForbiddenException('Managers can only create employees');
-      }
-      // Managers must assign the new employee to one of their own divisions
-      if (!dto.divisionId) {
-        throw new BadRequestException('Managers must assign the employee to one of their divisions');
-      }
-      // Validate that the division belongs to this manager
-      await this.usersService.validateManagerDivisionOwnership(companyId, userId, dto.divisionId);
-    } else if (!['admin', 'owner'].includes(role)) {
-      throw new ForbiddenException('Insufficient permissions to create users');
+    if (!['admin', 'owner'].includes(req.user.role)) {
+      throw new ForbiddenException('Only Admin or Owner can create users');
     }
-
-    return this.usersService.createUser(companyId, dto);
+    return this.usersService.createUser(req.user.companyId, dto);
   }
 
   /** PATCH /users/:id — update role and/or managerId for a user */
