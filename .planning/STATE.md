@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: Phase 7 - Employee Lifecycle + Per-User Timezone (IN PROGRESS)
-Plan: 07-02 (backend EMPL endpoints — complete)
-Status: 07-02 complete — DELETE /users/:id soft-delete, PATCH /users/:id with fullName+timezone, manager-scoped POST /users with division ownership validation, GET /users with division+manager join. TypeScript clean. EMPL-01 through EMPL-04 delivered.
-Last activity: 2026-03-03 — 07-02 executed and committed
+Plan: 07-03 (attendance timezone override — complete)
+Status: 07-03 complete — checkIn() and checkOut() now use effectiveTimezone = user.timezone ?? company.timezone for all classification and work-date computation. TypeScript clean. TZMG-01 and TZMG-02 delivered.
+Last activity: 2026-03-03 — 07-03 executed and committed
 
 Progress: [█████████░░░░░░░░░░░] 20% (1/5 v2.0 phases)
 
@@ -159,6 +159,8 @@ Recent decisions affecting current work:
 - listUsers() uses nested Supabase FK join users!divisions_manager_id_fkey to return division manager name in single query without additional round-trip (07-02)
 - validateManagerDivisionOwnership() lives in UsersService (not controller) — controller delegates, service validates — consistent thin-controller pattern (07-02)
 - timezone field in UpdateUserDto accepts string | null — null explicitly clears per-user timezone override so user falls back to company timezone (07-02)
+- effectiveTimezone = user.timezone ?? company.timezone applied inline in checkIn() and checkOut() after getCompanySettings(); only these two classification-path methods are updated — history/report methods unchanged (07-03)
+- userRecord?.timezone cast as string | null before nullish coalescing to satisfy TypeScript strict mode with Supabase unknown return type (07-03)
 
 ### Pending Todos
 
@@ -183,6 +185,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Completed 07-01-PLAN.md — migration 008 (users.timezone column)
+Stopped at: Completed 07-03-PLAN.md — attendance timezone override (effectiveTimezone in checkIn/checkOut)
 Resume file: None
-Next: 07-02-PLAN.md — backend EMPL endpoints (soft-delete, PATCH timezone, manager-scoped create)
+Next: 07-04-PLAN.md — Frontend: EditUserModal (name/division/timezone), Delete button + confirmation, Manager-scoped Create, Manager column in UserTable
