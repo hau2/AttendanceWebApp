@@ -506,7 +506,7 @@ export class AttendanceService {
       .from('attendance_records')
       .select(`
         *,
-        users (
+        users!user_id (
           full_name,
           email
         )
@@ -660,7 +660,7 @@ export class AttendanceService {
       .from('attendance_records')
       .select(`
         *,
-        users (
+        users!user_id (
           full_name,
           email
         )
@@ -864,7 +864,7 @@ export class AttendanceService {
       .from('attendance_records')
       .select(`
         *,
-        users (
+        users!user_id (
           full_name,
           email
         )
