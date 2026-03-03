@@ -1,22 +1,27 @@
 'use client';
 
 import { User } from '@/lib/api/users';
+import { Division } from '@/lib/api/divisions';
 
 const ROLE_OPTIONS: User['role'][] = ['owner', 'admin', 'manager', 'employee', 'executive'];
 
 interface UserTableProps {
   users: User[];
+  divisions: Division[];
   onRoleChange: (id: string, role: string) => void;
   onStatusToggle: (id: string, isActive: boolean) => void;
   onManagerChange: (id: string, managerId: string | null) => void;
+  onDivisionChange: (id: string, divisionId: string | null) => void;
   onAssignShift: (user: User) => void;
 }
 
 export function UserTable({
   users,
+  divisions,
   onRoleChange,
   onStatusToggle,
   onManagerChange,
+  onDivisionChange,
   onAssignShift,
 }: UserTableProps) {
   const managers = users.filter((u) => u.role === 'manager');
@@ -25,6 +30,12 @@ export function UserTable({
     if (!managerId) return '—';
     const mgr = users.find((u) => u.id === managerId);
     return mgr ? mgr.full_name : '—';
+  }
+
+  function getDivisionName(divisionId: string | null): string {
+    if (!divisionId) return '—';
+    const div = divisions.find((d) => d.id === divisionId);
+    return div ? div.name : '—';
   }
 
   return (
@@ -43,6 +54,9 @@ export function UserTable({
             </th>
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Manager
+            </th>
+            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Division
             </th>
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
@@ -79,6 +93,9 @@ export function UserTable({
               <td className="px-4 py-3 text-sm text-gray-600">
                 {getManagerName(user.manager_id)}
               </td>
+              <td className="px-4 py-3 text-sm text-gray-600">
+                {getDivisionName(user.division_id)}
+              </td>
               <td className="px-4 py-3 text-sm">
                 <span
                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
@@ -112,6 +129,20 @@ export function UserTable({
                       </option>
                     ))}
                   </select>
+                  <select
+                    value={user.division_id ?? ''}
+                    onChange={(e) =>
+                      onDivisionChange(user.id, e.target.value || null)
+                    }
+                    className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">No division</option>
+                    {divisions.map((div) => (
+                      <option key={div.id} value={div.id}>
+                        {div.name}
+                      </option>
+                    ))}
+                  </select>
                   <button
                     onClick={() => onAssignShift(user)}
                     className="text-xs text-indigo-600 hover:text-indigo-800 underline text-left"
@@ -124,7 +155,7 @@ export function UserTable({
           ))}
           {users.length === 0 && (
             <tr>
-              <td colSpan={6} className="px-4 py-8 text-center text-sm text-gray-500">
+              <td colSpan={7} className="px-4 py-8 text-center text-sm text-gray-500">
                 No users found.
               </td>
             </tr>

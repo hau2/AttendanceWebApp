@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { User, CreateUserData, createUser } from '@/lib/api/users';
+import { Division } from '@/lib/api/divisions';
 import { getStoredToken } from '@/lib/api/auth';
 
 const ROLE_OPTIONS: User['role'][] = ['admin', 'manager', 'employee', 'executive'];
@@ -11,6 +12,7 @@ interface CreateUserModalProps {
   onClose: () => void;
   onCreated: () => void;
   managers: User[];
+  divisions: Division[];
 }
 
 export function CreateUserModal({
@@ -18,12 +20,14 @@ export function CreateUserModal({
   onClose,
   onCreated,
   managers,
+  divisions,
 }: CreateUserModalProps) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<string>('employee');
   const [managerId, setManagerId] = useState('');
+  const [divisionId, setDivisionId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -35,6 +39,7 @@ export function CreateUserModal({
     setPassword('');
     setRole('employee');
     setManagerId('');
+    setDivisionId('');
     setError(null);
   }
 
@@ -66,6 +71,9 @@ export function CreateUserModal({
     };
     if (role === 'employee' && managerId) {
       data.managerId = managerId;
+    }
+    if (divisionId) {
+      data.divisionId = divisionId;
     }
 
     setLoading(true);
@@ -175,6 +183,24 @@ export function CreateUserModal({
               </select>
             </div>
           )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Division (optional)
+            </label>
+            <select
+              value={divisionId}
+              onChange={(e) => setDivisionId(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="">No division</option>
+              {divisions.map((div) => (
+                <option key={div.id} value={div.id}>
+                  {div.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <div className="flex gap-3 pt-2">
             <button
