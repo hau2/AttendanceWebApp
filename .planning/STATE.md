@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Division, Acknowledgment & Remote Work
 status: roadmap_ready
-last_updated: "2026-03-03T07:01:14Z"
+last_updated: "2026-03-03T07:11:00Z"
 progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 6
-  completed_plans: 3
+  completed_plans: 5
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: Phase 6 - Division Architecture (in progress)
-Plan: 06-04
-Status: Plan 06-03 complete — attendance service migrated to division-based scoping; divisionId added to UpdateUserDto
-Last activity: 2026-03-03 — 06-03 complete: division-based manager scoping in 3 attendance methods + divisionId in UpdateUserDto/UsersService
+Plan: 06-06
+Status: Plan 06-05 complete — User Management frontend updated: Division column in UserTable, assignment dropdown in Actions, Division selector in CreateUserModal, parallel divisions fetch in UsersPage; divisionId in CreateUserDto and createUser service insert
+Last activity: 2026-03-03 — 06-05 complete: division assignment UI shipped in user management; backend CreateUserDto accepts divisionId
 
-Progress: [███░░░░░░░░░░░░░░░░░] 15%
+Progress: [█████░░░░░░░░░░░░░░░] 25%
 
 ## Performance Metrics
 
@@ -145,6 +145,10 @@ Recent decisions affecting current work:
 - Early-return empty result at division step (before employee lookup) when manager has no divisions — avoids unnecessary second Supabase round-trip (06-03)
 - Division ownership validated before assigning to user: BadRequestException if division.company_id != companyId — service-role bypasses RLS so explicit tenant check is required (06-03)
 - divisionId clearing (null assignment) not supported in Phase 6 — DIVN-05 only requires assign/reassign; unassign deferred to later phase (06-03)
+- DivisionsPage fetches divisions and users concurrently via Promise.all — single loading state; managers filtered client-side from full user list (06-04)
+- Divisions nav link placed after Shifts and before Records in layout.tsx — logical admin workflow ordering (06-04)
+- EditDivisionModal sends managerId: null on empty select to allow unsetting manager via PATCH (06-04)
+- Delete error from backend ConflictException propagated directly to page error state — shows employee count message without frontend duplication (06-04)
 
 ### Pending Todos
 
@@ -168,6 +172,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Completed 06-03-PLAN.md (division-based manager scoping in attendance + divisionId in UpdateUserDto)
+Stopped at: Completed 06-04-PLAN.md (Division Management frontend: /admin/divisions page, components, API helper, nav link)
 Resume file: None
-Next: Execute 06-04-PLAN.md
+Next: Execute 06-05-PLAN.md

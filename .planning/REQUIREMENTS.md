@@ -97,10 +97,10 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Division Management (DIVN)
 
-- [ ] **DIVN-01**: Admin can create a Division with a name and assign a Manager to it
-- [ ] **DIVN-02**: Admin can view all Divisions in a dedicated management page, with the assigned Manager clearly displayed per Division
-- [ ] **DIVN-03**: Admin can edit a Division's name or reassign its Manager
-- [ ] **DIVN-04**: Admin can delete a Division (system prevents deletion if employees are still assigned)
+- [x] **DIVN-01**: Admin can create a Division with a name and assign a Manager to it
+- [x] **DIVN-02**: Admin can view all Divisions in a dedicated management page, with the assigned Manager clearly displayed per Division
+- [x] **DIVN-03**: Admin can edit a Division's name or reassign its Manager
+- [x] **DIVN-04**: Admin can delete a Division (system prevents deletion if employees are still assigned)
 - [ ] **DIVN-05**: Each Employee belongs to exactly one Division; Admin and Manager can assign or reassign an Employee's Division
 - [ ] **DIVN-06**: Manager can only view the Divisions they manage and the Employees within those Divisions across all views
 - [ ] **DIVN-07**: Admin and Executive can view all Divisions and all Employees company-wide across all views
@@ -247,10 +247,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RPTS-01 | Phase 5 Plan 05-02 | Done |
 | RPTS-02 | Phase 5 Plan 05-02 | Done |
 | RPTS-03 | Phase 5 Plan 05-02 | Done |
-| DIVN-01 | Phase 6 | Pending |
-| DIVN-02 | Phase 6 | Pending |
-| DIVN-03 | Phase 6 | Pending |
-| DIVN-04 | Phase 6 | Pending |
+| DIVN-01 | Phase 6 Plan 06-04 | Done |
+| DIVN-02 | Phase 6 Plan 06-04 | Done |
+| DIVN-03 | Phase 6 Plan 06-04 | Done |
+| DIVN-04 | Phase 6 Plan 06-04 | Done |
 | DIVN-05 | Phase 6 | Pending |
 | DIVN-06 | Phase 6 | Pending |
 | DIVN-07 | Phase 6 | Pending |
