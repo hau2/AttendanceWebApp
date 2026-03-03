@@ -93,9 +93,67 @@ Requirements for initial release. Each maps to a roadmap phase.
 - [x] **SECU-01**: Each company's data is fully isolated — no cross-tenant access possible
 - [x] **SECU-02**: All database queries scoped by company_id via Supabase Row Level Security
 
-## v2 Requirements
+## v2 Requirements (Current Milestone — v2.0)
 
-Deferred to future release. Tracked but not in current roadmap.
+### Division Management (DIVN)
+
+- [ ] **DIVN-01**: Admin can create a Division with a name and assign a Manager to it
+- [ ] **DIVN-02**: Admin can view all Divisions in a dedicated management page, with the assigned Manager clearly displayed per Division
+- [ ] **DIVN-03**: Admin can edit a Division's name or reassign its Manager
+- [ ] **DIVN-04**: Admin can delete a Division (system prevents deletion if employees are still assigned)
+- [ ] **DIVN-05**: Each Employee belongs to exactly one Division; Admin and Manager can assign or reassign an Employee's Division
+- [ ] **DIVN-06**: Manager can only view the Divisions they manage and the Employees within those Divisions across all views
+- [ ] **DIVN-07**: Admin and Executive can view all Divisions and all Employees company-wide across all views
+
+### Employee Lifecycle (EMPL)
+
+- [ ] **EMPL-01**: Admin can delete an employee account when the employee leaves; all historical attendance records are retained with the employee's name visible
+- [ ] **EMPL-02**: Admin can edit an employee's full name, Division assignment, and personal timezone
+- [ ] **EMPL-03**: Manager can create a new Employee account and assign that employee to any Division the Manager manages
+- [ ] **EMPL-04**: Admin and Executive can see which Manager (via Division) is responsible for each Employee in user listing and attendance views
+
+### Per-User Timezone (TZMG)
+
+- [ ] **TZMG-01**: Admin can set a personal timezone override on any employee's profile (for employees on overseas assignment)
+- [ ] **TZMG-02**: Attendance late/early classification uses the employee's personal timezone when set; falls back to company timezone otherwise
+
+### Acknowledgment Flow (ACKN)
+
+- [ ] **ACKN-01**: Manager can see the late reason and early-leave note for each attendance record in their monitoring view
+- [ ] **ACKN-02**: Manager can click an "Acknowledge" button on a late or early-leave record to confirm they have seen the reason
+- [ ] **ACKN-03**: Employee can see in their attendance history that their Manager has acknowledged their late reason or early-leave note (with timestamp)
+- [ ] **ACKN-04**: Manager can click an "Acknowledge" button on a Remote Work check-in to confirm they are aware
+- [ ] **ACKN-05**: Employee can see in their attendance history that their Manager has acknowledged their Remote Work check-in (with timestamp)
+
+### Remote Work (RMOT)
+
+- [ ] **RMOT-01**: Employee can select a "Remote Work" option when checking in, indicating they are working from outside the office
+- [ ] **RMOT-02**: Remote Work check-ins are visually flagged with a distinct "Remote" badge in Manager, Admin, and Employee views
+
+### Data Refresh (RFSH)
+
+- [ ] **RFSH-01**: Admin can manually trigger a Data Refresh job via a button on the Admin Attendance page
+- [ ] **RFSH-02**: Data Refresh marks every active employee with no check-in record for today as "Absent Morning" (intended to run at or after 12:00 PM)
+- [ ] **RFSH-03**: Data Refresh marks every active employee with no attendance record at all for yesterday as "Absent" (full day absent)
+- [ ] **RFSH-04**: Admin can see the date and time of the last Data Refresh run on the attendance page
+
+### Advanced Attendance Filters (FLTR)
+
+- [ ] **FLTR-01**: Admin and Manager can filter the attendance table by "Late" — shows only records where check-in was classified as late
+- [ ] **FLTR-02**: Admin and Manager can filter the attendance table by "Early Leave" — shows only records where check-out was classified as early
+- [ ] **FLTR-03**: Admin and Manager can filter the attendance table by "Absent" — shows only records marked as absent (no show all day)
+- [ ] **FLTR-04**: Admin and Manager can filter the attendance table by "Absent Morning" — shows only records where no check-in was recorded before 12:00 PM
+- [ ] **FLTR-05**: Admin and Manager can filter the attendance table by "Absent Afternoon" — shows only records where check-in exists but no check-out was recorded after 12:00 PM
+
+### UI & UX Improvements (UIUX)
+
+- [ ] **UIUX-01**: Employee Home page displays a live HH:MM:SS clock showing the current time in the device's local timezone
+- [ ] **UIUX-02**: All attendance status badges use a consistent Lucide icon per state (CheckCircle = On-time, Clock = Late, LogOut = Early Leave, AlertCircle = Missing Checkout, XCircle = Absent, Laptop = Remote)
+- [ ] **UIUX-03**: All new modals, tables, dropdowns, and form components use Shadcn UI components for visual consistency
+- [ ] **UIUX-04**: Executive can click on any employee row in the dashboard to drill down to that employee's full attendance history (read-only)
+- [ ] **UIUX-05**: Manager has a dedicated Employee Detail page showing one employee's full monthly attendance table with late/early reasons and acknowledgment status
+
+## Deferred to v3
 
 ### Notifications
 
@@ -120,13 +178,15 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Feature | Reason |
 |---------|--------|
-| Payroll calculation | Explicit v1 boundary — not an attendance system responsibility |
-| Face recognition | Significant complexity and cost; photo-as-evidence achieves anti-fraud goal without AI |
-| Native mobile app | Web-first; mobile browser supported but no native app in v1 |
-| GPS / geolocation check-in | IP-based restriction is sufficient for v1 |
-| In-system correction request workflow | Admin adjusts directly with audit trail; offline notification sufficient for v1 |
-| Email / push notifications | Manual dashboard monitoring sufficient; deferred to v2 |
-| Per-day/per-week shift scheduling | One active shift per employee; complex scheduling deferred pending real demand |
+| Payroll calculation | Explicit boundary — not an attendance system responsibility |
+| Face recognition | Significant complexity; photo-as-evidence achieves anti-fraud without AI |
+| Native mobile app | Web-first; mobile browser supported but no native app |
+| GPS / geolocation check-in | IP-based restriction sufficient |
+| In-system correction request workflow | Admin adjusts directly with audit trail |
+| Email / push notifications | Manual dashboard monitoring sufficient; deferred |
+| Per-day/per-week shift scheduling | One active shift per employee; complex scheduling deferred |
+| Scheduled auto-refresh CRON (12 PM / 11:30 PM) | Manual trigger is sufficient for v2.0; scheduled job deferred |
+| Division-level timezone | Per-user timezone covers the use case |
 
 ## Traceability
 
@@ -188,11 +248,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RPTS-02 | Phase 5 Plan 05-02 | Done |
 | RPTS-03 | Phase 5 Plan 05-02 | Done |
 
-**Coverage:**
+**v1 Coverage:**
 - v1 requirements: 53 total
 - Mapped to phases: 53
-- Unmapped: 0
+- Unmapped: 0 ✓
+
+**v2 Coverage (pending roadmap):**
+- v2 requirements: 34 total
+- Mapped to phases: 0
+- Unmapped: 34 ⚠️
 
 ---
 *Requirements defined: 2026-03-01*
-*Last updated: 2026-03-02 after 04-01 plan completion — ADJT-01, ADJT-02, ADJT-03 marked complete (backend implementation)*
+*Last updated: 2026-03-03 after v2.0 milestone start — 34 new requirements added (DIVN, EMPL, TZMG, ACKN, RMOT, RFSH, FLTR, UIUX)*

@@ -116,5 +116,19 @@ Employees can check in/out quickly with photo evidence captured at the moment of
 | Photos visible to Admin and Manager in records | Evidence available for routine monitoring and disputes without mandatory review workflow | — Pending |
 | No face recognition in v1 | Significant complexity and cost; photo-as-evidence achieves anti-fraud goal without AI | — Pending |
 
+## Current Milestone: v2.0 Division, Acknowledgment & Remote Work
+
+**Goal:** Restructure employee grouping around Divisions, enable Manager acknowledgment of late/remote events, add Remote Work check-in, improve employee lifecycle management, and deliver a polished role-consistent UI with Lucide icons and Shadcn components.
+
+**Target features:**
+- Division management (Admin creates Divisions, assigns Managers; employees belong to a Division)
+- Per-user timezone override (for employees working in other countries)
+- Employee lifecycle: delete account (keep history), edit name/division/timezone
+- Manager Acknowledgment flow for late reasons, early-leave notes, and remote work
+- Remote Work check-in option for employees
+- Data Refresh job: marks absent/absent-morning records on demand
+- Advanced attendance filters: Late, Early Leave, Absent, Absent Morning, Absent Afternoon
+- UI: live HH:MM:SS clock on employee home, Lucide icons everywhere, Shadcn components for modals/tables/badges
+
 ---
-*Last updated: 2026-03-01 after adding full-stack delivery constraint*
+*Last updated: 2026-03-03 after v2.0 milestone start*
