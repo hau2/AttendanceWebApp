@@ -32,16 +32,16 @@ export class AttendanceService {
    * e.g. 08:30 -> 510
    */
   private getMinutesInTimezone(date: Date, timezone: string): number {
-    const timeStr = date.toLocaleTimeString('en-US', {
-      hour12: false,
+    // Use en-GB locale which always produces HH:MM in 24-hour h23 format (00-23).
+    // Avoid en-US with hour12:false — it uses h24 cycle in Node.js/V8 and returns
+    // "24:xx" for times just after midnight, causing midnight check-ins to appear
+    // as 1440+ minutes and be misclassified as late.
+    const timeStr = date.toLocaleTimeString('en-GB', {
       hour: '2-digit',
       minute: '2-digit',
       timeZone: timezone,
     });
-    // timeStr format: "HH:MM" (hour12: false with 2-digit gives 00-23)
-    const parts = timeStr.split(':');
-    const hours = parseInt(parts[0], 10);
-    const minutes = parseInt(parts[1], 10);
+    const [hours, minutes] = timeStr.split(':').map(Number);
     return hours * 60 + minutes;
   }
 

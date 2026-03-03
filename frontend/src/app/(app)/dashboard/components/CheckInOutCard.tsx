@@ -66,7 +66,6 @@ export function CheckInOutCard() {
     setNeedsEarlyNote(false);
     setLateReason('');
     setEarlyNote('');
-    setIsRemote(false);
     setCapturedBlob(null);
     setCapturedUrl(null);
     try {
