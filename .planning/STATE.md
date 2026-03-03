@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-03-03T00:08:00Z"
+last_updated: "2026-03-03T00:14:01Z"
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 20
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 5 of 5 (Monitoring & Reporting) — IN PROGRESS
-Plan: 2 of 5 complete — Plan 05-02 complete (2026-03-03)
-Status: Phase 5 in progress — executive summary, monthly report, and CSV export backend delivered
-Last activity: 2026-03-03 — Plan 05-02 (Executive Summary + Monthly Report Backend) complete; getExecutiveSummary/getMonthlyReport/exportCsv + three new GET routes
+Plan: 3 of 5 complete — Plan 05-03 complete (2026-03-03)
+Status: Phase 5 in progress — manager monitoring UI delivered with team summary card and scoped employee dropdown
+Last activity: 2026-03-03 — Plan 05-03 (Manager Monitoring UI) complete; team summary card + getTeamSummary() API helper + manager-filtered employee dropdown
 
-Progress: [████████████████████] 93%
+Progress: [████████████████████] 95%
 
 ## Performance Metrics
 
@@ -125,6 +125,9 @@ Recent decisions affecting current work:
 - exportCsv() delegates to getMonthlyReport() — single source of truth for manager-scope query logic (05-02)
 - Attendance rate = distinct user IDs with records / total active users — reflects who showed up, not record count (05-02)
 - CSV timestamps formatted with toLocaleString('en-US', { timeZone: 'UTC' }) — raw UTC acceptable for export (05-02)
+- Manager employee dropdown filtered client-side (manager_id === currentUserId) — backend already scopes records; client-side filter gives consistent UX in dropdown without an extra API endpoint (05-03)
+- Team summary fetch added inside year/month/role useEffect with userRole as dependency so fetch fires correctly after role is set on initial load (05-03)
+- teamSummary null-guarded in JSX — card only renders when data available; silently suppresses on API error (05-03)
 
 ### Pending Todos
 
@@ -146,5 +149,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Phase 5 Plan 05-02 (Executive Summary + Monthly Report Backend) complete; ready for Plan 05-03 (Executive Dashboard frontend)
+Stopped at: Phase 5 Plan 05-03 (Manager Monitoring UI) complete; ready for Plan 05-04 (Executive Dashboard + Admin Reports frontend)
 Resume file: None
