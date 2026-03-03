@@ -119,6 +119,15 @@ None - no external service configuration required.
 - CSV export endpoint ready for 05-04 (CSV download button)
 - All three endpoints return 403 for unauthorized roles as required
 
+## Self-Check: PASSED
+
+- backend/src/attendance/attendance.service.ts: FOUND
+- backend/src/attendance/attendance.controller.ts: FOUND
+- .planning/phases/05-monitoring-reporting/05-02-SUMMARY.md: FOUND
+- Commit 2c7c645 (Task 1 - service methods): FOUND
+- Commit 94d026d (Task 2 - controller routes): FOUND
+- TypeScript compilation (npx tsc --noEmit): ZERO ERRORS
+
 ---
 *Phase: 05-monitoring-reporting*
 *Completed: 2026-03-03*
