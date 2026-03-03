@@ -177,3 +177,66 @@ export async function getTeamSummary(year: number, month: number): Promise<TeamS
   }
   return res.json();
 }
+
+export interface ExecutiveSummary {
+  attendanceRate: number;
+  totalRecords: number;
+  lateCount: number;
+  lateRanking: Array<{ userId: string; fullName: string; lateCount: number; totalDays: number }>;
+  monthlyBreakdown: Array<{ date: string; present: number; late: number; missingCheckout: number }>;
+}
+
+export async function getExecutiveSummary(year: number, month: number): Promise<ExecutiveSummary> {
+  const res = await fetch(
+    `${API_URL}/attendance/reports/executive?year=${year}&month=${month}`,
+    { headers: { Authorization: `Bearer ${getToken()}` } },
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to fetch executive summary');
+  }
+  return res.json();
+}
+
+export interface MonthlyReportStats {
+  total: number;
+  lateCount: number;
+  onTimeCount: number;
+  withinGraceCount: number;
+  missingCheckoutCount: number;
+  lateRate: number;
+}
+
+export interface MonthlyReport {
+  records: AttendanceRecordWithUser[];
+  stats: MonthlyReportStats;
+}
+
+export async function getMonthlyReport(year: number, month: number): Promise<MonthlyReport> {
+  const res = await fetch(
+    `${API_URL}/attendance/reports/monthly?year=${year}&month=${month}`,
+    { headers: { Authorization: `Bearer ${getToken()}` } },
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to fetch monthly report');
+  }
+  return res.json();
+}
+
+export async function downloadAttendanceCsv(year: number, month: number): Promise<void> {
+  const res = await fetch(
+    `${API_URL}/attendance/export/csv?year=${year}&month=${month}`,
+    { headers: { Authorization: `Bearer ${getToken()}` } },
+  );
+  if (!res.ok) throw new Error('Failed to export CSV');
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `attendance-${year}-${String(month).padStart(2, '0')}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
