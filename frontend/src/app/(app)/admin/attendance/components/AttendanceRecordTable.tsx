@@ -1,9 +1,11 @@
 'use client';
 
 import { AttendanceRecordWithUser } from '@/lib/api/attendance';
+import { User } from '@/lib/api/users';
 
 interface Props {
   records: AttendanceRecordWithUser[];
+  usersMap: Record<string, User>;
   onSelectRecord: (r: AttendanceRecordWithUser) => void;
 }
 
@@ -28,7 +30,7 @@ function statusBadge(status: string | null) {
   return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${map[status] || 'bg-gray-100 text-gray-600'}`}>{status}</span>;
 }
 
-export function AttendanceRecordTable({ records, onSelectRecord }: Props) {
+export function AttendanceRecordTable({ records, usersMap, onSelectRecord }: Props) {
   if (records.length === 0) {
     return <p className="text-gray-500 text-center py-10">No attendance records for this period.</p>;
   }
@@ -39,6 +41,8 @@ export function AttendanceRecordTable({ records, onSelectRecord }: Props) {
         <thead>
           <tr className="border-b border-gray-200 text-left text-gray-500">
             <th className="pb-3 px-4 font-medium">Employee</th>
+            <th className="pb-3 px-4 font-medium">Division</th>
+            <th className="pb-3 px-4 font-medium">Manager</th>
             <th className="pb-3 px-4 font-medium">Date</th>
             <th className="pb-3 px-4 font-medium">Check-in</th>
             <th className="pb-3 px-4 font-medium">In Status</th>
@@ -48,42 +52,49 @@ export function AttendanceRecordTable({ records, onSelectRecord }: Props) {
           </tr>
         </thead>
         <tbody>
-          {records.map((r) => (
-            <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50">
-              <td className="py-3 px-4 text-gray-900 font-medium">
-                {r.users?.full_name || 'Unknown'}
-              </td>
-              <td className="py-3 px-4 text-gray-700">{formatDate(r.work_date)}</td>
-              <td className="py-3 px-4 text-gray-700">{formatTime(r.check_in_at)}</td>
-              <td className="py-3 px-4">{statusBadge(r.check_in_status)}</td>
-              <td className="py-3 px-4">
-                {r.check_in_at ? (
-                  r.missing_checkout ? (
-                    <span className="text-red-600 font-medium">Missing</span>
+          {records.map((r) => {
+            const user = usersMap[r.user_id];
+            const divisionName = user?.divisions?.name ?? '—';
+            const managerName = user?.divisions?.users?.full_name ?? '—';
+            return (
+              <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50">
+                <td className="py-3 px-4 text-gray-900 font-medium">
+                  {r.users?.full_name || user?.full_name || 'Unknown'}
+                </td>
+                <td className="py-3 px-4 text-gray-600">{divisionName}</td>
+                <td className="py-3 px-4 text-gray-600">{managerName}</td>
+                <td className="py-3 px-4 text-gray-700">{formatDate(r.work_date)}</td>
+                <td className="py-3 px-4 text-gray-700">{formatTime(r.check_in_at)}</td>
+                <td className="py-3 px-4">{statusBadge(r.check_in_status)}</td>
+                <td className="py-3 px-4">
+                  {r.check_in_at ? (
+                    r.missing_checkout ? (
+                      <span className="text-red-600 font-medium">Missing</span>
+                    ) : (
+                      <span className="text-gray-700">{formatTime(r.check_out_at)}</span>
+                    )
                   ) : (
-                    <span className="text-gray-700">{formatTime(r.check_out_at)}</span>
-                  )
-                ) : (
-                  <span className="text-gray-400">—</span>
-                )}
-              </td>
-              <td className="py-3 px-4">
-                {r.missing_checkout ? (
-                  <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Missing checkout</span>
-                ) : (
-                  statusBadge(r.check_out_status)
-                )}
-              </td>
-              <td className="py-3 px-4">
-                <button
-                  onClick={() => onSelectRecord(r)}
-                  className="px-3 py-1 text-xs bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors font-medium"
-                >
-                  View
-                </button>
-              </td>
-            </tr>
-          ))}
+                    <span className="text-gray-400">—</span>
+                  )}
+                </td>
+                <td className="py-3 px-4">
+                  {r.missing_checkout ? (
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Missing checkout</span>
+                  ) : (
+                    statusBadge(r.check_out_status)
+                  )}
+                </td>
+                <td className="py-3 px-4">
+                  <button
+                    onClick={() => onSelectRecord(r)}
+                    className="px-3 py-1 text-xs bg-blue-50 text-blue-700 rounded hover:bg-blue-100 transition-colors font-medium"
+                  >
+                    View
+                  </button>
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     </div>

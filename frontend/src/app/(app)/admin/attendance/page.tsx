@@ -21,51 +21,36 @@ export default function AdminAttendancePage() {
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [records, setRecords] = useState<AttendanceRecordWithUser[]>([]);
   const [selectedRecord, setSelectedRecord] = useState<AttendanceRecordWithUser | null>(null);
-  const [filterUserId, setFilterUserId] = useState('');
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userRole, setUserRole] = useState('');
   const [teamSummary, setTeamSummary] = useState<TeamSummary | null>(null);
-  const [currentUserId, setCurrentUserId] = useState('');
+
+  // Filters (all client-side)
+  const [searchName, setSearchName] = useState('');
+  const [filterDivisionId, setFilterDivisionId] = useState('');
+  const [filterManagerId, setFilterManagerId] = useState('');
 
   useEffect(() => {
     const user = getStoredUser();
-    if (!user) {
-      router.replace('/login');
-      return;
-    }
-    if (!['admin', 'owner', 'manager'].includes(user.role)) {
-      router.replace('/dashboard');
-      return;
-    }
+    if (!user) { router.replace('/login'); return; }
+    if (!['admin', 'owner', 'manager'].includes(user.role)) { router.replace('/dashboard'); return; }
     setUserRole(user.role);
-    setCurrentUserId(user.id);
-    // Load users for filter dropdown
     const token = getStoredToken();
-    if (token) {
-      listUsers(token).then(setUsers).catch(() => {});
-    }
+    if (token) listUsers(token).then(setUsers).catch(() => {});
   }, [router]);
 
   useEffect(() => {
     setLoading(true);
     setError(null);
     if (userRole === 'manager') {
-      getTeamSummary(year, month)
-        .then(setTeamSummary)
-        .catch(() => setTeamSummary(null));
+      getTeamSummary(year, month).then(setTeamSummary).catch(() => setTeamSummary(null));
     }
-    listRecords(year, month, filterUserId || undefined)
-      .then((data) => {
-        setRecords(data);
-        setLoading(false);
-      })
-      .catch(() => {
-        setError('Failed to load records');
-        setLoading(false);
-      });
-  }, [year, month, filterUserId, userRole]);
+    listRecords(year, month)
+      .then((data) => { setRecords(data); setLoading(false); })
+      .catch(() => { setError('Failed to load records'); setLoading(false); });
+  }, [year, month, userRole]);
 
   function navigate(dir: number) {
     let m = month + dir;
@@ -77,12 +62,53 @@ export default function AdminAttendancePage() {
   }
 
   function handleAdjusted(updated: AttendanceRecordWithUser) {
-    setRecords((prev) =>
-      prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r))
-    );
+    setRecords((prev) => prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r)));
     setSelectedRecord((prev) => (prev ? { ...prev, ...updated } : prev));
   }
 
+  // Build usersMap for O(1) lookup by user_id
+  const usersMap: Record<string, User> = {};
+  users.forEach((u) => { usersMap[u.id] = u; });
+
+  // Extract unique divisions from users list
+  const divisionOptions: { id: string; name: string }[] = [];
+  const seenDivisions = new Set<string>();
+  users.forEach((u) => {
+    if (u.divisions && !seenDivisions.has(u.divisions.id)) {
+      seenDivisions.add(u.divisions.id);
+      divisionOptions.push({ id: u.divisions.id, name: u.divisions.name });
+    }
+  });
+
+  // Extract unique managers from users list (via division.users)
+  const managerOptions: { id: string; full_name: string }[] = [];
+  const seenManagers = new Set<string>();
+  users.forEach((u) => {
+    const mgr = u.divisions?.users;
+    if (mgr && !seenManagers.has(mgr.id)) {
+      seenManagers.add(mgr.id);
+      managerOptions.push({ id: mgr.id, full_name: mgr.full_name });
+    }
+  });
+
+  // Apply client-side filters
+  const filteredRecords = records.filter((r) => {
+    if (searchName) {
+      const name = (r.users?.full_name || usersMap[r.user_id]?.full_name || '').toLowerCase();
+      if (!name.includes(searchName.toLowerCase())) return false;
+    }
+    if (filterDivisionId) {
+      const user = usersMap[r.user_id];
+      if (!user || user.divisions?.id !== filterDivisionId) return false;
+    }
+    if (filterManagerId) {
+      const user = usersMap[r.user_id];
+      if (!user || user.divisions?.users?.id !== filterManagerId) return false;
+    }
+    return true;
+  });
+
+  const hasFilters = searchName || filterDivisionId || filterManagerId;
   const monthLabel = `${MONTH_NAMES[month - 1]} ${year}`;
 
   return (
@@ -113,41 +139,79 @@ export default function AdminAttendancePage() {
         </div>
       )}
 
-      <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
+      <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Attendance Records</h1>
-        <div className="flex items-center gap-3 flex-wrap">
-          {/* Month navigation */}
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => navigate(-1)}
-              className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
-            >
-              &#8249;
-            </button>
-            <span className="text-gray-700 font-medium w-36 text-center">{monthLabel}</span>
-            <button
-              onClick={() => navigate(1)}
-              className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
-            >
-              &#8250;
-            </button>
-          </div>
+        {/* Month navigation */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => navigate(-1)}
+            className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
+          >
+            &#8249;
+          </button>
+          <span className="text-gray-700 font-medium w-36 text-center">{monthLabel}</span>
+          <button
+            onClick={() => navigate(1)}
+            className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
+          >
+            &#8250;
+          </button>
+        </div>
+      </div>
 
-          {/* Employee filter */}
+      {/* Filter bar */}
+      <div className="flex flex-wrap items-center gap-3 mb-5">
+        {/* Search by name */}
+        <input
+          type="text"
+          placeholder="Search employee..."
+          value={searchName}
+          onChange={(e) => setSearchName(e.target.value)}
+          className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
+        />
+
+        {/* Filter by division */}
+        {divisionOptions.length > 0 && (
           <select
-            value={filterUserId}
-            onChange={(e) => setFilterUserId(e.target.value)}
+            value={filterDivisionId}
+            onChange={(e) => { setFilterDivisionId(e.target.value); setFilterManagerId(''); }}
             className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">All Employees</option>
-            {(userRole === 'manager'
-              ? users.filter((u) => u.manager_id === currentUserId)
-              : users
-            ).map((u) => (
-              <option key={u.id} value={u.id}>{u.full_name}</option>
+            <option value="">All Divisions</option>
+            {divisionOptions.map((d) => (
+              <option key={d.id} value={d.id}>{d.name}</option>
             ))}
           </select>
-        </div>
+        )}
+
+        {/* Filter by manager (admin/owner only) */}
+        {['admin', 'owner'].includes(userRole) && managerOptions.length > 0 && (
+          <select
+            value={filterManagerId}
+            onChange={(e) => { setFilterManagerId(e.target.value); setFilterDivisionId(''); }}
+            className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          >
+            <option value="">All Managers</option>
+            {managerOptions.map((m) => (
+              <option key={m.id} value={m.id}>{m.full_name}</option>
+            ))}
+          </select>
+        )}
+
+        {hasFilters && (
+          <button
+            onClick={() => { setSearchName(''); setFilterDivisionId(''); setFilterManagerId(''); }}
+            className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50"
+          >
+            Clear filters
+          </button>
+        )}
+
+        {hasFilters && (
+          <span className="text-sm text-gray-400">
+            {filteredRecords.length} of {records.length} records
+          </span>
+        )}
       </div>
 
       {error && (
@@ -162,7 +226,11 @@ export default function AdminAttendancePage() {
             <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
-          <AttendanceRecordTable records={records} onSelectRecord={setSelectedRecord} />
+          <AttendanceRecordTable
+            records={filteredRecords}
+            usersMap={usersMap}
+            onSelectRecord={setSelectedRecord}
+          />
         )}
       </div>
 
