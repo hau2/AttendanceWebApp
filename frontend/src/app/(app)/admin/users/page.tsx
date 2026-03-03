@@ -8,6 +8,7 @@ import {
   updateUser,
   setUserStatus,
 } from '@/lib/api/users';
+import { Division, listDivisions } from '@/lib/api/divisions';
 import { UserTable } from './components/UserTable';
 import { CreateUserModal } from './components/CreateUserModal';
 import { CsvImportModal } from './components/CsvImportModal';
@@ -15,6 +16,7 @@ import { AssignShiftModal } from './components/AssignShiftModal';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
+  const [divisions, setDivisions] = useState<Division[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -38,8 +40,9 @@ export default function UsersPage() {
       return;
     }
     try {
-      const data = await listUsers(token);
+      const [data, divs] = await Promise.all([listUsers(token), listDivisions(token)]);
       setUsers(data);
+      setDivisions(divs);
       setError(null);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to load users';
@@ -90,6 +93,18 @@ export default function UsersPage() {
     }
   }
 
+  async function handleDivisionChange(id: string, divisionId: string | null) {
+    const token = getStoredToken();
+    if (!token) return;
+    try {
+      await updateUser(token, id, { divisionId: divisionId ?? undefined });
+      await refreshUsers();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to update division';
+      setError(message);
+    }
+  }
+
   const managers = users.filter((u) => u.role === 'manager');
 
   return (
@@ -125,9 +140,11 @@ export default function UsersPage() {
       ) : (
         <UserTable
           users={users}
+          divisions={divisions}
           onRoleChange={handleRoleChange}
           onStatusToggle={handleStatusToggle}
           onManagerChange={handleManagerChange}
+          onDivisionChange={handleDivisionChange}
           onAssignShift={setAssigningUser}
         />
       )}
@@ -137,6 +154,7 @@ export default function UsersPage() {
         onClose={() => setShowCreateModal(false)}
         onCreated={refreshUsers}
         managers={managers}
+        divisions={divisions}
       />
 
       <CsvImportModal
