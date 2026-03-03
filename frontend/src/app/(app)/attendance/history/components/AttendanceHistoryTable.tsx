@@ -46,6 +46,8 @@ export function AttendanceHistoryTable({ records }: Props) {
             <th className="pb-3 font-medium">Check-out</th>
             <th className="pb-3 font-medium">Status</th>
             <th className="pb-3 font-medium">Mins Late/Early</th>
+            <th className="pb-3 font-medium">Remote</th>
+            <th className="pb-3 font-medium">Acknowledged</th>
             <th className="pb-3 font-medium"></th>
           </tr>
         </thead>
@@ -74,6 +76,22 @@ export function AttendanceHistoryTable({ records }: Props) {
                     {r.minutes_early > 0 && <span className="text-orange-600">-{r.minutes_early} min</span>}
                   </td>
                   <td className="py-3">
+                    {r.is_remote && (
+                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Remote</span>
+                    )}
+                  </td>
+                  <td className="py-3 text-xs text-gray-500">
+                    {(r.acknowledged_at || r.remote_acknowledged_at) ? (
+                      <span className="text-green-600 font-medium">
+                        {r.acknowledged_at && `Late/Early: ${new Date(r.acknowledged_at).toLocaleDateString()}`}
+                        {r.acknowledged_at && r.remote_acknowledged_at && ' | '}
+                        {r.remote_acknowledged_at && `Remote: ${new Date(r.remote_acknowledged_at).toLocaleDateString()}`}
+                      </span>
+                    ) : (
+                      <span className="text-gray-300">—</span>
+                    )}
+                  </td>
+                  <td className="py-3">
                     <button
                       onClick={() => setExpandedId(isExpanded ? null : r.id)}
                       className="text-gray-400 hover:text-gray-700 transition-colors p-1"
@@ -87,7 +105,7 @@ export function AttendanceHistoryTable({ records }: Props) {
                 </tr>
                 {isExpanded && (
                   <tr key={`${r.id}-detail`} className="bg-gray-50 border-b border-gray-100">
-                    <td colSpan={6} className="px-4 py-4">
+                    <td colSpan={8} className="px-4 py-4">
                       <div className="flex gap-8 flex-wrap">
                         <div>
                           <p className="text-xs text-gray-500 font-medium mb-2">CHECK-IN PHOTO</p>

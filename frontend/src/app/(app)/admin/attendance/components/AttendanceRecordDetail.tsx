@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { AttendanceRecordWithUser } from '@/lib/api/attendance';
+import { useEffect, useState } from 'react';
+import { AttendanceRecordWithUser, acknowledgeRecord, acknowledgeRemote } from '@/lib/api/attendance';
 import { AdjustAttendanceModal } from './AdjustAttendanceModal';
 
 interface Props {
@@ -36,7 +36,14 @@ export function AttendanceRecordDetail({ record, onClose, onAdjusted, userRole }
   if (!record) return null;
 
   const [showAdjust, setShowAdjust] = useState(false);
+  const [ackLoading, setAckLoading] = useState(false);
+  const [remoteAckLoading, setRemoteAckLoading] = useState(false);
+  const [localRecord, setLocalRecord] = useState(record);
+
+  useEffect(() => { setLocalRecord(record); }, [record]);
+
   const canAdjust = ['admin', 'owner'].includes(userRole ?? '');
+  const canAcknowledge = ['manager', 'admin', 'owner'].includes(userRole ?? '');
 
   const employeeName = record.users?.full_name || 'Unknown Employee';
 
@@ -72,6 +79,9 @@ export function AttendanceRecordDetail({ record, onClose, onAdjusted, userRole }
           {/* Check-in section */}
           <div>
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Check-in</h3>
+            {localRecord?.is_remote && (
+              <span className="inline-block mb-2 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Remote Work</span>
+            )}
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-700 font-medium">{formatTime(record.check_in_at)}</span>
@@ -82,6 +92,56 @@ export function AttendanceRecordDetail({ record, onClose, onAdjusted, userRole }
               </div>
               {record.late_reason && (
                 <p className="text-sm text-gray-600"><span className="font-medium">Reason:</span> {record.late_reason}</p>
+              )}
+              {canAcknowledge && (localRecord?.check_in_status === 'late' || localRecord?.check_out_status === 'early') && (
+                <div className="mt-3">
+                  {localRecord?.acknowledged_at ? (
+                    <p className="text-xs text-green-600 font-medium">
+                      Acknowledged {new Date(localRecord.acknowledged_at).toLocaleString()}
+                    </p>
+                  ) : (
+                    <button
+                      onClick={async () => {
+                        if (!localRecord) return;
+                        setAckLoading(true);
+                        try {
+                          const updated = await acknowledgeRecord(localRecord.id);
+                          setLocalRecord(updated as typeof localRecord);
+                        } catch { /* silently ignore */ }
+                        finally { setAckLoading(false); }
+                      }}
+                      disabled={ackLoading}
+                      className="px-3 py-1.5 text-xs bg-amber-600 text-white rounded-lg hover:bg-amber-700 transition-colors disabled:opacity-50"
+                    >
+                      {ackLoading ? 'Acknowledging...' : 'Acknowledge Late/Early'}
+                    </button>
+                  )}
+                </div>
+              )}
+              {canAcknowledge && localRecord?.is_remote && (
+                <div className="mt-2">
+                  {localRecord?.remote_acknowledged_at ? (
+                    <p className="text-xs text-green-600 font-medium">
+                      Remote acknowledged {new Date(localRecord.remote_acknowledged_at).toLocaleString()}
+                    </p>
+                  ) : (
+                    <button
+                      onClick={async () => {
+                        if (!localRecord) return;
+                        setRemoteAckLoading(true);
+                        try {
+                          const updated = await acknowledgeRemote(localRecord.id);
+                          setLocalRecord(updated as typeof localRecord);
+                        } catch { /* silently ignore */ }
+                        finally { setRemoteAckLoading(false); }
+                      }}
+                      disabled={remoteAckLoading}
+                      className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                    >
+                      {remoteAckLoading ? 'Acknowledging...' : 'Acknowledge Remote'}
+                    </button>
+                  )}
+                </div>
               )}
               <div className="mt-3">
                 {record.check_in_photo_url ? (

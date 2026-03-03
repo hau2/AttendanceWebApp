@@ -46,6 +46,8 @@ export function AttendanceRecordTable({ records, usersMap, onSelectRecord }: Pro
             <th className="pb-3 px-4 font-medium">Date</th>
             <th className="pb-3 px-4 font-medium">Check-in</th>
             <th className="pb-3 px-4 font-medium">In Status</th>
+            <th className="pb-3 px-4 font-medium">Remote</th>
+            <th className="pb-3 px-4 font-medium">Notes</th>
             <th className="pb-3 px-4 font-medium">Check-out</th>
             <th className="pb-3 px-4 font-medium">Out Status</th>
             <th className="pb-3 px-4 font-medium"></th>
@@ -66,6 +68,19 @@ export function AttendanceRecordTable({ records, usersMap, onSelectRecord }: Pro
                 <td className="py-3 px-4 text-gray-700">{formatDate(r.work_date)}</td>
                 <td className="py-3 px-4 text-gray-700">{formatTime(r.check_in_at)}</td>
                 <td className="py-3 px-4">{statusBadge(r.check_in_status)}</td>
+                <td className="py-3 px-4">
+                  {r.is_remote && (
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Remote</span>
+                  )}
+                </td>
+                <td className="py-3 px-4 max-w-xs">
+                  {r.late_reason && (
+                    <p className="text-xs text-gray-600"><span className="font-medium">Late:</span> {r.late_reason}</p>
+                  )}
+                  {r.early_note && (
+                    <p className="text-xs text-gray-600"><span className="font-medium">Early:</span> {r.early_note}</p>
+                  )}
+                </td>
                 <td className="py-3 px-4">
                   {r.check_in_at ? (
                     r.missing_checkout ? (
