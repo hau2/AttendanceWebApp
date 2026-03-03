@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Division, Acknowledgment & Remote Work
 status: roadmap_ready
-last_updated: "2026-03-03T09:00:00Z"
+last_updated: "2026-03-03T07:01:14Z"
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 6
+  completed_plans: 1
 ---
 
 # Project State
@@ -22,12 +22,12 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 
 ## Current Position
 
-Phase: Phase 6 - Division Architecture (not started)
-Plan: —
-Status: Roadmap created for v2.0; ready to plan Phase 6
-Last activity: 2026-03-03 — v2.0 roadmap created; 34 requirements mapped across Phases 6–10
+Phase: Phase 6 - Division Architecture (in progress)
+Plan: 06-02
+Status: Plan 06-01 complete — DB schema (divisions table + users.division_id FK + RLS) created
+Last activity: 2026-03-03 — 06-01 complete: divisions migration + RLS policy files created
 
-Progress: [░░░░░░░░░░░░░░░░░░░░] 0%
+Progress: [█░░░░░░░░░░░░░░░░░░░] 5%
 
 ## Performance Metrics
 
@@ -133,6 +133,10 @@ Recent decisions affecting current work:
 - layout.tsx converted to 'use client' with useEffect for role detection — enables conditional nav link rendering (05-04)
 - Executive dashboard enforces EXEC-05 read-only by absence of any edit controls — no special disabling logic needed (05-04)
 - Phase 5 E2E human verification passed — all 9 test cases confirmed; no code changes required post-verification (05-05)
+- divisions.manager_id is nullable (ON DELETE SET NULL) — a division can exist without an assigned manager (06-01)
+- users.division_id is nullable (ON DELETE SET NULL) — deleting a division orphans employees to no division rather than cascading delete (06-01)
+- UNIQUE(company_id, name) on divisions enforced at DB constraint level — prevents duplicate division names within a company without application-layer checks (06-01)
+- RLS on divisions uses company_id = JWT app_metadata.company_id — consistent with all other tenant-isolated tables (06-01)
 
 ### Pending Todos
 
@@ -146,7 +150,8 @@ Recent decisions affecting current work:
 - Run 004_attendance_records.sql migration in Supabase SQL editor before testing check-in/out endpoints
 - Run 003_attendance_rls.sql RLS policy in Supabase SQL editor before using attendance endpoints from frontend
 - Run 006_attendance_adjustments.sql migration in Supabase SQL editor before testing PATCH /attendance/records/:id endpoint
-- Phase 6: Run divisions table migration in Supabase SQL editor before testing Division endpoints
+- Run 007_divisions.sql migration in Supabase SQL editor before testing Division endpoints (Phase 6)
+- Run 004_divisions_rls.sql RLS policy in Supabase SQL editor AFTER running 007_divisions.sql (Phase 6)
 
 ### Blockers/Concerns
 
@@ -155,6 +160,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: v2.0 roadmap created (Phases 6–10, 34 requirements)
+Stopped at: Completed 06-01-PLAN.md (divisions DB schema migration + RLS policy)
 Resume file: None
-Next: /gsd:plan-phase 6
+Next: Execute 06-02-PLAN.md

@@ -127,7 +127,7 @@ Plans:
 **Plans**: 6 plans
 
 Plans:
-- [ ] 06-01-PLAN.md — DB migration (divisions table + users.division_id FK column + RLS policy)
+- [x] 06-01-PLAN.md — DB migration (divisions table + users.division_id FK column + RLS policy)
 - [ ] 06-02-PLAN.md — NestJS DivisionsModule (POST/GET/PATCH/DELETE /divisions, delete guard against employee assignments)
 - [ ] 06-03-PLAN.md — Manager scope migration (attendance service uses division membership instead of manager_id) + divisionId in UpdateUserDto
 - [ ] 06-04-PLAN.md — Division Management UI (/admin/divisions page with Create/Edit/Delete modals + nav link)
@@ -192,7 +192,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Attendance Core | 6/6 | Complete    | 2026-03-02 |
 | 4. Admin Adjustments | 2/2 | Complete    | 2026-03-02 |
 | 5. Monitoring & Reporting | 5/5 | Complete    | 2026-03-03 |
-| 6. Division Architecture | 0/6 | Not started | - |
+| 6. Division Architecture | 1/6 | In progress | - |
 | 7. Employee Lifecycle + Per-User Timezone | 0/? | Not started | - |
 | 8. Remote Work + Acknowledgment Flow | 0/? | Not started | - |
 | 9. Advanced Monitoring | 0/? | Not started | - |
