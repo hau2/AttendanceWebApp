@@ -9,7 +9,15 @@ export interface User {
   is_active: boolean;
   manager_id: string | null;
   division_id: string | null;
+  timezone: string | null;
   created_at: string;
+  // Nested join from backend (optional — only present when listUsers() includes join)
+  divisions?: {
+    id: string;
+    name: string;
+    manager_id: string | null;
+    users?: { id: string; full_name: string } | null;
+  } | null;
 }
 
 export interface CreateUserData {
@@ -22,6 +30,8 @@ export interface CreateUserData {
 }
 
 export interface UpdateUserData {
+  fullName?: string;
+  timezone?: string | null;  // IANA string to set, null to clear
   role?: string;
   managerId?: string;
   divisionId?: string;
@@ -92,6 +102,17 @@ export async function setUserStatus(
     throw new Error(err.message || 'Failed to update user status');
   }
   return res.json();
+}
+
+export async function deleteUser(token: string, userId: string): Promise<void> {
+  const res = await fetch(`${API_URL}/users/${userId}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to delete user');
+  }
 }
 
 export async function importUsersCSV(
