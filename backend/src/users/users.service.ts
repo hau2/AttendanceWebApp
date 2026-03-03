@@ -179,10 +179,15 @@ export class UsersService {
       throw new BadRequestException('Cannot delete the company owner');
     }
 
-    // 3. Delete from Supabase Auth (removes login capability)
-    const { error: authError } = await client.auth.admin.deleteUser(userId);
+    // 3. Ban the auth user so they cannot obtain new tokens.
+    // We intentionally do NOT call auth.admin.deleteUser() because public.users has
+    // REFERENCES auth.users(id) ON DELETE CASCADE — deleting the auth row would cascade
+    // and wipe the public.users row and all attendance_records for this employee.
+    const { error: authError } = await client.auth.admin.updateUserById(userId, {
+      ban_duration: '876000h',
+    });
     if (authError) {
-      throw new InternalServerErrorException(`Failed to delete auth account: ${authError.message}`);
+      throw new InternalServerErrorException(`Failed to ban auth account: ${authError.message}`);
     }
 
     // 4. Set is_active = false on public.users row (row preserved for history)
@@ -193,9 +198,8 @@ export class UsersService {
       .eq('company_id', companyId);
 
     if (updateError) {
-      // Auth account already deleted — log error but surface as internal error
       throw new InternalServerErrorException(
-        `Auth deleted but failed to deactivate user record: ${updateError.message}`,
+        `Auth banned but failed to deactivate user record: ${updateError.message}`,
       );
     }
   }
