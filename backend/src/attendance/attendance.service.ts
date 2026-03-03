@@ -408,7 +408,7 @@ export class AttendanceService {
   /**
    * List all attendance records for a company in a given month.
    * Admin/Manager only. Optionally filter by userId.
-   * When managerId is provided, scopes records to employees assigned to that manager.
+   * When managerId is provided, scopes records to employees in the manager's divisions.
    * Returns records with user full_name.
    */
   async listRecords(
@@ -420,24 +420,45 @@ export class AttendanceService {
   ): Promise<Record<string, unknown>[]> {
     const client = this.supabase.getClient();
 
-    // If manager scope is requested, first fetch the employee IDs assigned to this manager
+    // If manager scope is requested, use division-based employee lookup
     let employeeIds: string[] | undefined;
     if (managerId) {
-      const { data: employees, error: empError } = await client
-        .from('users')
+      // Step 1: Find divisions managed by this manager
+      const { data: managedDivisions, error: divError } = await client
+        .from('divisions')
         .select('id')
         .eq('company_id', companyId)
         .eq('manager_id', managerId);
 
+      if (divError) {
+        throw new InternalServerErrorException(
+          `Failed to fetch manager's divisions: ${divError.message}`,
+        );
+      }
+
+      const divisionIds = (managedDivisions ?? []).map((d: Record<string, unknown>) => d.id as string);
+
+      // If manager has no divisions, return empty immediately
+      if (divisionIds.length === 0) {
+        return [];
+      }
+
+      // Step 2: Find employees in those divisions
+      const { data: employees, error: empError } = await client
+        .from('users')
+        .select('id')
+        .eq('company_id', companyId)
+        .in('division_id', divisionIds);
+
       if (empError) {
         throw new InternalServerErrorException(
-          `Failed to fetch manager's employees: ${empError.message}`,
+          `Failed to fetch division employees: ${empError.message}`,
         );
       }
 
       employeeIds = (employees ?? []).map((e: Record<string, unknown>) => e.id as string);
 
-      // If no employees assigned, return empty immediately
+      // If no employees in those divisions, return empty immediately
       if (employeeIds.length === 0) {
         return [];
       }
@@ -485,6 +506,7 @@ export class AttendanceService {
   /**
    * Returns a team summary for a manager: total records, late count,
    * punctuality rate, and daily breakdown for the given month.
+   * Scoped to employees in the manager's divisions.
    */
   async getTeamSummary(
     companyId: string,
@@ -499,22 +521,42 @@ export class AttendanceService {
   }> {
     const client = this.supabase.getClient();
 
-    // 1. Fetch employee IDs assigned to this manager
-    const { data: employees, error: empError } = await client
-      .from('users')
+    // Step 1: Find divisions managed by this manager
+    const { data: managedDivisions, error: divError } = await client
+      .from('divisions')
       .select('id')
       .eq('company_id', companyId)
       .eq('manager_id', managerId);
 
+    if (divError) {
+      throw new InternalServerErrorException(
+        `Failed to fetch manager's divisions: ${divError.message}`,
+      );
+    }
+
+    const divisionIds = (managedDivisions ?? []).map((d: Record<string, unknown>) => d.id as string);
+
+    // If manager has no divisions, return zero stats
+    if (divisionIds.length === 0) {
+      return { total: 0, late: 0, punctualityRate: 100, monthlyBreakdown: [] };
+    }
+
+    // Step 2: Find employees in those divisions
+    const { data: employees, error: empError } = await client
+      .from('users')
+      .select('id')
+      .eq('company_id', companyId)
+      .in('division_id', divisionIds);
+
     if (empError) {
       throw new InternalServerErrorException(
-        `Failed to fetch manager's employees: ${empError.message}`,
+        `Failed to fetch division employees: ${empError.message}`,
       );
     }
 
     const employeeIds = (employees ?? []).map((e: Record<string, unknown>) => e.id as string);
 
-    // 2. If no employees assigned, return zero stats
+    // If no employees in those divisions, return zero stats
     if (employeeIds.length === 0) {
       return { total: 0, late: 0, punctualityRate: 100, monthlyBreakdown: [] };
     }
@@ -717,18 +759,49 @@ export class AttendanceService {
     const endYear = month === 12 ? year + 1 : year;
     const endDate = `${endYear}-${String(endMonth).padStart(2, '0')}-01`;
 
-    // If managerId provided, scope to that manager's employees
+    // If managerId provided, scope to employees in the manager's divisions
     let userIds: string[] | undefined;
     if (managerId) {
-      const { data: managedUsers, error: usersError } = await client
-        .from('users')
+      // Step 1: Find divisions managed by this manager
+      const { data: managedDivisions, error: divError } = await client
+        .from('divisions')
         .select('id')
         .eq('company_id', companyId)
         .eq('manager_id', managerId);
 
+      if (divError) {
+        throw new InternalServerErrorException(
+          `Failed to fetch manager's divisions: ${divError.message}`,
+        );
+      }
+
+      const divisionIds = (managedDivisions ?? []).map((d: Record<string, unknown>) => d.id as string);
+
+      // If manager has no divisions, return empty immediately
+      if (divisionIds.length === 0) {
+        return {
+          records: [],
+          stats: {
+            total: 0,
+            lateCount: 0,
+            onTimeCount: 0,
+            withinGraceCount: 0,
+            missingCheckoutCount: 0,
+            lateRate: 0,
+          },
+        };
+      }
+
+      // Step 2: Find employees in those divisions
+      const { data: managedUsers, error: usersError } = await client
+        .from('users')
+        .select('id')
+        .eq('company_id', companyId)
+        .in('division_id', divisionIds);
+
       if (usersError) {
         throw new InternalServerErrorException(
-          `Failed to fetch managed users: ${usersError.message}`,
+          `Failed to fetch division employees: ${usersError.message}`,
         );
       }
 
@@ -737,7 +810,7 @@ export class AttendanceService {
       );
     }
 
-    // If manager has no direct reports, return empty
+    // If manager has no employees in their divisions, return empty
     if (userIds !== undefined && userIds.length === 0) {
       return {
         records: [],
