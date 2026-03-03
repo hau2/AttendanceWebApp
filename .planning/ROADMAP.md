@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 2: Workforce Configuration** - User management and shift definitions ready for attendance tracking
 - [x] **Phase 3: Attendance Core** - Employee check-in/out with photo evidence and accurate late/early classification
 - [x] **Phase 4: Admin Adjustments** - Admins can correct records with a full, immutable audit trail
-- [ ] **Phase 5: Monitoring & Reporting** - Manager monitoring, Executive dashboard, and CSV export
+- [x] **Phase 5: Monitoring & Reporting** - Manager monitoring, Executive dashboard, and CSV export
 
 ## Phase Details
 
@@ -106,7 +106,7 @@ Plans:
 - [x] 05-02-PLAN.md — Executive summary, monthly report, and CSV export backend endpoints (EXEC-01-05, RPTS-01-03)
 - [x] 05-03-PLAN.md — Manager monitoring UI: team summary card + scoped employee dropdown on /admin/attendance (MNGR-01-06)
 - [x] 05-04-PLAN.md — Executive dashboard page (/executive) + Admin/Manager reports page (/admin/reports) with CSV export (EXEC-01-05, RPTS-01-03)
-- [ ] 05-05-PLAN.md — Human verification checkpoint (all three role journeys: Manager, Executive, Admin reports + CSV)
+- [x] 05-05-PLAN.md — Human verification checkpoint (all three role journeys: Manager, Executive, Admin reports + CSV)
 
 ## Progress
 
@@ -119,7 +119,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Workforce Configuration | 4/4 | Complete    | 2026-03-02 |
 | 3. Attendance Core | 6/6 | Complete    | 2026-03-02 |
 | 4. Admin Adjustments | 2/2 | Complete    | 2026-03-02 |
-| 5. Monitoring & Reporting | 4/5 | In progress | - |
+| 5. Monitoring & Reporting | 5/5 | Complete    | 2026-03-03 |
 
 ---
 *Roadmap created: 2026-03-01*
