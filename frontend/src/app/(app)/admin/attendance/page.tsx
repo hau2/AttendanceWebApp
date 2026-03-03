@@ -70,21 +70,21 @@ export default function AdminAttendancePage() {
   const usersMap: Record<string, User> = {};
   users.forEach((u) => { usersMap[u.id] = u; });
 
-  // Extract unique divisions from users list
+  // Extract unique divisions and managers from users who appear in *records*
+  // (not from all users). This automatically scopes the dropdowns:
+  // - Admin sees only divisions/managers with records this month
+  // - Manager sees only their own divisions (backend already scoped records)
   const divisionOptions: { id: string; name: string }[] = [];
-  const seenDivisions = new Set<string>();
-  users.forEach((u) => {
-    if (u.divisions && !seenDivisions.has(u.divisions.id)) {
-      seenDivisions.add(u.divisions.id);
-      divisionOptions.push({ id: u.divisions.id, name: u.divisions.name });
-    }
-  });
-
-  // Extract unique managers from users list (via division.users)
   const managerOptions: { id: string; full_name: string }[] = [];
+  const seenDivisions = new Set<string>();
   const seenManagers = new Set<string>();
-  users.forEach((u) => {
-    const mgr = u.divisions?.users;
+  records.forEach((r) => {
+    const user = usersMap[r.user_id];
+    if (user?.divisions && !seenDivisions.has(user.divisions.id)) {
+      seenDivisions.add(user.divisions.id);
+      divisionOptions.push({ id: user.divisions.id, name: user.divisions.name });
+    }
+    const mgr = user?.divisions?.users;
     if (mgr && !seenManagers.has(mgr.id)) {
       seenManagers.add(mgr.id);
       managerOptions.push({ id: mgr.id, full_name: mgr.full_name });
