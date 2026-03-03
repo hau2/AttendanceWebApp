@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: Phase 8 - Remote Work + Acknowledgment Flow (In progress)
-Plan: 08-02 (Backend acknowledge endpoints — complete)
-Status: 08-02 complete — CheckInDto extended with is_remote; acknowledgeRecord() + acknowledgeRemote() service methods and POST controller routes added. TypeScript build passes cleanly.
-Last activity: 2026-03-03 — 08-02 backend API complete
+Plan: 08-03 (Frontend remote work + acknowledge UI — complete)
+Status: 08-03 complete — Remote Work toggle in CheckInOutCard, Remote badge in admin table/detail/history, Acknowledge Late/Early + Acknowledge Remote buttons in detail modal (manager/admin/owner), Acknowledged column in employee history. TypeScript build passes.
+Last activity: 2026-03-04 — 08-03 frontend UI complete
 
 Progress: [██████████████░░░░░░] 40% (2/5 v2.0 phases)
 
@@ -173,6 +173,10 @@ Recent decisions affecting current work:
 - acknowledgeRecord()/acknowledgeRemote() accessible to manager/admin/owner — managers are primary users; admins included for operational coverage (08-02)
 - Idempotent acknowledge pattern: if *_at already set, return full current record without error — safe for frontend retry on network failure (08-02)
 - acknowledgeRecord() validates late OR early before writing; acknowledgeRemote() validates is_remote flag — prevents misuse on wrong record types (08-02)
+- localRecord state in AttendanceRecordDetail synced via useEffect from prop — allows optimistic update after acknowledge without triggering parent re-fetch; acknowledges are not time adjustments so onAdjusted is not called (08-03)
+- acknowledgeRecord/acknowledgeRemote silently ignore catch errors — idempotent backend safe for silent retry (08-03)
+- Remote toggle resets in openCamera() rather than on submission — prevents stale checkbox state if user cancels mid-flow (08-03)
+- Remote badge color bg-blue-100 text-blue-700 used consistently across all three views (admin table, record detail, employee history) — distinct from all existing status badge colors (08-03)
 
 ### Pending Todos
 
@@ -197,7 +201,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-03
-Stopped at: Completed 08-02-PLAN.md — Backend: CheckInDto is_remote field, acknowledgeRecord() + acknowledgeRemote() service methods, two POST controller routes
+Last session: 2026-03-04
+Stopped at: Completed 08-03-PLAN.md — Frontend: Remote Work toggle in CheckInOutCard, Remote badge across all views, Acknowledge Late/Early + Acknowledge Remote buttons in record detail, Acknowledged column in employee history
 Resume file: None
-Next: 08-03-PLAN.md — Frontend: Remote Work toggle in CheckInOutCard, Remote badge in all views, Acknowledge buttons in record detail, acknowledgment status in employee history
+Next: 08-04-PLAN.md — Human verification checkpoint (all 7 Phase 8 requirements end-to-end)
