@@ -179,6 +179,21 @@ export class AttendanceService {
     // 1. Fetch company settings
     const { timezone, ipMode, ipAllowlist } = await this.getCompanySettings(companyId);
 
+    // 1b. Fetch user's personal timezone override
+    const { data: userRecord, error: userError } = await client
+      .from('users')
+      .select('timezone')
+      .eq('id', userId)
+      .eq('company_id', companyId)
+      .maybeSingle();
+
+    if (userError) {
+      throw new InternalServerErrorException(`Failed to fetch user timezone: ${userError.message}`);
+    }
+
+    // Apply override: user timezone takes priority; fallback to company timezone
+    const effectiveTimezone: string = (userRecord?.timezone as string | null) ?? timezone;
+
     // 2. IP check
     const allowlist = ipAllowlist ?? [];
     let withinAllowlist = true;
@@ -197,8 +212,8 @@ export class AttendanceService {
       );
     }
 
-    // 3. Get work date in company timezone
-    const workDate = this.getWorkDate(timezone);
+    // 3. Get work date in effective timezone
+    const workDate = this.getWorkDate(effectiveTimezone);
 
     // 4. Check for existing record (idempotency guard)
     const { data: existing, error: existingError } = await client
@@ -227,7 +242,7 @@ export class AttendanceService {
     let minutesLate = 0;
 
     if (shift) {
-      const classification = this.classifyCheckIn(now, shift, timezone);
+      const classification = this.classifyCheckIn(now, shift, effectiveTimezone);
       checkInStatus = classification.status;
       minutesLate = classification.minutesLate;
     }
@@ -280,6 +295,21 @@ export class AttendanceService {
     // 1. Fetch company settings
     const { timezone, ipMode, ipAllowlist } = await this.getCompanySettings(companyId);
 
+    // 1b. Fetch user's personal timezone override
+    const { data: userRecord, error: userError } = await client
+      .from('users')
+      .select('timezone')
+      .eq('id', userId)
+      .eq('company_id', companyId)
+      .maybeSingle();
+
+    if (userError) {
+      throw new InternalServerErrorException(`Failed to fetch user timezone: ${userError.message}`);
+    }
+
+    // Apply override: user timezone takes priority; fallback to company timezone
+    const effectiveTimezone: string = (userRecord?.timezone as string | null) ?? timezone;
+
     // 2. IP check
     const allowlist = ipAllowlist ?? [];
     let withinAllowlist = true;
@@ -298,8 +328,8 @@ export class AttendanceService {
       );
     }
 
-    // 3. Get work date
-    const workDate = this.getWorkDate(timezone);
+    // 3. Get work date in effective timezone
+    const workDate = this.getWorkDate(effectiveTimezone);
 
     // 4. Fetch today's record
     const { data: record, error: recordError } = await client
@@ -333,7 +363,7 @@ export class AttendanceService {
     let minutesEarly = 0;
 
     if (shift) {
-      const classification = this.classifyCheckOut(now, shift, timezone);
+      const classification = this.classifyCheckOut(now, shift, effectiveTimezone);
       checkOutStatus = classification.status;
       minutesEarly = classification.minutesEarly;
     }
