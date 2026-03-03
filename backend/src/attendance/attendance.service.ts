@@ -565,6 +565,321 @@ export class AttendanceService {
   }
 
   /**
+   * Returns company-wide executive summary for a given month.
+   * Includes attendance rate, late ranking (top 10), and daily breakdown.
+   */
+  async getExecutiveSummary(
+    companyId: string,
+    year: number,
+    month: number,
+  ): Promise<Record<string, unknown>> {
+    const client = this.supabase.getClient();
+
+    // Build date range
+    const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
+    const endMonth = month === 12 ? 1 : month + 1;
+    const endYear = month === 12 ? year + 1 : year;
+    const endDate = `${endYear}-${String(endMonth).padStart(2, '0')}-01`;
+
+    // Fetch all records for the month with user join
+    const { data: records, error: recordsError } = await client
+      .from('attendance_records')
+      .select(`
+        *,
+        users (
+          full_name,
+          email
+        )
+      `)
+      .eq('company_id', companyId)
+      .gte('work_date', startDate)
+      .lt('work_date', endDate);
+
+    if (recordsError) {
+      throw new InternalServerErrorException(
+        `Failed to fetch attendance records: ${recordsError.message}`,
+      );
+    }
+
+    const allRecords = records ?? [];
+
+    // Fetch total active users for attendance rate calculation
+    const { data: activeUsers, error: usersError } = await client
+      .from('users')
+      .select('id')
+      .eq('company_id', companyId)
+      .eq('is_active', true);
+
+    if (usersError) {
+      throw new InternalServerErrorException(
+        `Failed to fetch active users: ${usersError.message}`,
+      );
+    }
+
+    const totalActiveUsers = (activeUsers ?? []).length;
+
+    // Compute attendance rate: distinct users with at least one record / total active users
+    const distinctUserIds = new Set(
+      allRecords.map((r: Record<string, unknown>) => r.user_id as string),
+    );
+    const presentUsers = distinctUserIds.size;
+    const attendanceRate =
+      totalActiveUsers > 0
+        ? Math.round((presentUsers / totalActiveUsers) * 1000) / 10
+        : 0;
+
+    // Compute total late count
+    const lateCount = allRecords.filter(
+      (r: Record<string, unknown>) => r.check_in_status === 'late',
+    ).length;
+
+    // Compute late ranking: group by user_id, count late records, sort desc, take top 10
+    const userLateMap = new Map<
+      string,
+      { fullName: string; lateCount: number; totalDays: number }
+    >();
+
+    for (const record of allRecords as Record<string, unknown>[]) {
+      const userId = record.user_id as string;
+      const usersJoin = record.users as Record<string, unknown> | null;
+      const fullName = (usersJoin?.full_name as string) ?? 'Unknown';
+      const existing = userLateMap.get(userId);
+      if (existing) {
+        existing.totalDays += 1;
+        if (record.check_in_status === 'late') {
+          existing.lateCount += 1;
+        }
+      } else {
+        userLateMap.set(userId, {
+          fullName,
+          lateCount: record.check_in_status === 'late' ? 1 : 0,
+          totalDays: 1,
+        });
+      }
+    }
+
+    const lateRanking = Array.from(userLateMap.entries())
+      .map(([userId, stats]) => ({ userId, ...stats }))
+      .sort((a, b) => b.lateCount - a.lateCount)
+      .slice(0, 10);
+
+    // Compute monthly breakdown: group by work_date
+    const dateMap = new Map<
+      string,
+      { date: string; present: number; late: number; missingCheckout: number }
+    >();
+
+    for (const record of allRecords as Record<string, unknown>[]) {
+      const date = record.work_date as string;
+      const existing = dateMap.get(date);
+      if (existing) {
+        existing.present += 1;
+        if (record.check_in_status === 'late') existing.late += 1;
+        if (record.missing_checkout === true) existing.missingCheckout += 1;
+      } else {
+        dateMap.set(date, {
+          date,
+          present: 1,
+          late: record.check_in_status === 'late' ? 1 : 0,
+          missingCheckout: record.missing_checkout === true ? 1 : 0,
+        });
+      }
+    }
+
+    const monthlyBreakdown = Array.from(dateMap.values()).sort((a, b) =>
+      a.date.localeCompare(b.date),
+    );
+
+    return {
+      attendanceRate,
+      totalRecords: allRecords.length,
+      lateCount,
+      lateRanking,
+      monthlyBreakdown,
+    };
+  }
+
+  /**
+   * Returns full monthly attendance records with late statistics.
+   * Optionally scoped to a manager's employees when managerId is provided.
+   */
+  async getMonthlyReport(
+    companyId: string,
+    year: number,
+    month: number,
+    managerId?: string,
+  ): Promise<Record<string, unknown>> {
+    const client = this.supabase.getClient();
+
+    // Build date range
+    const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
+    const endMonth = month === 12 ? 1 : month + 1;
+    const endYear = month === 12 ? year + 1 : year;
+    const endDate = `${endYear}-${String(endMonth).padStart(2, '0')}-01`;
+
+    // If managerId provided, scope to that manager's employees
+    let userIds: string[] | undefined;
+    if (managerId) {
+      const { data: managedUsers, error: usersError } = await client
+        .from('users')
+        .select('id')
+        .eq('company_id', companyId)
+        .eq('manager_id', managerId);
+
+      if (usersError) {
+        throw new InternalServerErrorException(
+          `Failed to fetch managed users: ${usersError.message}`,
+        );
+      }
+
+      userIds = (managedUsers ?? []).map(
+        (u: Record<string, unknown>) => u.id as string,
+      );
+    }
+
+    // If manager has no direct reports, return empty
+    if (userIds !== undefined && userIds.length === 0) {
+      return {
+        records: [],
+        stats: {
+          total: 0,
+          lateCount: 0,
+          onTimeCount: 0,
+          withinGraceCount: 0,
+          missingCheckoutCount: 0,
+          lateRate: 0,
+        },
+      };
+    }
+
+    // Build query
+    let query = client
+      .from('attendance_records')
+      .select(`
+        *,
+        users (
+          full_name,
+          email
+        )
+      `)
+      .eq('company_id', companyId)
+      .gte('work_date', startDate)
+      .lt('work_date', endDate)
+      .order('work_date', { ascending: false });
+
+    if (userIds !== undefined) {
+      query = query.in('user_id', userIds);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      throw new InternalServerErrorException(
+        `Failed to fetch monthly records: ${error.message}`,
+      );
+    }
+
+    const reportRecords = data ?? [];
+    const total = reportRecords.length;
+    const lateCount = reportRecords.filter(
+      (r: Record<string, unknown>) => r.check_in_status === 'late',
+    ).length;
+    const onTimeCount = reportRecords.filter(
+      (r: Record<string, unknown>) => r.check_in_status === 'on-time',
+    ).length;
+    const withinGraceCount = reportRecords.filter(
+      (r: Record<string, unknown>) => r.check_in_status === 'within-grace',
+    ).length;
+    const missingCheckoutCount = reportRecords.filter(
+      (r: Record<string, unknown>) => r.missing_checkout === true,
+    ).length;
+    const lateRate = total > 0 ? Math.round((lateCount / total) * 1000) / 10 : 0;
+
+    return {
+      records: reportRecords,
+      stats: {
+        total,
+        lateCount,
+        onTimeCount,
+        withinGraceCount,
+        missingCheckoutCount,
+        lateRate,
+      },
+    };
+  }
+
+  /**
+   * Exports monthly attendance records as a CSV string.
+   * Optionally scoped to a manager's employees when managerId is provided.
+   */
+  async exportCsv(
+    companyId: string,
+    year: number,
+    month: number,
+    managerId?: string,
+  ): Promise<string> {
+    try {
+      const report = await this.getMonthlyReport(companyId, year, month, managerId);
+      const csvRecords = report.records as Record<string, unknown>[];
+
+      const escapeValue = (val: unknown): string => {
+        const str = val == null ? '' : String(val);
+        if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+          return `"${str.replace(/"/g, '""')}"`;
+        }
+        return str;
+      };
+
+      const header =
+        'Date,Employee,Check-in,Check-out,Status,Minutes Late,Late Reason,Early Note,Missing Checkout,Source';
+
+      const rows = csvRecords.map((record: Record<string, unknown>) => {
+        const usersJoin = record.users as Record<string, unknown> | null;
+        const employeeName = (usersJoin?.full_name as string) ?? '';
+        const checkIn = record.check_in_at
+          ? new Date(record.check_in_at as string).toLocaleString('en-US', {
+              timeZone: 'UTC',
+            })
+          : '';
+        const checkOut = record.check_out_at
+          ? new Date(record.check_out_at as string).toLocaleString('en-US', {
+              timeZone: 'UTC',
+            })
+          : '';
+        const status = (record.check_in_status as string) ?? '';
+        const minutesLate =
+          record.minutes_late != null ? String(record.minutes_late) : '';
+        const lateReason = (record.late_reason as string) ?? '';
+        const earlyNote = (record.early_note as string) ?? '';
+        const missingCheckout = record.missing_checkout === true ? 'Yes' : 'No';
+        const source = (record.source as string) ?? '';
+
+        return [
+          escapeValue(record.work_date),
+          escapeValue(employeeName),
+          escapeValue(checkIn),
+          escapeValue(checkOut),
+          escapeValue(status),
+          escapeValue(minutesLate),
+          escapeValue(lateReason),
+          escapeValue(earlyNote),
+          escapeValue(missingCheckout),
+          escapeValue(source),
+        ].join(',');
+      });
+
+      return [header, ...rows].join('\n');
+    } catch (err: unknown) {
+      if (err instanceof InternalServerErrorException) {
+        throw err;
+      }
+      throw new InternalServerErrorException(
+        `Failed to generate CSV: ${err instanceof Error ? err.message : 'unknown error'}`,
+      );
+    }
+  }
+
+  /**
    * Admin adjusts check_in_at and/or check_out_at on an existing record.
    * Stores one audit row per changed field in attendance_adjustments.
    * Requires reason. Admin and Owner roles only (enforced in controller).
