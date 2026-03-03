@@ -8,7 +8,7 @@ progress:
   total_phases: 5
   completed_phases: 0
   total_plans: 6
-  completed_plans: 1
+  completed_plans: 3
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: Phase 6 - Division Architecture (in progress)
-Plan: 06-02
-Status: Plan 06-01 complete — DB schema (divisions table + users.division_id FK + RLS) created
-Last activity: 2026-03-03 — 06-01 complete: divisions migration + RLS policy files created
+Plan: 06-04
+Status: Plan 06-03 complete — attendance service migrated to division-based scoping; divisionId added to UpdateUserDto
+Last activity: 2026-03-03 — 06-03 complete: division-based manager scoping in 3 attendance methods + divisionId in UpdateUserDto/UsersService
 
-Progress: [█░░░░░░░░░░░░░░░░░░░] 5%
+Progress: [███░░░░░░░░░░░░░░░░░] 15%
 
 ## Performance Metrics
 
@@ -137,6 +137,14 @@ Recent decisions affecting current work:
 - users.division_id is nullable (ON DELETE SET NULL) — deleting a division orphans employees to no division rather than cascading delete (06-01)
 - UNIQUE(company_id, name) on divisions enforced at DB constraint level — prevents duplicate division names within a company without application-layer checks (06-01)
 - RLS on divisions uses company_id = JWT app_metadata.company_id — consistent with all other tenant-isolated tables (06-01)
+- DivisionsModule exports DivisionsService so Plan 03 can inject it into AttendanceService without reimporting (06-02)
+- listDivisions uses Supabase FK join alias users!divisions_manager_id_fkey to fetch manager full_name in single query (06-02)
+- deleteDivision counts employees first, throws ConflictException with count message if > 0 — clear UX error showing how many employees need reassignment (06-02)
+- countError on pre-delete count query treated as NotFoundException — division not accessible in tenant scope (06-02)
+- Two-step division-based manager scoping: Step 1 finds divisions WHERE manager_id = managerId; Step 2 finds users WHERE division_id IN divisionIds — replaces direct manager_id lookup on users in all three attendance methods (06-03)
+- Early-return empty result at division step (before employee lookup) when manager has no divisions — avoids unnecessary second Supabase round-trip (06-03)
+- Division ownership validated before assigning to user: BadRequestException if division.company_id != companyId — service-role bypasses RLS so explicit tenant check is required (06-03)
+- divisionId clearing (null assignment) not supported in Phase 6 — DIVN-05 only requires assign/reassign; unassign deferred to later phase (06-03)
 
 ### Pending Todos
 
@@ -160,6 +168,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Completed 06-01-PLAN.md (divisions DB schema migration + RLS policy)
+Stopped at: Completed 06-03-PLAN.md (division-based manager scoping in attendance + divisionId in UpdateUserDto)
 Resume file: None
-Next: Execute 06-02-PLAN.md
+Next: Execute 06-04-PLAN.md
