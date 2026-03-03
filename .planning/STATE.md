@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-02T16:04:08.098Z"
+status: in_progress
+last_updated: "2026-03-03T00:06:49Z"
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 4
-  total_plans: 15
-  completed_plans: 15
+  total_plans: 20
+  completed_plans: 16
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** Phase 4 - Admin Adjustments
+**Current focus:** Phase 5 - Monitoring & Reporting
 
 ## Current Position
 
-Phase: 4 of 5 (Admin Adjustments) — COMPLETE
-Plan: 2 of 2 complete — Plan 04-02 complete (2026-03-02)
-Status: Phase 4 complete — all ADJT requirements delivered and E2E verified; Phase 5 Monitoring & Reporting is next
-Last activity: 2026-03-02 — Plan 04-02 (Admin Adjustments Frontend) complete; AdjustAttendanceModal + in-place record refresh + human verification approved
+Phase: 5 of 5 (Monitoring & Reporting) — IN PROGRESS
+Plan: 1 of 5 complete — Plan 05-01 complete (2026-03-03)
+Status: Phase 5 started — manager-scoped listRecords and team summary backend API delivered
+Last activity: 2026-03-03 — Plan 05-01 (Manager-Scoped Attendance Backend) complete; listRecords() manager scoping + GET /attendance/reports/team-summary endpoint
 
-Progress: [████████████████████] 88%
+Progress: [████████████████████] 91%
 
 ## Performance Metrics
 
@@ -117,6 +117,10 @@ Recent decisions affecting current work:
 - missing_checkout flag auto-cleared by service when check_out_at is adjusted by admin — prevents cron double-marking (04-01)
 - PATCH /attendance/records/:id restricted to admin and owner only (not manager) — managers can view but not correct records in v1 (04-01)
 - source field set to 'admin' on adjustment — distinguishes manual corrections from employee actions and system cron (04-01)
+- listRecords() managerId param: when role=manager, controller passes userId as managerId; scopes records via sub-query on users table where manager_id=managerId (05-01)
+- Empty employee list returns [] immediately in listRecords/getTeamSummary — avoids .in('user_id', []) Supabase behavior (05-01)
+- GET /attendance/reports/team-summary placed before :id param routes — prevents NestJS treating 'team-summary' as a record ID (05-01)
+- punctualityRate = 100 when total = 0 — sensible default for managers with no attendance data in selected month (05-01)
 
 ### Pending Todos
 
@@ -137,6 +141,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-02
-Stopped at: Phase 4 complete — Plan 04-02 (Admin Adjustments Frontend) complete and E2E verified; ready for Phase 5 (Monitoring & Reporting)
+Last session: 2026-03-03
+Stopped at: Phase 5 Plan 05-01 (Manager-Scoped Attendance Backend) complete; ready for Plan 05-02 (Executive summary, monthly report, CSV export backend)
 Resume file: None

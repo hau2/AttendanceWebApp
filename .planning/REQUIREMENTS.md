@@ -67,12 +67,12 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Manager Monitoring (MNGR)
 
-- [ ] **MNGR-01**: Manager can only view employees assigned to them
-- [ ] **MNGR-02**: Manager can view attendance records by day or by month
-- [ ] **MNGR-03**: Manager can filter records by individual employee
-- [ ] **MNGR-04**: Manager can read employee notes (late reasons, early-leave explanations)
-- [ ] **MNGR-05**: Manager can view photos embedded in attendance records
-- [ ] **MNGR-06**: Manager can view team report: total late count, punctuality rate, monthly trend
+- [x] **MNGR-01**: Manager can only view employees assigned to them
+- [x] **MNGR-02**: Manager can view attendance records by day or by month
+- [x] **MNGR-03**: Manager can filter records by individual employee
+- [x] **MNGR-04**: Manager can read employee notes (late reasons, early-leave explanations)
+- [x] **MNGR-05**: Manager can view photos embedded in attendance records
+- [x] **MNGR-06**: Manager can view team report: total late count, punctuality rate, monthly trend
 
 ### Executive Dashboard (EXEC)
 
@@ -173,12 +173,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ADJT-01 | Phase 4 | Complete |
 | ADJT-02 | Phase 4 | Complete |
 | ADJT-03 | Phase 4 | Complete |
-| MNGR-01 | Phase 5 | Pending |
-| MNGR-02 | Phase 5 | Pending |
-| MNGR-03 | Phase 5 | Pending |
-| MNGR-04 | Phase 5 | Pending |
-| MNGR-05 | Phase 5 | Pending |
-| MNGR-06 | Phase 5 | Pending |
+| MNGR-01 | Phase 5 Plan 05-01 | Done |
+| MNGR-02 | Phase 5 Plan 05-01 | Done |
+| MNGR-03 | Phase 5 Plan 05-01 | Done |
+| MNGR-04 | Phase 5 Plan 05-01 | Done |
+| MNGR-05 | Phase 5 Plan 05-01 | Done |
+| MNGR-06 | Phase 5 Plan 05-01 | Done |
 | EXEC-01 | Phase 5 | Pending |
 | EXEC-02 | Phase 5 | Pending |
 | EXEC-03 | Phase 5 | Pending |
