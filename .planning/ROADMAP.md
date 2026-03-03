@@ -162,7 +162,13 @@ Plans:
   2. Manager can see the late reason or early-leave note directly on each relevant record in their monitoring view, and can click an Acknowledge button — the button is only present when the record has an unacknowledged late/early event
   3. Manager can click an Acknowledge button on a Remote Work check-in record to confirm awareness of the remote session
   4. Employee can open their own attendance history and see, for any acknowledged record, that their Manager has acknowledged it along with the acknowledgment timestamp
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 08-01-PLAN.md — DB migration: is_remote + 4 acknowledgment columns on attendance_records
+- [ ] 08-02-PLAN.md — Backend: CheckInDto is_remote field, acknowledgeRecord() + acknowledgeRemote() service methods, two POST controller routes
+- [ ] 08-03-PLAN.md — Frontend: Remote Work toggle in CheckInOutCard, Remote badge in all views, Acknowledge buttons in record detail, acknowledgment status in employee history
+- [ ] 08-04-PLAN.md — Human verification checkpoint (all 7 requirements end-to-end)
 
 ### Phase 9: Advanced Monitoring
 **Goal**: Admins can manually trigger a Data Refresh to populate absent and absent-morning records for the current and previous day, and both Admins and Managers can filter the attendance table by any of five attendance status categories
@@ -201,7 +207,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Monitoring & Reporting | 5/5 | Complete    | 2026-03-03 |
 | 6. Division Architecture | 6/6 | Complete   | 2026-03-03 |
 | 7. Employee Lifecycle + Per-User Timezone | 5/5 | Complete   | 2026-03-03 |
-| 8. Remote Work + Acknowledgment Flow | 0/? | Not started | - |
+| 8. Remote Work + Acknowledgment Flow | 0/4 | Not started | - |
 | 9. Advanced Monitoring | 0/? | Not started | - |
 | 10. UI Polish | 0/? | Not started | - |
 
@@ -215,4 +221,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 *v2.0 roadmap appended: 2026-03-03 — Phases 6–10, 34 requirements mapped*
 *Phase 6 planned: 2026-03-03 — 6 plans, 4 waves*
 *Phase 7 planned: 2026-03-03 — 5 plans, 3 waves*
+*Phase 8 planned: 2026-03-04 — 4 plans, 4 waves*
 *v2 Coverage: 34/34 v2 requirements mapped*
