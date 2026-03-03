@@ -7,9 +7,11 @@ import {
   Query,
   Param,
   Request,
+  Res,
   UseGuards,
   ForbiddenException,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AttendanceService } from './attendance.service';
 import { CheckInDto } from './dto/check-in.dto';
@@ -98,6 +100,75 @@ export class AttendanceController {
     const y = parseInt(year) || new Date().getFullYear();
     const m = parseInt(month) || new Date().getMonth() + 1;
     return this.attendanceService.getTeamSummary(companyId, managerId, y, m);
+  }
+
+  /**
+   * Executive/Admin/Owner: company-wide attendance summary for a given month.
+   * Returns attendanceRate, totalRecords, lateCount, lateRanking, monthlyBreakdown.
+   * Note: must be declared BEFORE @Patch('records/:id') to avoid route conflict.
+   */
+  @Get('reports/executive')
+  async getExecutiveSummary(
+    @Request() req: any,
+    @Query('year') year: string,
+    @Query('month') month: string,
+  ) {
+    const { role, companyId } = req.user;
+    if (!['executive', 'admin', 'owner'].includes(role)) {
+      throw new ForbiddenException('Insufficient permissions');
+    }
+    const y = parseInt(year) || new Date().getFullYear();
+    const m = parseInt(month) || new Date().getMonth() + 1;
+    return this.attendanceService.getExecutiveSummary(companyId, y, m);
+  }
+
+  /**
+   * Admin/Manager/Owner: full monthly records with late statistics.
+   * When role=manager, automatically scoped to the manager's direct reports.
+   * Note: must be declared BEFORE @Patch('records/:id') to avoid route conflict.
+   */
+  @Get('reports/monthly')
+  async getMonthlyReport(
+    @Request() req: any,
+    @Query('year') year: string,
+    @Query('month') month: string,
+  ) {
+    const { role, companyId, userId } = req.user;
+    if (!['admin', 'owner', 'manager'].includes(role)) {
+      throw new ForbiddenException('Insufficient permissions');
+    }
+    const y = parseInt(year) || new Date().getFullYear();
+    const m = parseInt(month) || new Date().getMonth() + 1;
+    const managerId = role === 'manager' ? userId : undefined;
+    return this.attendanceService.getMonthlyReport(companyId, y, m, managerId);
+  }
+
+  /**
+   * Admin/Manager/Owner: export monthly attendance records as a CSV file.
+   * When role=manager, automatically scoped to the manager's direct reports.
+   * Note: must be declared BEFORE @Patch('records/:id') to avoid route conflict.
+   */
+  @Get('export/csv')
+  async exportCsv(
+    @Request() req: any,
+    @Query('year') year: string,
+    @Query('month') month: string,
+    @Res() res: Response,
+  ) {
+    const { role, companyId, userId } = req.user;
+    if (!['admin', 'owner', 'manager'].includes(role)) {
+      throw new ForbiddenException('Insufficient permissions');
+    }
+    const y = parseInt(year) || new Date().getFullYear();
+    const m = parseInt(month) || new Date().getMonth() + 1;
+    const managerId = role === 'manager' ? userId : undefined;
+    const csv = await this.attendanceService.exportCsv(companyId, y, m, managerId);
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="attendance-${y}-${String(m).padStart(2, '0')}.csv"`,
+    );
+    res.send(csv);
   }
 
   /**
