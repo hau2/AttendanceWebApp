@@ -105,6 +105,13 @@ Steps:
 - Soft-delete approach is locked in — Phase 7 Plan 02 must implement: delete auth user + PATCH users SET is_active=false
 - No blockers
 
+## Self-Check: PASSED
+
+- FOUND: backend/src/database/migrations/008_employee_lifecycle.sql
+- FOUND: .planning/phases/07-employee-lifecycle-timezone/07-01-SUMMARY.md
+- FOUND: commit 1bb67e8 (task commit)
+- FOUND: commit 70cef54 (docs/metadata commit)
+
 ---
 *Phase: 07-employee-lifecycle-timezone*
 *Completed: 2026-03-03*
