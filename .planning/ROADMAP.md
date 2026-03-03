@@ -147,7 +147,7 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 07-01-PLAN.md — DB migration (users.timezone nullable column)
+- [x] 07-01-PLAN.md — DB migration (users.timezone nullable column)
 - [x] 07-02-PLAN.md — Backend: DELETE /users/:id (soft-delete), PATCH /users/:id with fullName+timezone, Manager-scoped POST /users, GET /users with division manager join
 - [ ] 07-03-PLAN.md — Attendance timezone override: checkIn/checkOut use user.timezone ?? company.timezone for classification
 - [ ] 07-04-PLAN.md — Frontend: EditUserModal (name/division/timezone), Delete button + confirmation, Manager-scoped Create, Manager column in UserTable
@@ -200,7 +200,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Admin Adjustments | 2/2 | Complete    | 2026-03-02 |
 | 5. Monitoring & Reporting | 5/5 | Complete    | 2026-03-03 |
 | 6. Division Architecture | 6/6 | Complete   | 2026-03-03 |
-| 7. Employee Lifecycle + Per-User Timezone | 1/5 | In progress | - |
+| 7. Employee Lifecycle + Per-User Timezone | 1/5 | In progress | 2026-03-03 |
 | 8. Remote Work + Acknowledgment Flow | 0/? | Not started | - |
 | 9. Advanced Monitoring | 0/? | Not started | - |
 | 10. UI Polish | 0/? | Not started | - |

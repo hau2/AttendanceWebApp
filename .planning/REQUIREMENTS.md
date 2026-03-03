@@ -114,7 +114,7 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Per-User Timezone (TZMG)
 
-- [ ] **TZMG-01**: Admin can set a personal timezone override on any employee's profile (for employees on overseas assignment)
+- [x] **TZMG-01**: Admin can set a personal timezone override on any employee's profile (for employees on overseas assignment)
 - [ ] **TZMG-02**: Attendance late/early classification uses the employee's personal timezone when set; falls back to company timezone otherwise
 
 ### Acknowledgment Flow (ACKN)
@@ -258,7 +258,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EMPL-02 | Phase 7 Plan 07-02 | Done |
 | EMPL-03 | Phase 7 Plan 07-02 | Done |
 | EMPL-04 | Phase 7 Plan 07-02 | Done |
-| TZMG-01 | Phase 7 | Pending |
+| TZMG-01 | Phase 7 Plan 07-01 | Done |
 | TZMG-02 | Phase 7 | Pending |
 | RMOT-01 | Phase 8 | Pending |
 | RMOT-02 | Phase 8 | Pending |
