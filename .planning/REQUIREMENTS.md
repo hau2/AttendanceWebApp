@@ -247,17 +247,51 @@ Which phases cover which requirements. Updated during roadmap creation.
 | RPTS-01 | Phase 5 Plan 05-02 | Done |
 | RPTS-02 | Phase 5 Plan 05-02 | Done |
 | RPTS-03 | Phase 5 Plan 05-02 | Done |
+| DIVN-01 | Phase 6 | Pending |
+| DIVN-02 | Phase 6 | Pending |
+| DIVN-03 | Phase 6 | Pending |
+| DIVN-04 | Phase 6 | Pending |
+| DIVN-05 | Phase 6 | Pending |
+| DIVN-06 | Phase 6 | Pending |
+| DIVN-07 | Phase 6 | Pending |
+| EMPL-01 | Phase 7 | Pending |
+| EMPL-02 | Phase 7 | Pending |
+| EMPL-03 | Phase 7 | Pending |
+| EMPL-04 | Phase 7 | Pending |
+| TZMG-01 | Phase 7 | Pending |
+| TZMG-02 | Phase 7 | Pending |
+| RMOT-01 | Phase 8 | Pending |
+| RMOT-02 | Phase 8 | Pending |
+| ACKN-01 | Phase 8 | Pending |
+| ACKN-02 | Phase 8 | Pending |
+| ACKN-03 | Phase 8 | Pending |
+| ACKN-04 | Phase 8 | Pending |
+| ACKN-05 | Phase 8 | Pending |
+| RFSH-01 | Phase 9 | Pending |
+| RFSH-02 | Phase 9 | Pending |
+| RFSH-03 | Phase 9 | Pending |
+| RFSH-04 | Phase 9 | Pending |
+| FLTR-01 | Phase 9 | Pending |
+| FLTR-02 | Phase 9 | Pending |
+| FLTR-03 | Phase 9 | Pending |
+| FLTR-04 | Phase 9 | Pending |
+| FLTR-05 | Phase 9 | Pending |
+| UIUX-01 | Phase 10 | Pending |
+| UIUX-02 | Phase 10 | Pending |
+| UIUX-03 | Phase 10 | Pending |
+| UIUX-04 | Phase 10 | Pending |
+| UIUX-05 | Phase 10 | Pending |
 
 **v1 Coverage:**
 - v1 requirements: 53 total
 - Mapped to phases: 53
 - Unmapped: 0 ✓
 
-**v2 Coverage (pending roadmap):**
+**v2 Coverage:**
 - v2 requirements: 34 total
-- Mapped to phases: 0
-- Unmapped: 34 ⚠️
+- Mapped to phases: 34
+- Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-01*
-*Last updated: 2026-03-03 after v2.0 milestone start — 34 new requirements added (DIVN, EMPL, TZMG, ACKN, RMOT, RFSH, FLTR, UIUX)*
+*Last updated: 2026-03-03 — v2.0 traceability complete; 34 requirements mapped across Phases 6–10*
