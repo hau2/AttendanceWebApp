@@ -53,6 +53,7 @@ export class AttendanceController {
   /**
    * Admin/Manager: list attendance records for all users in the company (filtered by date range).
    * Optionally filter by userId.
+   * When role=manager, automatically scopes to the manager's assigned employees.
    */
   @Get('records')
   async listRecords(
@@ -67,7 +68,36 @@ export class AttendanceController {
     }
     const y = parseInt(year) || new Date().getFullYear();
     const m = parseInt(month) || new Date().getMonth() + 1;
-    return this.attendanceService.listRecords(companyId, y, m, userId);
+    return this.attendanceService.listRecords(
+      companyId,
+      y,
+      m,
+      userId,
+      role === 'manager' ? req.user.userId : undefined,
+    );
+  }
+
+  /**
+   * Admin/Manager/Owner: get team summary KPIs for the current user's managed employees.
+   * Returns total records, late count, punctuality rate, and daily breakdown.
+   * Note: must be declared BEFORE @Patch('records/:id') to avoid route conflict.
+   */
+  @Get('reports/team-summary')
+  async getTeamSummary(
+    @Request() req: any,
+    @Query('year') year: string,
+    @Query('month') month: string,
+  ) {
+    const { role, companyId, userId } = req.user;
+    if (!['admin', 'owner', 'manager'].includes(role)) {
+      throw new ForbiddenException('Insufficient permissions');
+    }
+    // For admin/owner, use their own userId as managerId (returns their own managed employees)
+    // In practice this endpoint is designed for manager role — admin sees their own managed employees
+    const managerId = userId;
+    const y = parseInt(year) || new Date().getFullYear();
+    const m = parseInt(month) || new Date().getMonth() + 1;
+    return this.attendanceService.getTeamSummary(companyId, managerId, y, m);
   }
 
   /**
