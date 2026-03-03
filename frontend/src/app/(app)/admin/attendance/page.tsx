@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getStoredUser, getStoredToken } from '@/lib/api/auth';
-import { listRecords, AttendanceRecordWithUser } from '@/lib/api/attendance';
+import { listRecords, AttendanceRecordWithUser, getTeamSummary, TeamSummary } from '@/lib/api/attendance';
 import { listUsers, User } from '@/lib/api/users';
 import { AttendanceRecordTable } from './components/AttendanceRecordTable';
 import { AttendanceRecordDetail } from './components/AttendanceRecordDetail';
@@ -26,6 +26,8 @@ export default function AdminAttendancePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userRole, setUserRole] = useState('');
+  const [teamSummary, setTeamSummary] = useState<TeamSummary | null>(null);
+  const [currentUserId, setCurrentUserId] = useState('');
 
   useEffect(() => {
     const user = getStoredUser();
@@ -38,6 +40,7 @@ export default function AdminAttendancePage() {
       return;
     }
     setUserRole(user.role);
+    setCurrentUserId(user.id);
     // Load users for filter dropdown
     const token = getStoredToken();
     if (token) {
@@ -48,6 +51,11 @@ export default function AdminAttendancePage() {
   useEffect(() => {
     setLoading(true);
     setError(null);
+    if (userRole === 'manager') {
+      getTeamSummary(year, month)
+        .then(setTeamSummary)
+        .catch(() => setTeamSummary(null));
+    }
     listRecords(year, month, filterUserId || undefined)
       .then((data) => {
         setRecords(data);
@@ -57,7 +65,7 @@ export default function AdminAttendancePage() {
         setError('Failed to load records');
         setLoading(false);
       });
-  }, [year, month, filterUserId]);
+  }, [year, month, filterUserId, userRole]);
 
   function navigate(dir: number) {
     let m = month + dir;
@@ -88,6 +96,23 @@ export default function AdminAttendancePage() {
         <span className="text-gray-900 font-medium">Attendance Records</span>
       </div>
 
+      {userRole === 'manager' && teamSummary && (
+        <div className="grid grid-cols-3 gap-4 mb-6">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+            <div className="text-2xl font-bold text-gray-900">{teamSummary.total}</div>
+            <div className="text-sm text-gray-500 mt-1">Total Records</div>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+            <div className="text-2xl font-bold text-red-600">{teamSummary.late}</div>
+            <div className="text-sm text-gray-500 mt-1">Late Check-ins</div>
+          </div>
+          <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
+            <div className="text-2xl font-bold text-green-600">{teamSummary.punctualityRate}%</div>
+            <div className="text-sm text-gray-500 mt-1">Punctuality Rate</div>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Attendance Records</h1>
         <div className="flex items-center gap-3 flex-wrap">
@@ -115,7 +140,10 @@ export default function AdminAttendancePage() {
             className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="">All Employees</option>
-            {users.map((u) => (
+            {(userRole === 'manager'
+              ? users.filter((u) => u.manager_id === currentUserId)
+              : users
+            ).map((u) => (
               <option key={u.id} value={u.id}>{u.full_name}</option>
             ))}
           </select>
