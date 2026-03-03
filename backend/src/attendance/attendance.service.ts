@@ -408,6 +408,7 @@ export class AttendanceService {
   /**
    * List all attendance records for a company in a given month.
    * Admin/Manager only. Optionally filter by userId.
+   * When managerId is provided, scopes records to employees assigned to that manager.
    * Returns records with user full_name.
    */
   async listRecords(
@@ -415,8 +416,32 @@ export class AttendanceService {
     year: number,
     month: number,
     userId?: string,
+    managerId?: string,
   ): Promise<Record<string, unknown>[]> {
     const client = this.supabase.getClient();
+
+    // If manager scope is requested, first fetch the employee IDs assigned to this manager
+    let employeeIds: string[] | undefined;
+    if (managerId) {
+      const { data: employees, error: empError } = await client
+        .from('users')
+        .select('id')
+        .eq('company_id', companyId)
+        .eq('manager_id', managerId);
+
+      if (empError) {
+        throw new InternalServerErrorException(
+          `Failed to fetch manager's employees: ${empError.message}`,
+        );
+      }
+
+      employeeIds = (employees ?? []).map((e: Record<string, unknown>) => e.id as string);
+
+      // If no employees assigned, return empty immediately
+      if (employeeIds.length === 0) {
+        return [];
+      }
+    }
 
     // Build date range for the given month
     const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
@@ -438,6 +463,10 @@ export class AttendanceService {
       .lt('work_date', endDate)
       .order('work_date', { ascending: false });
 
+    if (employeeIds) {
+      query = query.in('user_id', employeeIds);
+    }
+
     if (userId) {
       query = query.eq('user_id', userId);
     }
@@ -451,6 +480,88 @@ export class AttendanceService {
     }
 
     return (data ?? []) as Record<string, unknown>[];
+  }
+
+  /**
+   * Returns a team summary for a manager: total records, late count,
+   * punctuality rate, and daily breakdown for the given month.
+   */
+  async getTeamSummary(
+    companyId: string,
+    managerId: string,
+    year: number,
+    month: number,
+  ): Promise<{
+    total: number;
+    late: number;
+    punctualityRate: number;
+    monthlyBreakdown: Array<{ date: string; present: number; late: number }>;
+  }> {
+    const client = this.supabase.getClient();
+
+    // 1. Fetch employee IDs assigned to this manager
+    const { data: employees, error: empError } = await client
+      .from('users')
+      .select('id')
+      .eq('company_id', companyId)
+      .eq('manager_id', managerId);
+
+    if (empError) {
+      throw new InternalServerErrorException(
+        `Failed to fetch manager's employees: ${empError.message}`,
+      );
+    }
+
+    const employeeIds = (employees ?? []).map((e: Record<string, unknown>) => e.id as string);
+
+    // 2. If no employees assigned, return zero stats
+    if (employeeIds.length === 0) {
+      return { total: 0, late: 0, punctualityRate: 100, monthlyBreakdown: [] };
+    }
+
+    // 3. Build date range and fetch attendance records
+    const startDate = `${year}-${String(month).padStart(2, '0')}-01`;
+    const endMonth = month === 12 ? 1 : month + 1;
+    const endYear = month === 12 ? year + 1 : year;
+    const endDate = `${endYear}-${String(endMonth).padStart(2, '0')}-01`;
+
+    const { data: records, error: recError } = await client
+      .from('attendance_records')
+      .select('work_date, check_in_status')
+      .eq('company_id', companyId)
+      .in('user_id', employeeIds)
+      .gte('work_date', startDate)
+      .lt('work_date', endDate);
+
+    if (recError) {
+      throw new InternalServerErrorException(
+        `Failed to fetch team attendance records: ${recError.message}`,
+      );
+    }
+
+    const rows = (records ?? []) as Array<{ work_date: string; check_in_status: string }>;
+
+    // 4. Compute totals
+    const total = rows.length;
+    const late = rows.filter((r) => r.check_in_status === 'late').length;
+    const punctualityRate = total === 0 ? 100 : Math.round(((total - late) / total) * 100);
+
+    // 5. Build daily breakdown (group by work_date)
+    const dateMap = new Map<string, { present: number; late: number }>();
+    for (const row of rows) {
+      const entry = dateMap.get(row.work_date) ?? { present: 0, late: 0 };
+      entry.present += 1;
+      if (row.check_in_status === 'late') {
+        entry.late += 1;
+      }
+      dateMap.set(row.work_date, entry);
+    }
+
+    const monthlyBreakdown = Array.from(dateMap.entries())
+      .map(([date, counts]) => ({ date, ...counts }))
+      .sort((a, b) => a.date.localeCompare(b.date));
+
+    return { total, late, punctualityRate, monthlyBreakdown };
   }
 
   /**

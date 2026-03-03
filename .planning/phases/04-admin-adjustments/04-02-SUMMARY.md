@@ -126,3 +126,15 @@ None - no new external service configuration required. The `006_attendance_adjus
 ---
 *Phase: 04-admin-adjustments*
 *Completed: 2026-03-02*
+
+## Self-Check: PASSED
+
+- FOUND: frontend/src/lib/api/attendance.ts
+- FOUND: frontend/src/app/(app)/admin/attendance/components/AdjustAttendanceModal.tsx
+- FOUND: frontend/src/app/(app)/admin/attendance/components/AttendanceRecordDetail.tsx
+- FOUND: frontend/src/app/(app)/admin/attendance/page.tsx
+- FOUND: .planning/phases/04-admin-adjustments/04-02-SUMMARY.md
+- FOUND: commit 419d5ea (Task 1)
+- FOUND: commit 3e9ff8c (Task 2)
+- FOUND: commit cd8deb0 (timezone fix)
+- FOUND: commit f7e36a9 (final metadata)
