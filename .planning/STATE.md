@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-03-03T00:14:01Z"
+last_updated: "2026-03-03T00:15:00Z"
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 20
-  completed_plans: 18
+  completed_plans: 19
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 5 of 5 (Monitoring & Reporting) — IN PROGRESS
-Plan: 3 of 5 complete — Plan 05-03 complete (2026-03-03)
-Status: Phase 5 in progress — manager monitoring UI delivered with team summary card and scoped employee dropdown
-Last activity: 2026-03-03 — Plan 05-03 (Manager Monitoring UI) complete; team summary card + getTeamSummary() API helper + manager-filtered employee dropdown
+Plan: 4 of 5 complete — Plan 05-04 complete (2026-03-03)
+Status: Phase 5 in progress — executive dashboard + admin reports frontend delivered; CSV export working
+Last activity: 2026-03-03 — Plan 05-04 (Executive Dashboard + Admin Reports Frontend) complete; /executive page, /admin/reports page with Export CSV, nav links added
 
-Progress: [████████████████████] 95%
+Progress: [████████████████████] 98%
 
 ## Performance Metrics
 
@@ -128,6 +128,9 @@ Recent decisions affecting current work:
 - Manager employee dropdown filtered client-side (manager_id === currentUserId) — backend already scopes records; client-side filter gives consistent UX in dropdown without an extra API endpoint (05-03)
 - Team summary fetch added inside year/month/role useEffect with userRole as dependency so fetch fires correctly after role is set on initial load (05-03)
 - teamSummary null-guarded in JSX — card only renders when data available; silently suppresses on API error (05-03)
+- blob/URL.createObjectURL() used for CSV download — preserves Authorization header without query-param token exposure (05-04)
+- layout.tsx converted to 'use client' with useEffect for role detection — enables conditional nav link rendering (05-04)
+- Executive dashboard enforces EXEC-05 read-only by absence of any edit controls — no special disabling logic needed (05-04)
 
 ### Pending Todos
 
@@ -149,5 +152,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Phase 5 Plan 05-03 (Manager Monitoring UI) complete; ready for Plan 05-04 (Executive Dashboard + Admin Reports frontend)
+Stopped at: Phase 5 Plan 05-04 (Executive Dashboard + Admin Reports Frontend) complete; ready for Plan 05-05 (Human verification checkpoint)
 Resume file: None
