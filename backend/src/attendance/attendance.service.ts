@@ -478,6 +478,7 @@ export class AttendanceService {
         .from('users')
         .select('id')
         .eq('company_id', companyId)
+        .is('deleted_at', null)
         .in('division_id', divisionIds);
 
       if (empError) {
@@ -680,7 +681,8 @@ export class AttendanceService {
       .from('users')
       .select('id')
       .eq('company_id', companyId)
-      .eq('is_active', true);
+      .eq('is_active', true)
+      .is('deleted_at', null);
 
     if (usersError) {
       throw new InternalServerErrorException(
@@ -827,6 +829,7 @@ export class AttendanceService {
         .from('users')
         .select('id')
         .eq('company_id', companyId)
+        .is('deleted_at', null)
         .in('division_id', divisionIds);
 
       if (usersError) {

@@ -32,6 +32,7 @@ export class UsersService {
         )
       `)
       .eq('company_id', companyId)
+      .is('deleted_at', null)
       .order('created_at', { ascending: true });
 
     if (error) {
@@ -190,10 +191,12 @@ export class UsersService {
       throw new InternalServerErrorException(`Failed to ban auth account: ${authError.message}`);
     }
 
-    // 4. Set is_active = false on public.users row (row preserved for history)
+    // 4. Mark row as soft-deleted: is_active=false hides from all attendance queries;
+    //    deleted_at timestamp distinguishes "deleted" from "disabled" in listUsers.
+    //    The row is never hard-deleted so attendance_records JOINs still resolve the name.
     const { error: updateError } = await client
       .from('users')
-      .update({ is_active: false })
+      .update({ is_active: false, deleted_at: new Date().toISOString() })
       .eq('id', userId)
       .eq('company_id', companyId);
 
