@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Division, Acknowledgment & Remote Work
 status: roadmap_ready
-last_updated: "2026-03-03T13:55:41Z"
+last_updated: "2026-03-03T14:04:00Z"
 progress:
   total_phases: 5
   completed_phases: 1
@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** Phase 7 - Employee Lifecycle + Per-User Timezone (next)
+**Current focus:** Phase 8 - Remote Work + Acknowledgment (next)
 
 ## Current Position
 
-Phase: Phase 7 - Employee Lifecycle + Per-User Timezone (IN PROGRESS)
-Plan: 07-03 (attendance timezone override — complete)
-Status: 07-03 complete — checkIn() and checkOut() now use effectiveTimezone = user.timezone ?? company.timezone for all classification and work-date computation. TypeScript clean. TZMG-01 and TZMG-02 delivered.
-Last activity: 2026-03-03 — 07-03 executed and committed
+Phase: Phase 7 - Employee Lifecycle + Per-User Timezone (COMPLETE)
+Plan: 07-04 (employee lifecycle frontend — complete)
+Status: 07-04 complete — Delete with confirm, EditUserModal (fullName+division+timezone), Manager column via division join, manager-scoped CreateUserModal, Manager role page access. TypeScript clean. EMPL-01 through EMPL-04 frontend delivered.
+Last activity: 2026-03-03 — 07-04 executed and committed
 
 Progress: [█████████░░░░░░░░░░░] 20% (1/5 v2.0 phases)
 
@@ -161,6 +161,11 @@ Recent decisions affecting current work:
 - timezone field in UpdateUserDto accepts string | null — null explicitly clears per-user timezone override so user falls back to company timezone (07-02)
 - effectiveTimezone = user.timezone ?? company.timezone applied inline in checkIn() and checkOut() after getCompanySettings(); only these two classification-path methods are updated — history/report methods unchanged (07-03)
 - userRecord?.timezone cast as string | null before nullish coalescing to satisfy TypeScript strict mode with Supabase unknown return type (07-03)
+- Manager column in UserTable resolves from user.divisions?.users?.full_name (nested FK join from backend, no extra API round-trip) (07-04)
+- Delete button hidden for owner-role users at UI level, matching backend BadRequestException guard — dual guard at service + UI layers (07-04)
+- window.confirm used for delete confirmation — consistent with plain Tailwind modal pattern; Shadcn Dialog not added (07-04)
+- Manager role in UserTable sees static role span instead of role select — manager cannot change roles, only create employees (07-04)
+- availableDivisions computed in CreateUserModal: divisions.filter(d => d.manager_id === currentUserId) when currentUserRole === 'manager' (07-04)
 
 ### Pending Todos
 
@@ -185,6 +190,7 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Completed 07-03-PLAN.md — attendance timezone override (effectiveTimezone in checkIn/checkOut)
+Stopped at: Completed 07-04-PLAN.md — employee lifecycle frontend (Delete, EditUserModal, Manager column, manager-scoped Create)
 Resume file: None
+Next: Phase 8 — Remote work flag + acknowledgment workflow
 Next: 07-04-PLAN.md — Frontend: EditUserModal (name/division/timezone), Delete button + confirmation, Manager-scoped Create, Manager column in UserTable
