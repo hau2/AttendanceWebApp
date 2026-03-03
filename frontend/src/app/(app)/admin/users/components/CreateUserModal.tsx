@@ -13,6 +13,8 @@ interface CreateUserModalProps {
   onCreated: () => void;
   managers: User[];
   divisions: Division[];
+  currentUserId: string;
+  currentUserRole: string;
 }
 
 export function CreateUserModal({
@@ -21,6 +23,8 @@ export function CreateUserModal({
   onCreated,
   managers,
   divisions,
+  currentUserId,
+  currentUserRole,
 }: CreateUserModalProps) {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -30,6 +34,10 @@ export function CreateUserModal({
   const [divisionId, setDivisionId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const availableDivisions = currentUserRole === 'manager'
+    ? divisions.filter((d) => d.manager_id === currentUserId)
+    : divisions;
 
   if (!open) return null;
 
@@ -67,7 +75,7 @@ export function CreateUserModal({
       fullName,
       email,
       password,
-      role,
+      role: currentUserRole === 'manager' ? 'employee' : role,
     };
     if (role === 'employee' && managerId) {
       data.managerId = managerId;
@@ -151,17 +159,23 @@ export function CreateUserModal({
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Role
             </label>
-            <select
-              value={role}
-              onChange={(e) => setRole(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              {ROLE_OPTIONS.map((r) => (
-                <option key={r} value={r}>
-                  {r.charAt(0).toUpperCase() + r.slice(1)}
-                </option>
-              ))}
-            </select>
+            {currentUserRole === 'manager' ? (
+              <div className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-600">
+                Employee (Managers can only create employees)
+              </div>
+            ) : (
+              <select
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                {ROLE_OPTIONS.map((r) => (
+                  <option key={r} value={r}>
+                    {r.charAt(0).toUpperCase() + r.slice(1)}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
 
           {role === 'employee' && (
@@ -194,7 +208,7 @@ export function CreateUserModal({
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="">No division</option>
-              {divisions.map((div) => (
+              {availableDivisions.map((div) => (
                 <option key={div.id} value={div.id}>
                   {div.name}
                 </option>

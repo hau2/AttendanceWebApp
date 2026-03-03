@@ -8,29 +8,30 @@ const ROLE_OPTIONS: User['role'][] = ['owner', 'admin', 'manager', 'employee', '
 interface UserTableProps {
   users: User[];
   divisions: Division[];
+  currentUserRole: string;
   onRoleChange: (id: string, role: string) => void;
   onStatusToggle: (id: string, isActive: boolean) => void;
   onManagerChange: (id: string, managerId: string | null) => void;
   onDivisionChange: (id: string, divisionId: string | null) => void;
   onAssignShift: (user: User) => void;
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
 }
 
 export function UserTable({
   users,
   divisions,
+  currentUserRole,
   onRoleChange,
   onStatusToggle,
   onManagerChange,
   onDivisionChange,
   onAssignShift,
+  onEdit,
+  onDelete,
 }: UserTableProps) {
   const managers = users.filter((u) => u.role === 'manager');
-
-  function getManagerName(managerId: string | null): string {
-    if (!managerId) return '—';
-    const mgr = users.find((u) => u.id === managerId);
-    return mgr ? mgr.full_name : '—';
-  }
+  const isAdminOrOwner = ['admin', 'owner'].includes(currentUserRole);
 
   function getDivisionName(divisionId: string | null): string {
     if (!divisionId) return '—';
@@ -53,10 +54,10 @@ export function UserTable({
               Role
             </th>
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Manager
+              Division
             </th>
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Division
+              Manager
             </th>
             <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Status
@@ -77,24 +78,28 @@ export function UserTable({
               </td>
               <td className="px-4 py-3 text-sm text-gray-600">{user.email}</td>
               <td className="px-4 py-3 text-sm">
-                <select
-                  value={user.role}
-                  disabled={user.role === 'owner'}
-                  onChange={(e) => onRoleChange(user.id, e.target.value)}
-                  className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  {ROLE_OPTIONS.map((r) => (
-                    <option key={r} value={r}>
-                      {r.charAt(0).toUpperCase() + r.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              </td>
-              <td className="px-4 py-3 text-sm text-gray-600">
-                {getManagerName(user.manager_id)}
+                {currentUserRole === 'manager' ? (
+                  <span className="text-sm text-gray-600 capitalize">{user.role}</span>
+                ) : (
+                  <select
+                    value={user.role}
+                    disabled={user.role === 'owner'}
+                    onChange={(e) => onRoleChange(user.id, e.target.value)}
+                    className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    {ROLE_OPTIONS.map((r) => (
+                      <option key={r} value={r}>
+                        {r.charAt(0).toUpperCase() + r.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </td>
               <td className="px-4 py-3 text-sm text-gray-600">
                 {getDivisionName(user.division_id)}
+              </td>
+              <td className="px-4 py-3 text-sm text-gray-600">
+                {user.divisions?.users?.full_name ?? '—'}
               </td>
               <td className="px-4 py-3 text-sm">
                 <span
@@ -106,49 +111,73 @@ export function UserTable({
                 >
                   {user.is_active ? 'Active' : 'Disabled'}
                 </span>
-                <button
-                  onClick={() => onStatusToggle(user.id, !user.is_active)}
-                  className="ml-2 text-xs text-blue-600 hover:text-blue-800 underline"
-                >
-                  {user.is_active ? 'Disable' : 'Enable'}
-                </button>
+                {isAdminOrOwner && (
+                  <button
+                    onClick={() => onStatusToggle(user.id, !user.is_active)}
+                    className="ml-2 text-xs text-blue-600 hover:text-blue-800 underline"
+                  >
+                    {user.is_active ? 'Disable' : 'Enable'}
+                  </button>
+                )}
               </td>
               <td className="px-4 py-3 text-sm">
                 <div className="flex flex-col gap-2">
-                  <select
-                    value={user.manager_id ?? ''}
-                    onChange={(e) =>
-                      onManagerChange(user.id, e.target.value || null)
-                    }
-                    className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">No manager</option>
-                    {managers.map((mgr) => (
-                      <option key={mgr.id} value={mgr.id}>
-                        {mgr.full_name}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={user.division_id ?? ''}
-                    onChange={(e) =>
-                      onDivisionChange(user.id, e.target.value || null)
-                    }
-                    className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="">No division</option>
-                    {divisions.map((div) => (
-                      <option key={div.id} value={div.id}>
-                        {div.name}
-                      </option>
-                    ))}
-                  </select>
+                  {isAdminOrOwner && (
+                    <>
+                      <select
+                        value={user.manager_id ?? ''}
+                        onChange={(e) =>
+                          onManagerChange(user.id, e.target.value || null)
+                        }
+                        className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">No manager</option>
+                        {managers.map((mgr) => (
+                          <option key={mgr.id} value={mgr.id}>
+                            {mgr.full_name}
+                          </option>
+                        ))}
+                      </select>
+                      <select
+                        value={user.division_id ?? ''}
+                        onChange={(e) =>
+                          onDivisionChange(user.id, e.target.value || null)
+                        }
+                        className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value="">No division</option>
+                        {divisions.map((div) => (
+                          <option key={div.id} value={div.id}>
+                            {div.name}
+                          </option>
+                        ))}
+                      </select>
+                    </>
+                  )}
                   <button
                     onClick={() => onAssignShift(user)}
                     className="text-xs text-indigo-600 hover:text-indigo-800 underline text-left"
                   >
                     Assign Shift
                   </button>
+                  {isAdminOrOwner && (
+                    <>
+                      <button
+                        onClick={() => onEdit(user)}
+                        className="text-xs text-blue-600 hover:text-blue-800 underline text-left"
+                      >
+                        Edit
+                      </button>
+                      {user.role !== 'owner' && (
+                        <button
+                          onClick={() => onDelete(user)}
+                          className="text-xs text-red-600 hover:text-red-800 underline text-left"
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </>
+                  )}
                 </div>
               </td>
             </tr>

@@ -7,12 +7,14 @@ import {
   listUsers,
   updateUser,
   setUserStatus,
+  deleteUser,
 } from '@/lib/api/users';
 import { Division, listDivisions } from '@/lib/api/divisions';
 import { UserTable } from './components/UserTable';
 import { CreateUserModal } from './components/CreateUserModal';
 import { CsvImportModal } from './components/CsvImportModal';
 import { AssignShiftModal } from './components/AssignShiftModal';
+import { EditUserModal } from './components/EditUserModal';
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -22,12 +24,13 @@ export default function UsersPage() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showCsvModal, setShowCsvModal] = useState(false);
   const [assigningUser, setAssigningUser] = useState<User | null>(null);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
   const currentUser = getStoredUser();
-  if (currentUser && !['owner', 'admin'].includes(currentUser.role)) {
+  if (currentUser && !['owner', 'admin', 'manager'].includes(currentUser.role)) {
     return (
       <div className="p-8 text-center text-red-600 font-medium">
-        Access denied. Admin or Owner role required.
+        Access denied. Admin, Owner, or Manager role required.
       </div>
     );
   }
@@ -105,24 +108,39 @@ export default function UsersPage() {
     }
   }
 
+  async function handleDelete(user: User) {
+    if (!confirm(`Delete ${user.full_name}? Their attendance history will be preserved.`)) return;
+    const token = getStoredToken();
+    if (!token) return;
+    try {
+      await deleteUser(token, user.id);
+      await refreshUsers();
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Failed to delete user');
+    }
+  }
+
   const managers = users.filter((u) => u.role === 'manager');
+  const isManager = currentUser?.role === 'manager';
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
         <div className="flex gap-3">
-          <button
-            onClick={() => setShowCsvModal(true)}
-            className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            Import CSV
-          </button>
+          {!isManager && (
+            <button
+              onClick={() => setShowCsvModal(true)}
+              className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            >
+              Import CSV
+            </button>
+          )}
           <button
             onClick={() => setShowCreateModal(true)}
             className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
           >
-            Add User
+            {isManager ? 'Add Employee' : 'Add User'}
           </button>
         </div>
       </div>
@@ -141,11 +159,14 @@ export default function UsersPage() {
         <UserTable
           users={users}
           divisions={divisions}
+          currentUserRole={currentUser?.role ?? ''}
           onRoleChange={handleRoleChange}
           onStatusToggle={handleStatusToggle}
           onManagerChange={handleManagerChange}
           onDivisionChange={handleDivisionChange}
           onAssignShift={setAssigningUser}
+          onEdit={setEditingUser}
+          onDelete={handleDelete}
         />
       )}
 
@@ -155,6 +176,8 @@ export default function UsersPage() {
         onCreated={refreshUsers}
         managers={managers}
         divisions={divisions}
+        currentUserId={currentUser?.id ?? ''}
+        currentUserRole={currentUser?.role ?? ''}
       />
 
       <CsvImportModal
@@ -168,6 +191,14 @@ export default function UsersPage() {
         user={assigningUser}
         onClose={() => setAssigningUser(null)}
         onAssigned={refreshUsers}
+      />
+
+      <EditUserModal
+        open={!!editingUser}
+        user={editingUser}
+        divisions={divisions}
+        onClose={() => setEditingUser(null)}
+        onSaved={refreshUsers}
       />
     </div>
   );
