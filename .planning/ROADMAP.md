@@ -99,7 +99,14 @@ Plans:
   2. Manager can view a team summary showing total late count, punctuality rate, and monthly trend for their group
   3. Executive can view company-wide attendance rate, a ranking of employees by late frequency, and monthly aggregated summaries — and can drill into an individual employee's full history — but cannot edit any record
   4. Admin or Manager can generate a monthly attendance report, view late statistics, and export the data as a CSV file
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Manager-scoped listRecords + GET /attendance/reports/team-summary backend (MNGR-01 through MNGR-06)
+- [ ] 05-02-PLAN.md — Executive summary, monthly report, and CSV export backend endpoints (EXEC-01-05, RPTS-01-03)
+- [ ] 05-03-PLAN.md — Manager monitoring UI: team summary card + scoped employee dropdown on /admin/attendance (MNGR-01-06)
+- [ ] 05-04-PLAN.md — Executive dashboard page (/executive) + Admin/Manager reports page (/admin/reports) with CSV export (EXEC-01-05, RPTS-01-03)
+- [ ] 05-05-PLAN.md — Human verification checkpoint (all three role journeys: Manager, Executive, Admin reports + CSV)
 
 ## Progress
 
@@ -112,7 +119,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Workforce Configuration | 4/4 | Complete    | 2026-03-02 |
 | 3. Attendance Core | 6/6 | Complete    | 2026-03-02 |
 | 4. Admin Adjustments | 2/2 | Complete    | 2026-03-02 |
-| 5. Monitoring & Reporting | 0/TBD | Not started | - |
+| 5. Monitoring & Reporting | 0/5 | Not started | - |
 
 ---
 *Roadmap created: 2026-03-01*
@@ -120,3 +127,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 *Phase 1 planned: 2026-03-01 — 3 plans, 3 waves*
 *Phase 3 planned: 2026-03-02 — 6 plans, 4 waves*
 *Phase 4 planned: 2026-03-02 — 2 plans, 2 waves*
+*Phase 5 planned: 2026-03-03 — 5 plans, 3 waves*
