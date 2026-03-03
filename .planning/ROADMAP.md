@@ -166,7 +166,7 @@ Plans:
 
 Plans:
 - [x] 08-01-PLAN.md — DB migration: is_remote + 4 acknowledgment columns on attendance_records
-- [ ] 08-02-PLAN.md — Backend: CheckInDto is_remote field, acknowledgeRecord() + acknowledgeRemote() service methods, two POST controller routes
+- [x] 08-02-PLAN.md — Backend: CheckInDto is_remote field, acknowledgeRecord() + acknowledgeRemote() service methods, two POST controller routes
 - [ ] 08-03-PLAN.md — Frontend: Remote Work toggle in CheckInOutCard, Remote badge in all views, Acknowledge buttons in record detail, acknowledgment status in employee history
 - [ ] 08-04-PLAN.md — Human verification checkpoint (all 7 requirements end-to-end)
 
@@ -207,7 +207,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Monitoring & Reporting | 5/5 | Complete    | 2026-03-03 |
 | 6. Division Architecture | 6/6 | Complete   | 2026-03-03 |
 | 7. Employee Lifecycle + Per-User Timezone | 5/5 | Complete   | 2026-03-03 |
-| 8. Remote Work + Acknowledgment Flow | 1/4 | In progress | - |
+| 8. Remote Work + Acknowledgment Flow | 2/4 | In progress | - |
 | 9. Advanced Monitoring | 0/? | Not started | - |
 | 10. UI Polish | 0/? | Not started | - |
 

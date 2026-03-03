@@ -23,9 +23,9 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: Phase 8 - Remote Work + Acknowledgment Flow (In progress)
-Plan: 08-01 (DB migration — complete)
-Status: 08-01 complete — migration 010_remote_acknowledgment.sql written with is_remote + 4 acknowledgment columns. Phase 7 was completed and human-verified. Now starting Phase 8.
-Last activity: 2026-03-03 — 08-01 DB migration complete
+Plan: 08-02 (Backend acknowledge endpoints — complete)
+Status: 08-02 complete — CheckInDto extended with is_remote; acknowledgeRecord() + acknowledgeRemote() service methods and POST controller routes added. TypeScript build passes cleanly.
+Last activity: 2026-03-03 — 08-02 backend API complete
 
 Progress: [██████████████░░░░░░] 40% (2/5 v2.0 phases)
 
@@ -170,6 +170,9 @@ Recent decisions affecting current work:
 - acknowledged_by/remote_acknowledged_by use ON DELETE SET NULL — timestamp (acknowledged_at) survives manager account deletion; audit trail preserved with who-pointer cleared (08-01)
 - NULL acknowledged_at = unacknowledged state — no separate boolean status column needed; presence of timestamp is the status (08-01)
 - Acknowledgment pair pattern: *_at TIMESTAMPTZ (when) + *_by UUID FK (who) — both nullable, both set atomically in one UPDATE (08-01)
+- acknowledgeRecord()/acknowledgeRemote() accessible to manager/admin/owner — managers are primary users; admins included for operational coverage (08-02)
+- Idempotent acknowledge pattern: if *_at already set, return full current record without error — safe for frontend retry on network failure (08-02)
+- acknowledgeRecord() validates late OR early before writing; acknowledgeRemote() validates is_remote flag — prevents misuse on wrong record types (08-02)
 
 ### Pending Todos
 
@@ -195,6 +198,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Completed 08-01-PLAN.md — DB migration 010_remote_acknowledgment.sql (is_remote + 4 ack columns)
+Stopped at: Completed 08-02-PLAN.md — Backend: CheckInDto is_remote field, acknowledgeRecord() + acknowledgeRemote() service methods, two POST controller routes
 Resume file: None
-Next: 08-02-PLAN.md — Backend: CheckInDto is_remote field, acknowledgeRecord() + acknowledgeRemote() service methods
+Next: 08-03-PLAN.md — Frontend: Remote Work toggle in CheckInOutCard, Remote badge in all views, Acknowledge buttons in record detail, acknowledgment status in employee history
