@@ -149,6 +149,9 @@ Recent decisions affecting current work:
 - Divisions nav link placed after Shifts and before Records in layout.tsx — logical admin workflow ordering (06-04)
 - EditDivisionModal sends managerId: null on empty select to allow unsetting manager via PATCH (06-04)
 - Delete error from backend ConflictException propagated directly to page error state — shows employee count message without frontend duplication (06-04)
+- divisionId added to CreateUserDto and createUser service insert so new users can be assigned a division at creation time — avoids two-step create-then-assign UX (06-05)
+- Division dropdown always visible in Actions column (not role-gated) — any user may be assigned to any division by Admin (06-05)
+- Divisions fetched in parallel with users via Promise.all in refreshUsers — single function handles both refresh scenarios (06-05)
 
 ### Pending Todos
 
@@ -172,6 +175,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Completed 06-04-PLAN.md (Division Management frontend: /admin/divisions page, components, API helper, nav link)
+Stopped at: Completed 06-05-PLAN.md (User Management division assignment UI: Division column, dropdown, CreateUserModal selector; divisionId in CreateUserDto)
 Resume file: None
-Next: Execute 06-05-PLAN.md
+Next: Execute 06-06-PLAN.md
