@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-last_updated: "2026-03-03T00:06:49Z"
+last_updated: "2026-03-03T00:08:00Z"
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 20
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: 5 of 5 (Monitoring & Reporting) — IN PROGRESS
-Plan: 1 of 5 complete — Plan 05-01 complete (2026-03-03)
-Status: Phase 5 started — manager-scoped listRecords and team summary backend API delivered
-Last activity: 2026-03-03 — Plan 05-01 (Manager-Scoped Attendance Backend) complete; listRecords() manager scoping + GET /attendance/reports/team-summary endpoint
+Plan: 2 of 5 complete — Plan 05-02 complete (2026-03-03)
+Status: Phase 5 in progress — executive summary, monthly report, and CSV export backend delivered
+Last activity: 2026-03-03 — Plan 05-02 (Executive Summary + Monthly Report Backend) complete; getExecutiveSummary/getMonthlyReport/exportCsv + three new GET routes
 
-Progress: [████████████████████] 91%
+Progress: [████████████████████] 93%
 
 ## Performance Metrics
 
@@ -121,6 +121,10 @@ Recent decisions affecting current work:
 - Empty employee list returns [] immediately in listRecords/getTeamSummary — avoids .in('user_id', []) Supabase behavior (05-01)
 - GET /attendance/reports/team-summary placed before :id param routes — prevents NestJS treating 'team-summary' as a record ID (05-01)
 - punctualityRate = 100 when total = 0 — sensible default for managers with no attendance data in selected month (05-01)
+- import type { Response } from 'express' required when isolatedModules + emitDecoratorMetadata both enabled — avoids TS1272 decorator metadata error (05-02)
+- exportCsv() delegates to getMonthlyReport() — single source of truth for manager-scope query logic (05-02)
+- Attendance rate = distinct user IDs with records / total active users — reflects who showed up, not record count (05-02)
+- CSV timestamps formatted with toLocaleString('en-US', { timeZone: 'UTC' }) — raw UTC acceptable for export (05-02)
 
 ### Pending Todos
 
@@ -142,5 +146,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Phase 5 Plan 05-01 (Manager-Scoped Attendance Backend) complete; ready for Plan 05-02 (Executive summary, monthly report, CSV export backend)
+Stopped at: Phase 5 Plan 05-02 (Executive Summary + Monthly Report Backend) complete; ready for Plan 05-03 (Executive Dashboard frontend)
 Resume file: None

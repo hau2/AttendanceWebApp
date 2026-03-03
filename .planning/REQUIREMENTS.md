@@ -76,17 +76,17 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Executive Dashboard (EXEC)
 
-- [ ] **EXEC-01**: Executive can view company-wide attendance rate
-- [ ] **EXEC-02**: Executive can view employees ranked by late frequency
-- [ ] **EXEC-03**: Executive can view monthly aggregated attendance summaries
-- [ ] **EXEC-04**: Executive can drill down to individual employee attendance history
-- [ ] **EXEC-05**: Executive has read-only access — no editing
+- [x] **EXEC-01**: Executive can view company-wide attendance rate
+- [x] **EXEC-02**: Executive can view employees ranked by late frequency
+- [x] **EXEC-03**: Executive can view monthly aggregated attendance summaries
+- [x] **EXEC-04**: Executive can drill down to individual employee attendance history
+- [x] **EXEC-05**: Executive has read-only access — no editing
 
 ### Reports & Export (RPTS)
 
-- [ ] **RPTS-01**: Admin and Manager can generate monthly attendance reports
-- [ ] **RPTS-02**: Admin and Manager can view late statistics
-- [ ] **RPTS-03**: Admin and Manager can export attendance data to CSV
+- [x] **RPTS-01**: Admin and Manager can generate monthly attendance reports
+- [x] **RPTS-02**: Admin and Manager can view late statistics
+- [x] **RPTS-03**: Admin and Manager can export attendance data to CSV
 
 ### Security (SECU)
 
@@ -179,14 +179,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MNGR-04 | Phase 5 Plan 05-01 | Done |
 | MNGR-05 | Phase 5 Plan 05-01 | Done |
 | MNGR-06 | Phase 5 Plan 05-01 | Done |
-| EXEC-01 | Phase 5 | Pending |
-| EXEC-02 | Phase 5 | Pending |
-| EXEC-03 | Phase 5 | Pending |
-| EXEC-04 | Phase 5 | Pending |
-| EXEC-05 | Phase 5 | Pending |
-| RPTS-01 | Phase 5 | Pending |
-| RPTS-02 | Phase 5 | Pending |
-| RPTS-03 | Phase 5 | Pending |
+| EXEC-01 | Phase 5 Plan 05-02 | Done |
+| EXEC-02 | Phase 5 Plan 05-02 | Done |
+| EXEC-03 | Phase 5 Plan 05-02 | Done |
+| EXEC-04 | Phase 5 Plan 05-02 | Done |
+| EXEC-05 | Phase 5 Plan 05-02 | Done |
+| RPTS-01 | Phase 5 Plan 05-02 | Done |
+| RPTS-02 | Phase 5 Plan 05-02 | Done |
+| RPTS-03 | Phase 5 Plan 05-02 | Done |
 
 **Coverage:**
 - v1 requirements: 53 total
