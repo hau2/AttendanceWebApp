@@ -144,7 +144,14 @@ Plans:
   3. Manager can create a new Employee account and assign that employee to any Division the Manager manages — they cannot assign to a Division outside their scope
   4. When an employee has a personal timezone set, their check-in late/early classification uses that timezone; when no personal timezone is set, the company timezone applies — the two paths produce visibly different results for employees in different zones
   5. Admin and Executive can see which Manager (via Division) is responsible for each Employee in user listing and attendance views
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 07-01-PLAN.md — DB migration (users.timezone nullable column)
+- [ ] 07-02-PLAN.md — Backend: DELETE /users/:id (soft-delete), PATCH /users/:id with fullName+timezone, Manager-scoped POST /users, GET /users with division manager join
+- [ ] 07-03-PLAN.md — Attendance timezone override: checkIn/checkOut use user.timezone ?? company.timezone for classification
+- [ ] 07-04-PLAN.md — Frontend: EditUserModal (name/division/timezone), Delete button + confirmation, Manager-scoped Create, Manager column in UserTable
+- [ ] 07-05-PLAN.md — Human verification checkpoint (all 6 requirements end-to-end)
 
 ### Phase 8: Remote Work + Acknowledgment Flow
 **Goal**: Employees can declare Remote Work at check-in time, and Managers can explicitly acknowledge late, early-leave, and remote work records — with acknowledgment status visible to both Manager and Employee
@@ -193,7 +200,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Admin Adjustments | 2/2 | Complete    | 2026-03-02 |
 | 5. Monitoring & Reporting | 5/5 | Complete    | 2026-03-03 |
 | 6. Division Architecture | 6/6 | Complete   | 2026-03-03 |
-| 7. Employee Lifecycle + Per-User Timezone | 0/? | Not started | - |
+| 7. Employee Lifecycle + Per-User Timezone | 0/5 | Not started | - |
 | 8. Remote Work + Acknowledgment Flow | 0/? | Not started | - |
 | 9. Advanced Monitoring | 0/? | Not started | - |
 | 10. UI Polish | 0/? | Not started | - |
@@ -207,4 +214,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 *Phase 5 planned: 2026-03-03 — 5 plans, 3 waves*
 *v2.0 roadmap appended: 2026-03-03 — Phases 6–10, 34 requirements mapped*
 *Phase 6 planned: 2026-03-03 — 6 plans, 4 waves*
+*Phase 7 planned: 2026-03-03 — 5 plans, 3 waves*
 *v2 Coverage: 34/34 v2 requirements mapped*
