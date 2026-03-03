@@ -23,6 +23,7 @@ export function CheckInOutCard() {
   const [needsEarlyNote, setNeedsEarlyNote] = useState(false);
   const [lateReason, setLateReason] = useState('');
   const [earlyNote, setEarlyNote] = useState('');
+  const [isRemote, setIsRemote] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -65,6 +66,7 @@ export function CheckInOutCard() {
     setNeedsEarlyNote(false);
     setLateReason('');
     setEarlyNote('');
+    setIsRemote(false);
     setCapturedBlob(null);
     setCapturedUrl(null);
     try {
@@ -123,7 +125,7 @@ export function CheckInOutCard() {
 
       let record: AttendanceRecord;
       if (action === 'check-in') {
-        record = await checkIn({ photo_url: permanentUrl, late_reason: lateReason || undefined });
+        record = await checkIn({ photo_url: permanentUrl, late_reason: lateReason || undefined, is_remote: isRemote });
       } else {
         record = await checkOut({ photo_url: permanentUrl, early_note: earlyNote || undefined });
       }
@@ -168,6 +170,9 @@ export function CheckInOutCard() {
       <div className="bg-white rounded-xl shadow-md p-8 max-w-sm mx-auto text-center">
         <div className="text-green-600 text-4xl mb-3">&#10003;</div>
         <p className="text-lg font-semibold text-gray-800">All done for today</p>
+        {todayRecord.is_remote && (
+          <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Remote</span>
+        )}
         {inTime && <p className="text-sm text-gray-500 mt-1">Checked in at {inTime}</p>}
         <p className="text-sm text-gray-500">Checked out at {outTime}</p>
       </div>
@@ -184,6 +189,17 @@ export function CheckInOutCard() {
               Checked in at{' '}
               {new Date(todayRecord.check_in_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
             </p>
+          )}
+          {action === 'check-in' && (
+            <label className="flex items-center gap-2 mb-4 cursor-pointer justify-center">
+              <input
+                type="checkbox"
+                checked={isRemote}
+                onChange={(e) => setIsRemote(e.target.checked)}
+                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-600 font-medium">Working remotely today</span>
+            </label>
           )}
           <button
             onClick={openCamera}
