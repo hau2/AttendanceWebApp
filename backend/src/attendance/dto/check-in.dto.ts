@@ -1,4 +1,4 @@
-import { IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CheckInDto {
   @IsOptional()
@@ -9,4 +9,8 @@ export class CheckInDto {
   @IsString()
   @MaxLength(500)
   late_reason?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  is_remote?: boolean;  // true = employee working remotely today
 }

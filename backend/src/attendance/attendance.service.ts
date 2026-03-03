@@ -266,6 +266,7 @@ export class AttendanceService {
         minutes_late: minutesLate,
         late_reason: dto.late_reason ?? null,
         check_in_ip_within_allowlist: withinAllowlist,
+        is_remote: dto.is_remote ?? false,
         source: 'employee',
       })
       .select()
