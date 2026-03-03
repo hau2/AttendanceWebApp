@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   ConflictException,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
@@ -76,6 +77,27 @@ export class UsersService {
     }
     if (dto.managerId !== undefined) {
       updateData.manager_id = dto.managerId;
+    }
+    if (dto.divisionId !== undefined) {
+      // Verify the target division belongs to this company
+      const { data: div, error: divErr } = await client
+        .from('divisions')
+        .select('id')
+        .eq('id', dto.divisionId)
+        .eq('company_id', companyId)
+        .maybeSingle();
+
+      if (divErr) {
+        throw new InternalServerErrorException(
+          `Failed to verify division: ${divErr.message}`,
+        );
+      }
+
+      if (!div) {
+        throw new BadRequestException('Division not found or does not belong to this company');
+      }
+
+      updateData.division_id = dto.divisionId;
     }
 
     if (Object.keys(updateData).length === 0) {

@@ -8,4 +8,8 @@ export class UpdateUserDto {
   @IsOptional()
   @IsUUID()
   managerId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  divisionId?: string;
 }
