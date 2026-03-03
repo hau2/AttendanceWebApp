@@ -124,7 +124,15 @@ Plans:
   2. Every Employee record carries a division_id; Admin can assign or reassign any Employee to a Division from the User Management page
   3. When a Manager logs in and navigates to any attendance or employee view, they can only see Employees belonging to Divisions that Manager manages — no cross-division data leaks
   4. Admin and Executive can see all Divisions and all Employees across the entire company in every view
-**Plans**: TBD
+**Plans**: 6 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — DB migration (divisions table + users.division_id FK column + RLS policy)
+- [ ] 06-02-PLAN.md — NestJS DivisionsModule (POST/GET/PATCH/DELETE /divisions, delete guard against employee assignments)
+- [ ] 06-03-PLAN.md — Manager scope migration (attendance service uses division membership instead of manager_id) + divisionId in UpdateUserDto
+- [ ] 06-04-PLAN.md — Division Management UI (/admin/divisions page with Create/Edit/Delete modals + nav link)
+- [ ] 06-05-PLAN.md — User Management updates (Division column, assignment dropdown, division in Create User form)
+- [ ] 06-06-PLAN.md — Human verification checkpoint (full E2E: Division CRUD, assignment, manager scope, admin/exec scope)
 
 ### Phase 7: Employee Lifecycle + Per-User Timezone
 **Goal**: Admins and Managers can manage the full employee lifecycle — including soft-deleting departed employees while preserving their attendance history — and employees working abroad get accurate late/early classification using their personal timezone instead of the company default
@@ -184,7 +192,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 3. Attendance Core | 6/6 | Complete    | 2026-03-02 |
 | 4. Admin Adjustments | 2/2 | Complete    | 2026-03-02 |
 | 5. Monitoring & Reporting | 5/5 | Complete    | 2026-03-03 |
-| 6. Division Architecture | 0/? | Not started | - |
+| 6. Division Architecture | 0/6 | Not started | - |
 | 7. Employee Lifecycle + Per-User Timezone | 0/? | Not started | - |
 | 8. Remote Work + Acknowledgment Flow | 0/? | Not started | - |
 | 9. Advanced Monitoring | 0/? | Not started | - |
@@ -198,4 +206,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 *Phase 4 planned: 2026-03-02 — 2 plans, 2 waves*
 *Phase 5 planned: 2026-03-03 — 5 plans, 3 waves*
 *v2.0 roadmap appended: 2026-03-03 — Phases 6–10, 34 requirements mapped*
+*Phase 6 planned: 2026-03-03 — 6 plans, 4 waves*
 *v2 Coverage: 34/34 v2 requirements mapped*
