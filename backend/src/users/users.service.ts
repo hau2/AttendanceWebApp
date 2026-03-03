@@ -21,7 +21,7 @@ export class UsersService {
       .from('users')
       .select(`
         *,
-        divisions (
+        divisions!users_division_id_fkey (
           id,
           name,
           manager_id,
