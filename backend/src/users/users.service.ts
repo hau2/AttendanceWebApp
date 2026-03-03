@@ -2,6 +2,7 @@ import {
   Injectable,
   BadRequestException,
   ConflictException,
+  ForbiddenException,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
@@ -18,7 +19,18 @@ export class UsersService {
 
     const { data, error } = await client
       .from('users')
-      .select('*')
+      .select(`
+        *,
+        divisions (
+          id,
+          name,
+          manager_id,
+          users!divisions_manager_id_fkey (
+            id,
+            full_name
+          )
+        )
+      `)
       .eq('company_id', companyId)
       .order('created_at', { ascending: true });
 
@@ -73,6 +85,15 @@ export class UsersService {
 
     // Build update payload from only the fields explicitly provided
     const updateData: Record<string, unknown> = {};
+
+    if (dto.fullName !== undefined) {
+      updateData.full_name = dto.fullName;
+    }
+
+    if (dto.timezone !== undefined) {
+      updateData.timezone = dto.timezone; // null clears it; string sets it
+    }
+
     if (dto.role !== undefined) {
       updateData.role = dto.role;
     }
@@ -132,6 +153,77 @@ export class UsersService {
     }
 
     return data;
+  }
+
+  async deleteUser(companyId: string, userId: string): Promise<void> {
+    const client = this.supabase.getClient();
+
+    // 1. Verify user belongs to this company before deleting
+    const { data: user, error: fetchError } = await client
+      .from('users')
+      .select('id, role')
+      .eq('id', userId)
+      .eq('company_id', companyId)
+      .maybeSingle();
+
+    if (fetchError) {
+      throw new InternalServerErrorException(`Failed to fetch user: ${fetchError.message}`);
+    }
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // 2. Cannot delete an owner
+    if (user.role === 'owner') {
+      throw new BadRequestException('Cannot delete the company owner');
+    }
+
+    // 3. Delete from Supabase Auth (removes login capability)
+    const { error: authError } = await client.auth.admin.deleteUser(userId);
+    if (authError) {
+      throw new InternalServerErrorException(`Failed to delete auth account: ${authError.message}`);
+    }
+
+    // 4. Set is_active = false on public.users row (row preserved for history)
+    const { error: updateError } = await client
+      .from('users')
+      .update({ is_active: false })
+      .eq('id', userId)
+      .eq('company_id', companyId);
+
+    if (updateError) {
+      // Auth account already deleted — log error but surface as internal error
+      throw new InternalServerErrorException(
+        `Auth deleted but failed to deactivate user record: ${updateError.message}`,
+      );
+    }
+  }
+
+  async validateManagerDivisionOwnership(
+    companyId: string,
+    managerId: string,
+    divisionId: string,
+  ): Promise<void> {
+    const client = this.supabase.getClient();
+    const { data: division, error } = await client
+      .from('divisions')
+      .select('id, manager_id')
+      .eq('id', divisionId)
+      .eq('company_id', companyId)
+      .maybeSingle();
+
+    if (error) {
+      throw new InternalServerErrorException(`Failed to verify division: ${error.message}`);
+    }
+
+    if (!division) {
+      throw new BadRequestException('Division not found');
+    }
+
+    if (division.manager_id !== managerId) {
+      throw new ForbiddenException('You can only assign employees to divisions you manage');
+    }
   }
 
   async setUserStatus(companyId: string, userId: string, isActive: boolean): Promise<object> {
