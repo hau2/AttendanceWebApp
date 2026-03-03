@@ -18,4 +18,8 @@ export class CreateUserDto {
   @IsOptional()
   @IsUUID()
   managerId?: string;
+
+  @IsOptional()
+  @IsUUID()
+  divisionId?: string;
 }

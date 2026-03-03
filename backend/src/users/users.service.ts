@@ -54,6 +54,7 @@ export class UsersService {
         email: dto.email,
         role: dto.role,
         manager_id: dto.managerId ?? null,
+        division_id: dto.divisionId ?? null,
       })
       .select()
       .single();

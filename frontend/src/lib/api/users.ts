@@ -8,6 +8,7 @@ export interface User {
   role: 'owner' | 'admin' | 'manager' | 'employee' | 'executive';
   is_active: boolean;
   manager_id: string | null;
+  division_id: string | null;
   created_at: string;
 }
 
@@ -17,11 +18,13 @@ export interface CreateUserData {
   password: string;
   role: string;
   managerId?: string;
+  divisionId?: string;
 }
 
 export interface UpdateUserData {
   role?: string;
   managerId?: string;
+  divisionId?: string;
 }
 
 export async function listUsers(token: string): Promise<User[]> {
