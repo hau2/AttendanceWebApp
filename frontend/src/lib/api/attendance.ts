@@ -158,3 +158,22 @@ export async function adjustRecord(
   }
   return res.json();
 }
+
+export interface TeamSummary {
+  total: number;
+  late: number;
+  punctualityRate: number;
+  monthlyBreakdown: Array<{ date: string; present: number; late: number }>;
+}
+
+export async function getTeamSummary(year: number, month: number): Promise<TeamSummary> {
+  const res = await fetch(
+    `${API_URL}/attendance/reports/team-summary?year=${year}&month=${month}`,
+    { headers: { Authorization: `Bearer ${getToken()}` } },
+  );
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to fetch team summary');
+  }
+  return res.json();
+}
