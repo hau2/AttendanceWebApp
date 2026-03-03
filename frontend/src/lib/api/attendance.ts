@@ -23,6 +23,12 @@ export interface AttendanceRecord {
   source: 'employee' | 'system' | 'admin';
   created_at: string;
   updated_at: string;
+  // Phase 8 additions
+  is_remote: boolean;
+  acknowledged_at: string | null;
+  acknowledged_by: string | null;
+  remote_acknowledged_at: string | null;
+  remote_acknowledged_by: string | null;
 }
 
 export interface PhotoUploadUrlResponse {
@@ -62,6 +68,7 @@ export async function uploadPhotoBlob(signedUrl: string, blob: Blob): Promise<vo
 export async function checkIn(data: {
   photo_url?: string;
   late_reason?: string;
+  is_remote?: boolean;
 }): Promise<AttendanceRecord> {
   const res = await fetch(`${API_URL}/attendance/check-in`, {
     method: 'POST',
@@ -239,4 +246,28 @@ export async function downloadAttendanceCsv(year: number, month: number): Promis
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
+}
+
+export async function acknowledgeRecord(recordId: string): Promise<AttendanceRecord> {
+  const res = await fetch(`${API_URL}/attendance/records/${recordId}/acknowledge`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${getToken()}` },
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to acknowledge record');
+  }
+  return res.json();
+}
+
+export async function acknowledgeRemote(recordId: string): Promise<AttendanceRecord> {
+  const res = await fetch(`${API_URL}/attendance/records/${recordId}/acknowledge-remote`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${getToken()}` },
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.message || 'Failed to acknowledge remote record');
+  }
+  return res.json();
 }
