@@ -107,10 +107,10 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Employee Lifecycle (EMPL)
 
-- [ ] **EMPL-01**: Admin can delete an employee account when the employee leaves; all historical attendance records are retained with the employee's name visible
-- [ ] **EMPL-02**: Admin can edit an employee's full name, Division assignment, and personal timezone
-- [ ] **EMPL-03**: Manager can create a new Employee account and assign that employee to any Division the Manager manages
-- [ ] **EMPL-04**: Admin and Executive can see which Manager (via Division) is responsible for each Employee in user listing and attendance views
+- [x] **EMPL-01**: Admin can delete an employee account when the employee leaves; all historical attendance records are retained with the employee's name visible
+- [x] **EMPL-02**: Admin can edit an employee's full name, Division assignment, and personal timezone
+- [x] **EMPL-03**: Manager can create a new Employee account and assign that employee to any Division the Manager manages
+- [x] **EMPL-04**: Admin and Executive can see which Manager (via Division) is responsible for each Employee in user listing and attendance views
 
 ### Per-User Timezone (TZMG)
 
@@ -254,10 +254,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DIVN-05 | Phase 6 | Pending |
 | DIVN-06 | Phase 6 | Pending |
 | DIVN-07 | Phase 6 | Pending |
-| EMPL-01 | Phase 7 | Pending |
-| EMPL-02 | Phase 7 | Pending |
-| EMPL-03 | Phase 7 | Pending |
-| EMPL-04 | Phase 7 | Pending |
+| EMPL-01 | Phase 7 Plan 07-02 | Done |
+| EMPL-02 | Phase 7 Plan 07-02 | Done |
+| EMPL-03 | Phase 7 Plan 07-02 | Done |
+| EMPL-04 | Phase 7 Plan 07-02 | Done |
 | TZMG-01 | Phase 7 | Pending |
 | TZMG-02 | Phase 7 | Pending |
 | RMOT-01 | Phase 8 | Pending |

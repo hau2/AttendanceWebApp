@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Division, Acknowledgment & Remote Work
 status: roadmap_ready
-last_updated: "2026-03-03T08:00:00Z"
+last_updated: "2026-03-03T13:55:41Z"
 progress:
   total_phases: 5
   completed_phases: 1
@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 
 ## Current Position
 
-Phase: Phase 6 - Division Architecture (COMPLETE)
-Plan: 06-06 (verification checkpoint — approved by human)
-Status: Phase 6 complete — all 7 DIVN requirements delivered and human-verified. Division Architecture fully operational: divisions table + RLS, NestJS DivisionsModule CRUD, division-based manager scope in attendance, Division Management UI at /admin/divisions, User Management with division column + assignment.
-Last activity: 2026-03-03 — Phase 6 human verification approved; all 5 test cases passed
+Phase: Phase 7 - Employee Lifecycle + Per-User Timezone (IN PROGRESS)
+Plan: 07-02 (backend EMPL endpoints — complete)
+Status: 07-02 complete — DELETE /users/:id soft-delete, PATCH /users/:id with fullName+timezone, manager-scoped POST /users with division ownership validation, GET /users with division+manager join. TypeScript clean. EMPL-01 through EMPL-04 delivered.
+Last activity: 2026-03-03 — 07-02 executed and committed
 
 Progress: [█████████░░░░░░░░░░░] 20% (1/5 v2.0 phases)
 
@@ -152,6 +152,13 @@ Recent decisions affecting current work:
 - divisionId added to CreateUserDto and createUser service insert so new users can be assigned a division at creation time — avoids two-step create-then-assign UX (06-05)
 - Division dropdown always visible in Actions column (not role-gated) — any user may be assigned to any division by Admin (06-05)
 - Divisions fetched in parallel with users via Promise.all in refreshUsers — single function handles both refresh scenarios (06-05)
+- users.timezone is nullable TEXT — NULL = use company timezone (zero regression); non-null = IANA string for per-employee late/early classification override (07-01)
+- Soft-delete pattern: Auth.admin.deleteUser() removes login capability, then is_active=false set on public.users row — row is never deleted so attendance records retain employee full_name (07-02)
+- Owner role blocked from deletion at service layer before any Auth call — BadRequestException prevents accidental loss of company access (07-02)
+- Manager role permitted on POST /users only for employee role creation; must supply a divisionId from their own managed divisions — ForbiddenException if division not managed by caller (07-02)
+- listUsers() uses nested Supabase FK join users!divisions_manager_id_fkey to return division manager name in single query without additional round-trip (07-02)
+- validateManagerDivisionOwnership() lives in UsersService (not controller) — controller delegates, service validates — consistent thin-controller pattern (07-02)
+- timezone field in UpdateUserDto accepts string | null — null explicitly clears per-user timezone override so user falls back to company timezone (07-02)
 
 ### Pending Todos
 
@@ -167,6 +174,7 @@ Recent decisions affecting current work:
 - Run 006_attendance_adjustments.sql migration in Supabase SQL editor before testing PATCH /attendance/records/:id endpoint
 - Run 007_divisions.sql migration in Supabase SQL editor before testing Division endpoints (Phase 6)
 - Run 004_divisions_rls.sql RLS policy in Supabase SQL editor AFTER running 007_divisions.sql (Phase 6)
+- Run 008_employee_lifecycle.sql migration in Supabase SQL editor before testing Phase 7 endpoints (adds users.timezone column)
 
 ### Blockers/Concerns
 
@@ -175,6 +183,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-03
-Stopped at: Phase 6 complete — 06-06 human verification approved
+Stopped at: Completed 07-01-PLAN.md — migration 008 (users.timezone column)
 Resume file: None
-Next: Plan and execute Phase 7 (Employee Lifecycle + Per-User Timezone)
+Next: 07-02-PLAN.md — backend EMPL endpoints (soft-delete, PATCH timezone, manager-scoped create)
