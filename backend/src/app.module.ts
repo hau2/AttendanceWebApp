@@ -12,9 +12,10 @@ import { OnboardingModule } from './onboarding/onboarding.module';
 import { UsersModule } from './users/users.module';
 import { ShiftsModule } from './shifts/shifts.module';
 import { AttendanceModule } from './attendance/attendance.module';
+import { DivisionsModule } from './divisions/divisions.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), ScheduleModule.forRoot(), SupabaseModule, AuthModule, CompanyModule, OnboardingModule, UsersModule, ShiftsModule, AttendanceModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), ScheduleModule.forRoot(), SupabaseModule, AuthModule, CompanyModule, OnboardingModule, UsersModule, ShiftsModule, AttendanceModule, DivisionsModule],
   controllers: [AppController],
   providers: [
     AppService,
