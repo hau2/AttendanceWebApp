@@ -207,7 +207,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Monitoring & Reporting | 5/5 | Complete    | 2026-03-03 |
 | 6. Division Architecture | 6/6 | Complete   | 2026-03-03 |
 | 7. Employee Lifecycle + Per-User Timezone | 5/5 | Complete   | 2026-03-03 |
-| 8. Remote Work + Acknowledgment Flow | 4/4 | Complete   | 2026-03-04 |
+| 8. Remote Work + Acknowledgment Flow | 4/4 | Complete    | 2026-03-04 |
 | 9. Advanced Monitoring | 0/? | Not started | - |
 | 10. UI Polish | 0/? | Not started | - |
 
