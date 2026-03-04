@@ -168,7 +168,7 @@ Plans:
 - [x] 08-01-PLAN.md — DB migration: is_remote + 4 acknowledgment columns on attendance_records
 - [x] 08-02-PLAN.md — Backend: CheckInDto is_remote field, acknowledgeRecord() + acknowledgeRemote() service methods, two POST controller routes
 - [x] 08-03-PLAN.md — Frontend: Remote Work toggle in CheckInOutCard, Remote badge in all views, Acknowledge buttons in record detail, acknowledgment status in employee history
-- [ ] 08-04-PLAN.md — Human verification checkpoint (all 7 requirements end-to-end)
+- [x] 08-04-PLAN.md — Human verification checkpoint (all 7 requirements end-to-end)
 
 ### Phase 9: Advanced Monitoring
 **Goal**: Admins can manually trigger a Data Refresh to populate absent and absent-morning records for the current and previous day, and both Admins and Managers can filter the attendance table by any of five attendance status categories
@@ -179,7 +179,12 @@ Plans:
   2. The Admin Attendance page shows the date and time of the last Data Refresh run, updated immediately after each manual trigger
   3. Admin and Manager can filter the attendance table by "Late" and see only records where check-in was late; filter by "Early Leave" and see only records where check-out was early
   4. Admin and Manager can filter the attendance table by "Absent", "Absent Morning", or "Absent Afternoon" and see only records matching each respective status
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 09-01-PLAN.md — DB migration (011_data_refresh.sql: extend check_in_status constraint + add last_refresh_at to companies) + DataRefreshService + POST /attendance/refresh controller route
+- [ ] 09-02-PLAN.md — Frontend: triggerRefresh() API, getCompanySettings() with last_refresh_at, Data Refresh button + timestamp display, status filter dropdown (5 options)
+- [ ] 09-03-PLAN.md — Human verification checkpoint (all 9 requirements: RFSH-01 through RFSH-04, FLTR-01 through FLTR-05)
 
 ### Phase 10: UI Polish
 **Goal**: Every role-specific UI surface is visually consistent — the Employee Home has a live clock, all status states carry a recognizable Lucide icon, new modals and tables use Shadcn components, and the Executive and Manager drill-down experiences are complete
@@ -208,7 +213,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Division Architecture | 6/6 | Complete   | 2026-03-03 |
 | 7. Employee Lifecycle + Per-User Timezone | 5/5 | Complete   | 2026-03-03 |
 | 8. Remote Work + Acknowledgment Flow | 4/4 | Complete    | 2026-03-04 |
-| 9. Advanced Monitoring | 0/? | Not started | - |
+| 9. Advanced Monitoring | 0/3 | In progress | - |
 | 10. UI Polish | 0/? | Not started | - |
 
 ---
@@ -222,4 +227,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 *Phase 6 planned: 2026-03-03 — 6 plans, 4 waves*
 *Phase 7 planned: 2026-03-03 — 5 plans, 3 waves*
 *Phase 8 planned: 2026-03-04 — 4 plans, 4 waves*
+*Phase 9 planned: 2026-03-04 — 3 plans, 3 waves*
 *v2 Coverage: 34/34 v2 requirements mapped*
