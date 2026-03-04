@@ -119,16 +119,16 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Acknowledgment Flow (ACKN)
 
-- [ ] **ACKN-01**: Manager can see the late reason and early-leave note for each attendance record in their monitoring view
-- [ ] **ACKN-02**: Manager can click an "Acknowledge" button on a late or early-leave record to confirm they have seen the reason
-- [ ] **ACKN-03**: Employee can see in their attendance history that their Manager has acknowledged their late reason or early-leave note (with timestamp)
-- [ ] **ACKN-04**: Manager can click an "Acknowledge" button on a Remote Work check-in to confirm they are aware
-- [ ] **ACKN-05**: Employee can see in their attendance history that their Manager has acknowledged their Remote Work check-in (with timestamp)
+- [x] **ACKN-01**: Manager can see the late reason and early-leave note for each attendance record in their monitoring view
+- [x] **ACKN-02**: Manager can click an "Acknowledge" button on a late or early-leave record to confirm they have seen the reason
+- [x] **ACKN-03**: Employee can see in their attendance history that their Manager has acknowledged their late reason or early-leave note (with timestamp)
+- [x] **ACKN-04**: Manager can click an "Acknowledge" button on a Remote Work check-in to confirm they are aware
+- [x] **ACKN-05**: Employee can see in their attendance history that their Manager has acknowledged their Remote Work check-in (with timestamp)
 
 ### Remote Work (RMOT)
 
-- [ ] **RMOT-01**: Employee can select a "Remote Work" option when checking in, indicating they are working from outside the office
-- [ ] **RMOT-02**: Remote Work check-ins are visually flagged with a distinct "Remote" badge in Manager, Admin, and Employee views
+- [x] **RMOT-01**: Employee can select a "Remote Work" option when checking in, indicating they are working from outside the office
+- [x] **RMOT-02**: Remote Work check-ins are visually flagged with a distinct "Remote" badge in Manager, Admin, and Employee views
 
 ### Data Refresh (RFSH)
 
@@ -260,13 +260,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | EMPL-04 | Phase 7 Plan 07-02 | Done |
 | TZMG-01 | Phase 7 Plan 07-01 | Done |
 | TZMG-02 | Phase 7 | Pending |
-| RMOT-01 | Phase 8 | Pending |
-| RMOT-02 | Phase 8 | Pending |
-| ACKN-01 | Phase 8 | Pending |
-| ACKN-02 | Phase 8 | Pending |
-| ACKN-03 | Phase 8 | Pending |
-| ACKN-04 | Phase 8 | Pending |
-| ACKN-05 | Phase 8 | Pending |
+| RMOT-01 | Phase 8 | Complete |
+| RMOT-02 | Phase 8 | Complete |
+| ACKN-01 | Phase 8 | Complete |
+| ACKN-02 | Phase 8 | Complete |
+| ACKN-03 | Phase 8 | Complete |
+| ACKN-04 | Phase 8 | Complete |
+| ACKN-05 | Phase 8 | Complete |
 | RFSH-01 | Phase 9 | Pending |
 | RFSH-02 | Phase 9 | Pending |
 | RFSH-03 | Phase 9 | Pending |

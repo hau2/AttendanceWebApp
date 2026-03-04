@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
 milestone: v2.0
-milestone_name: Division, Acknowledgment & Remote Work
-status: roadmap_ready
-last_updated: "2026-03-03T16:39:00Z"
+milestone_name: milestone
+status: unknown
+last_updated: "2026-03-04T02:43:56.092Z"
 progress:
-  total_phases: 5
-  completed_phases: 2
-  total_plans: 11
-  completed_plans: 11
+  total_phases: 8
+  completed_phases: 8
+  total_plans: 35
+  completed_plans: 35
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** Phase 8 - Remote Work + Acknowledgment (next)
+**Current focus:** Phase 9 - Advanced Monitoring (next)
 
 ## Current Position
 
-Phase: Phase 8 - Remote Work + Acknowledgment Flow (In progress)
-Plan: 08-03 (Frontend remote work + acknowledge UI — complete)
-Status: 08-03 complete — Remote Work toggle in CheckInOutCard, Remote badge in admin table/detail/history, Acknowledge Late/Early + Acknowledge Remote buttons in detail modal (manager/admin/owner), Acknowledged column in employee history. TypeScript build passes.
-Last activity: 2026-03-04 — 08-03 frontend UI complete
+Phase: Phase 8 - Remote Work + Acknowledgment Flow (Complete)
+Plan: 08-04 (Human verification — complete)
+Status: Phase 8 complete — all 7 requirements (RMOT-01, RMOT-02, ACKN-01 through ACKN-05) human-verified and approved. Remote Work toggle, Remote badge across all views, Manager Acknowledge Late/Early + Acknowledge Remote, Employee acknowledgment status in history — all confirmed working end-to-end.
+Last activity: 2026-03-04 — 08-04 human verification approved
 
-Progress: [██████████████░░░░░░] 40% (2/5 v2.0 phases)
+Progress: [████████████████░░░░] 60% (3/5 v2.0 phases)
 
 ## Performance Metrics
 
@@ -51,6 +51,7 @@ Progress: [██████████████░░░░░░] 40% (2/
 - Trend: Consistent
 
 *Updated after each plan completion*
+| Phase 08-remote-work-acknowledgment-flow P04 | 2 | 1 tasks | 0 files |
 
 ## Accumulated Context
 
@@ -177,6 +178,7 @@ Recent decisions affecting current work:
 - acknowledgeRecord/acknowledgeRemote silently ignore catch errors — idempotent backend safe for silent retry (08-03)
 - Remote toggle resets in openCamera() rather than on submission — prevents stale checkbox state if user cancels mid-flow (08-03)
 - Remote badge color bg-blue-100 text-blue-700 used consistently across all three views (admin table, record detail, employee history) — distinct from all existing status badge colors (08-03)
+- [Phase 08]: Phase 8 human verification passed — all 7 scenarios confirmed with no code changes required post-delivery
 
 ### Pending Todos
 
@@ -202,6 +204,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-04
-Stopped at: Completed 08-03-PLAN.md — Frontend: Remote Work toggle in CheckInOutCard, Remote badge across all views, Acknowledge Late/Early + Acknowledge Remote buttons in record detail, Acknowledged column in employee history
+Stopped at: Completed 08-04-PLAN.md — Phase 8 human verification approved (all 7 scenarios passed)
 Resume file: None
-Next: 08-04-PLAN.md — Human verification checkpoint (all 7 Phase 8 requirements end-to-end)
+Next: 09-advanced-monitoring — Manual Data Refresh job (absent/absent-morning statuses), advanced status filters

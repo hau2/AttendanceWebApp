@@ -21,7 +21,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Monitoring & Reporting** - Manager monitoring, Executive dashboard, and CSV export
 - [x] **Phase 6: Division Architecture** - DB schema + backend module + full Division Management UI; User Management updated to carry division_id (completed 2026-03-03)
 - [x] **Phase 7: Employee Lifecycle + Per-User Timezone** - Delete employee (retain history), edit name/division/timezone, Manager creates employees in their divisions, per-user timezone in classification (completed 2026-03-03)
-- [ ] **Phase 8: Remote Work + Acknowledgment Flow** - Remote Work check-in option, Manager Acknowledge button for late/early/remote records, Employee sees acknowledgment status
+- [x] **Phase 8: Remote Work + Acknowledgment Flow** - Remote Work check-in option, Manager Acknowledge button for late/early/remote records, Employee sees acknowledgment status (completed 2026-03-04)
 - [ ] **Phase 9: Advanced Monitoring** - Manual Data Refresh job (absent/absent-morning statuses), advanced status filters (5 filter types) in attendance tables
 - [ ] **Phase 10: UI Polish** - Live clock on Employee Home, Lucide status badge icons, Shadcn component upgrades, Executive drill-down, Manager Employee Detail page
 
@@ -207,7 +207,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 5. Monitoring & Reporting | 5/5 | Complete    | 2026-03-03 |
 | 6. Division Architecture | 6/6 | Complete   | 2026-03-03 |
 | 7. Employee Lifecycle + Per-User Timezone | 5/5 | Complete   | 2026-03-03 |
-| 8. Remote Work + Acknowledgment Flow | 3/4 | In progress | - |
+| 8. Remote Work + Acknowledgment Flow | 4/4 | Complete   | 2026-03-04 |
 | 9. Advanced Monitoring | 0/? | Not started | - |
 | 10. UI Polish | 0/? | Not started | - |
 
