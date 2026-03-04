@@ -3,11 +3,12 @@ import { AttendanceService } from './attendance.service';
 import { AttendanceController } from './attendance.controller';
 import { PhotoUploadController } from './photo-upload.controller';
 import { AttendanceCronService } from './attendance-cron.service';
+import { DataRefreshService } from './data-refresh.service';
 import { ShiftsModule } from '../shifts/shifts.module';
 
 @Module({
   imports: [ShiftsModule], // provides ShiftAssignmentsService via DI
-  providers: [AttendanceService, AttendanceCronService],
+  providers: [AttendanceService, AttendanceCronService, DataRefreshService],
   controllers: [AttendanceController, PhotoUploadController],
   exports: [AttendanceService],
 })

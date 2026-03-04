@@ -14,6 +14,7 @@ import {
 import type { Response } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { AttendanceService } from './attendance.service';
+import { DataRefreshService } from './data-refresh.service';
 import { CheckInDto } from './dto/check-in.dto';
 import { CheckOutDto } from './dto/check-out.dto';
 import { AdjustRecordDto } from './dto/adjust-record.dto';
@@ -21,7 +22,10 @@ import { AdjustRecordDto } from './dto/adjust-record.dto';
 @Controller('attendance')
 @UseGuards(JwtAuthGuard)
 export class AttendanceController {
-  constructor(private readonly attendanceService: AttendanceService) {}
+  constructor(
+    private readonly attendanceService: AttendanceService,
+    private readonly dataRefreshService: DataRefreshService,
+  ) {}
 
   @Post('check-in')
   async checkIn(@Request() req: any, @Body() dto: CheckInDto) {
@@ -169,6 +173,20 @@ export class AttendanceController {
       `attachment; filename="attendance-${y}-${String(m).padStart(2, '0')}.csv"`,
     );
     res.send(csv);
+  }
+
+  /**
+   * Admin/Owner: manually trigger Data Refresh for the company.
+   * Inserts absent_morning records for today and absent records for yesterday.
+   * Updates companies.last_refresh_at.
+   */
+  @Post('refresh')
+  async runRefresh(@Request() req: any) {
+    const { role, companyId } = req.user;
+    if (!['admin', 'owner'].includes(role)) {
+      throw new ForbiddenException('Only admins can trigger Data Refresh');
+    }
+    return this.dataRefreshService.runRefresh(companyId);
   }
 
   /**

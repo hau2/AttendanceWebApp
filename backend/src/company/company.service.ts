@@ -10,7 +10,7 @@ export class CompanyService {
     const { data, error } = await this.supabase
       .getClient()
       .from('companies')
-      .select('id, name, timezone, ip_mode, ip_allowlist, onboarding_complete')
+      .select('id, name, timezone, ip_mode, ip_allowlist, onboarding_complete, last_refresh_at')
       .eq('id', companyId)
       .single();
 
