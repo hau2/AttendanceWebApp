@@ -307,3 +307,20 @@ export async function triggerRefresh(): Promise<RefreshResult> {
   }
   return res.json();
 }
+
+export interface IpCheckResult {
+  ip: string;
+  withinAllowlist: boolean;
+  ipMode: 'disabled' | 'log-only' | 'enforce-block';
+}
+
+export async function checkIpStatus(): Promise<IpCheckResult> {
+  const res = await fetch(`${API_URL}/attendance/ip-check`, {
+    headers: { Authorization: `Bearer ${getToken()}` },
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as { message?: string }).message || 'Failed to check IP status');
+  }
+  return res.json();
+}
