@@ -4,8 +4,11 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getStoredUser } from '@/lib/api/auth';
 import { getMonthlyReport, downloadAttendanceCsv, MonthlyReport } from '@/lib/api/attendance';
+import { PaginationControls } from '@/components/PaginationControls';
 
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+const LIMIT = 20;
 
 export default function AdminReportsPage() {
   const router = useRouter();
@@ -16,6 +19,8 @@ export default function AdminReportsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     const user = getStoredUser();
@@ -25,13 +30,16 @@ export default function AdminReportsPage() {
     }
   }, [router]);
 
+  // Reset page to 1 when year or month changes
+  useEffect(() => { setPage(1); }, [year, month]);
+
   useEffect(() => {
     setLoading(true);
     setError(null);
-    getMonthlyReport(year, month)
-      .then(data => { setReport(data); setLoading(false); })
+    getMonthlyReport(year, month, page, LIMIT)
+      .then(data => { setReport(data); setTotal(data.total); setLoading(false); })
       .catch(() => { setError('Failed to load report'); setLoading(false); });
-  }, [year, month]);
+  }, [year, month, page]);
 
   const prevMonth = () => {
     if (month === 1) { setYear(y => y - 1); setMonth(12); }
@@ -97,7 +105,7 @@ export default function AdminReportsPage() {
           {/* Records table */}
           <div className="bg-white rounded-lg border border-gray-200">
             <div className="px-5 py-4 border-b border-gray-100">
-              <h2 className="font-semibold text-gray-800">Records ({report.records.length})</h2>
+              <h2 className="font-semibold text-gray-800">Records ({total})</h2>
             </div>
             {report.records.length === 0 ? (
               <div className="px-5 py-6 text-gray-400 text-sm text-center">No records this month</div>
@@ -141,6 +149,7 @@ export default function AdminReportsPage() {
                 </table>
               </div>
             )}
+            <PaginationControls page={page} limit={LIMIT} total={total} onPageChange={setPage} />
           </div>
         </>
       )}

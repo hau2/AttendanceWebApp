@@ -15,6 +15,9 @@ import { CreateUserModal } from './components/CreateUserModal';
 import { CsvImportModal } from './components/CsvImportModal';
 import { AssignShiftModal } from './components/AssignShiftModal';
 import { EditUserModal } from './components/EditUserModal';
+import { PaginationControls } from '@/components/PaginationControls';
+
+const LIMIT = 20;
 
 export default function UsersPage() {
   const [users, setUsers] = useState<User[]>([]);
@@ -25,6 +28,8 @@ export default function UsersPage() {
   const [showCsvModal, setShowCsvModal] = useState(false);
   const [assigningUser, setAssigningUser] = useState<User | null>(null);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
   const currentUser = getStoredUser();
   if (currentUser && !['owner', 'admin'].includes(currentUser.role)) {
@@ -35,7 +40,7 @@ export default function UsersPage() {
     );
   }
 
-  async function refreshUsers() {
+  async function refreshUsers(p = page) {
     const token = getStoredToken();
     if (!token) {
       setError('Not authenticated');
@@ -43,8 +48,9 @@ export default function UsersPage() {
       return;
     }
     try {
-      const [data, divs] = await Promise.all([listUsers(token), listDivisions(token)]);
-      setUsers(data);
+      const [result, divs] = await Promise.all([listUsers(token, p, LIMIT), listDivisions(token)]);
+      setUsers(result.data);
+      setTotal(result.total);
       setDivisions(divs);
       setError(null);
     } catch (err: unknown) {
@@ -60,12 +66,18 @@ export default function UsersPage() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    refreshUsers(page);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
   async function handleRoleChange(id: string, role: string) {
     const token = getStoredToken();
     if (!token) return;
     try {
       await updateUser(token, id, { role });
-      await refreshUsers();
+      await refreshUsers(1);
+      setPage(1);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to update role';
       setError(message);
@@ -77,7 +89,8 @@ export default function UsersPage() {
     if (!token) return;
     try {
       await setUserStatus(token, id, isActive);
-      await refreshUsers();
+      await refreshUsers(1);
+      setPage(1);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to update status';
       setError(message);
@@ -89,7 +102,8 @@ export default function UsersPage() {
     if (!token) return;
     try {
       await updateUser(token, id, { managerId: managerId ?? undefined });
-      await refreshUsers();
+      await refreshUsers(1);
+      setPage(1);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to update manager';
       setError(message);
@@ -101,7 +115,8 @@ export default function UsersPage() {
     if (!token) return;
     try {
       await updateUser(token, id, { divisionId: divisionId ?? undefined });
-      await refreshUsers();
+      await refreshUsers(1);
+      setPage(1);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to update division';
       setError(message);
@@ -114,7 +129,8 @@ export default function UsersPage() {
     if (!token) return;
     try {
       await deleteUser(token, user.id);
-      await refreshUsers();
+      await refreshUsers(1);
+      setPage(1);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to delete user');
     }
@@ -153,24 +169,27 @@ export default function UsersPage() {
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
-        <UserTable
-          users={users}
-          divisions={divisions}
-          currentUserRole={currentUser?.role ?? ''}
-          onRoleChange={handleRoleChange}
-          onStatusToggle={handleStatusToggle}
-          onManagerChange={handleManagerChange}
-          onDivisionChange={handleDivisionChange}
-          onAssignShift={setAssigningUser}
-          onEdit={setEditingUser}
-          onDelete={handleDelete}
-        />
+        <>
+          <UserTable
+            users={users}
+            divisions={divisions}
+            currentUserRole={currentUser?.role ?? ''}
+            onRoleChange={handleRoleChange}
+            onStatusToggle={handleStatusToggle}
+            onManagerChange={handleManagerChange}
+            onDivisionChange={handleDivisionChange}
+            onAssignShift={setAssigningUser}
+            onEdit={setEditingUser}
+            onDelete={handleDelete}
+          />
+          <PaginationControls page={page} limit={LIMIT} total={total} onPageChange={(p) => { setPage(p); refreshUsers(p); }} />
+        </>
       )}
 
       <CreateUserModal
         open={showCreateModal}
         onClose={() => setShowCreateModal(false)}
-        onCreated={refreshUsers}
+        onCreated={() => { refreshUsers(1); setPage(1); }}
         managers={managers}
         divisions={divisions}
         currentUserId={currentUser?.id ?? ''}
@@ -180,14 +199,14 @@ export default function UsersPage() {
       <CsvImportModal
         open={showCsvModal}
         onClose={() => setShowCsvModal(false)}
-        onImported={refreshUsers}
+        onImported={() => { refreshUsers(1); setPage(1); }}
       />
 
       <AssignShiftModal
         open={!!assigningUser}
         user={assigningUser}
         onClose={() => setAssigningUser(null)}
-        onAssigned={refreshUsers}
+        onAssigned={() => { refreshUsers(page); }}
       />
 
       <EditUserModal
@@ -195,7 +214,7 @@ export default function UsersPage() {
         user={editingUser}
         divisions={divisions}
         onClose={() => setEditingUser(null)}
-        onSaved={refreshUsers}
+        onSaved={() => { refreshUsers(1); setPage(1); }}
       />
     </div>
   );

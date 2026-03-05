@@ -9,11 +9,14 @@ import { getCompanySettings } from '@/lib/api/company';
 import { listUsers, User } from '@/lib/api/users';
 import { AttendanceRecordTable } from './components/AttendanceRecordTable';
 import { AttendanceRecordDetail } from './components/AttendanceRecordDetail';
+import { PaginationControls } from '@/components/PaginationControls';
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
   'July', 'August', 'September', 'October', 'November', 'December',
 ];
+
+const LIMIT = 20;
 
 export default function AdminAttendancePage() {
   const router = useRouter();
@@ -21,6 +24,8 @@ export default function AdminAttendancePage() {
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [records, setRecords] = useState<AttendanceRecordWithUser[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
   const [selectedRecord, setSelectedRecord] = useState<AttendanceRecordWithUser | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +50,7 @@ export default function AdminAttendancePage() {
     if (!['admin', 'owner', 'manager'].includes(user.role)) { router.replace('/dashboard'); return; }
     setUserRole(user.role);
     const token = getStoredToken();
-    if (token) listUsers(token).then(setUsers).catch(() => {});
+    if (token) listUsers(token, 1, 1000).then(r => setUsers(r.data)).catch(() => {});
     if (token && ['admin', 'owner'].includes(user.role)) {
       getCompanySettings(token).then((s) => setLastRefreshAt(s.last_refresh_at)).catch(() => {});
     }
@@ -57,16 +62,17 @@ export default function AdminAttendancePage() {
     if (userRole === 'manager') {
       getTeamSummary(year, month).then(setTeamSummary).catch(() => setTeamSummary(null));
     }
-    listRecords(year, month)
-      .then((data) => { setRecords(data); setLoading(false); })
+    listRecords(year, month, undefined, page, LIMIT)
+      .then((result) => { setRecords(result.data); setTotal(result.total); setLoading(false); })
       .catch(() => { setError('Failed to load records'); setLoading(false); });
-  }, [year, month, userRole]);
+  }, [year, month, userRole, page]);
 
   function navigate(dir: number) {
     let m = month + dir;
     let y = year;
     if (m < 1) { m = 12; y--; }
     if (m > 12) { m = 1; y++; }
+    setPage(1);
     setMonth(m);
     setYear(y);
   }
@@ -78,8 +84,9 @@ export default function AdminAttendancePage() {
       const result = await triggerRefresh();
       setLastRefreshAt(result.lastRefreshAt);
       // Reload records to show newly inserted absent rows
-      const data = await listRecords(year, month);
-      setRecords(data);
+      const data = await listRecords(year, month, undefined, page, LIMIT);
+      setRecords(data.data);
+      setTotal(data.total);
     } catch (err: unknown) {
       setRefreshError(err instanceof Error ? err.message : 'Refresh failed');
     } finally {
@@ -302,6 +309,7 @@ export default function AdminAttendancePage() {
             onSelectRecord={setSelectedRecord}
           />
         )}
+        <PaginationControls page={page} limit={LIMIT} total={total} onPageChange={setPage} />
       </div>
 
       <AttendanceRecordDetail
