@@ -1,4 +1,14 @@
 /**
+ * Normalize an IP address for allowlist comparison.
+ * Converts IPv6 loopback (::1) to 127.0.0.1 and strips IPv4-mapped IPv6 prefix (::ffff:).
+ */
+export function normalizeIp(ip: string): string {
+  if (ip === '::1') return '127.0.0.1';
+  if (ip.startsWith('::ffff:')) return ip.slice(7);
+  return ip;
+}
+
+/**
  * Check whether an IPv4 address is contained within a CIDR range or matches exactly.
  * Supports both exact addresses ("192.168.1.1") and CIDR notation ("192.168.1.0/24").
  * Returns false for invalid inputs (does not throw).

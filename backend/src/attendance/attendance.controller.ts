@@ -20,6 +20,7 @@ import { CheckInDto } from './dto/check-in.dto';
 import { CheckOutDto } from './dto/check-out.dto';
 import { AdjustRecordDto } from './dto/adjust-record.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
+import { normalizeIp } from '../common/ip-restriction.util';
 
 @Controller('attendance')
 @UseGuards(JwtAuthGuard)
@@ -35,28 +36,31 @@ export class AttendanceController {
    */
   @Get('ip-check')
   async ipCheck(@Request() req: any) {
-    const ip =
+    const ip = normalizeIp(
       req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
       req.socket?.remoteAddress ||
-      'unknown';
+      'unknown',
+    );
     return this.attendanceService.getIpCheckResult(req.user.companyId, ip);
   }
 
   @Post('check-in')
   async checkIn(@Request() req: any, @Body() dto: CheckInDto) {
-    const ip =
+    const ip = normalizeIp(
       req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
       req.socket?.remoteAddress ||
-      'unknown';
+      'unknown',
+    );
     return this.attendanceService.checkIn(req.user.companyId, req.user.userId, ip, dto);
   }
 
   @Post('check-out')
   async checkOut(@Request() req: any, @Body() dto: CheckOutDto) {
-    const ip =
+    const ip = normalizeIp(
       req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
       req.socket?.remoteAddress ||
-      'unknown';
+      'unknown',
+    );
     return this.attendanceService.checkOut(req.user.companyId, req.user.userId, ip, dto);
   }
 
