@@ -9,15 +9,18 @@ import {
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PaginationDto, PaginatedResult } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class UsersService {
   constructor(private readonly supabase: SupabaseService) {}
 
-  async listUsers(companyId: string): Promise<object[]> {
+  async listUsers(companyId: string, pagination: PaginationDto = new PaginationDto()): Promise<PaginatedResult<object>> {
     const client = this.supabase.getClient();
+    const page = pagination.page ?? 1;
+    const limit = pagination.limit ?? 20;
 
-    const { data, error } = await client
+    const { data, error, count } = await client
       .from('users')
       .select(`
         *,
@@ -30,16 +33,17 @@ export class UsersService {
             full_name
           )
         )
-      `)
+      `, { count: 'exact' })
       .eq('company_id', companyId)
       .is('deleted_at', null)
-      .order('created_at', { ascending: true });
+      .order('created_at', { ascending: true })
+      .range((page - 1) * limit, page * limit - 1);
 
     if (error) {
       throw new BadRequestException(`Failed to list users: ${error.message}`);
     }
 
-    return data ?? [];
+    return { data: data ?? [], total: count ?? 0, page, limit };
   }
 
   async createUser(companyId: string, dto: CreateUserDto): Promise<object> {

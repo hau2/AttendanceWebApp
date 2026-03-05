@@ -8,14 +8,17 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { IsBoolean } from 'class-validator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 class SetStatusDto {
   @IsBoolean()
@@ -29,8 +32,11 @@ export class UsersController {
 
   /** GET /users — list all users in the caller's company */
   @Get()
-  listUsers(@Request() req: { user: { companyId: string } }) {
-    return this.usersService.listUsers(req.user.companyId);
+  listUsers(
+    @Request() req: { user: { companyId: string } },
+    @Query(new ValidationPipe({ transform: true, whitelist: true })) pagination: PaginationDto,
+  ) {
+    return this.usersService.listUsers(req.user.companyId, pagination);
   }
 
   /** POST /users — create a new user in the caller's company.
