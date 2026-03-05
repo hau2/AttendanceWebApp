@@ -10,6 +10,7 @@ import {
   Res,
   UseGuards,
   ForbiddenException,
+  ValidationPipe,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -18,6 +19,7 @@ import { DataRefreshService } from './data-refresh.service';
 import { CheckInDto } from './dto/check-in.dto';
 import { CheckOutDto } from './dto/check-out.dto';
 import { AdjustRecordDto } from './dto/adjust-record.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller('attendance')
 @UseGuards(JwtAuthGuard)
@@ -67,6 +69,7 @@ export class AttendanceController {
     @Query('year') year: string,
     @Query('month') month: string,
     @Query('userId') userId?: string,
+    @Query(new ValidationPipe({ transform: true, whitelist: true })) pagination?: PaginationDto,
   ) {
     const { role, companyId } = req.user;
     if (!['admin', 'owner', 'manager'].includes(role)) {
@@ -80,6 +83,7 @@ export class AttendanceController {
       m,
       userId,
       role === 'manager' ? req.user.userId : undefined,
+      pagination,
     );
   }
 

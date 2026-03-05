@@ -11,6 +11,7 @@ import { ShiftAssignmentsService, ShiftAssignmentWithShift } from '../shifts/shi
 import { CheckInDto } from './dto/check-in.dto';
 import { CheckOutDto } from './dto/check-out.dto';
 import { AdjustRecordDto } from './dto/adjust-record.dto';
+import { PaginationDto, PaginatedResult } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class AttendanceService {
@@ -515,8 +516,11 @@ export class AttendanceService {
     month: number,
     userId?: string,
     managerId?: string,
-  ): Promise<Record<string, unknown>[]> {
+    pagination: PaginationDto = new PaginationDto(),
+  ): Promise<PaginatedResult<Record<string, unknown>>> {
     const client = this.supabase.getClient();
+    const page = pagination.page ?? 1;
+    const limit = pagination.limit ?? 20;
 
     // If manager scope is requested, use division-based employee lookup
     let employeeIds: string[] | undefined;
@@ -538,7 +542,7 @@ export class AttendanceService {
 
       // If manager has no divisions, return empty immediately
       if (divisionIds.length === 0) {
-        return [];
+        return { data: [], total: 0, page, limit };
       }
 
       // Step 2: Find employees in those divisions
@@ -559,7 +563,7 @@ export class AttendanceService {
 
       // If no employees in those divisions, return empty immediately
       if (employeeIds.length === 0) {
-        return [];
+        return { data: [], total: 0, page, limit };
       }
     }
 
@@ -571,13 +575,7 @@ export class AttendanceService {
 
     let query = client
       .from('attendance_records')
-      .select(`
-        *,
-        users!user_id (
-          full_name,
-          email
-        )
-      `)
+      .select(`*, users!user_id ( full_name, email )`, { count: 'exact' })
       .eq('company_id', companyId)
       .gte('work_date', startDate)
       .lt('work_date', endDate)
@@ -591,7 +589,7 @@ export class AttendanceService {
       query = query.eq('user_id', userId);
     }
 
-    const { data, error } = await query;
+    const { data, error, count } = await query.range((page - 1) * limit, page * limit - 1);
 
     if (error) {
       throw new InternalServerErrorException(
@@ -599,7 +597,12 @@ export class AttendanceService {
       );
     }
 
-    return (data ?? []) as Record<string, unknown>[];
+    return {
+      data: (data ?? []) as Record<string, unknown>[],
+      total: count ?? 0,
+      page,
+      limit,
+    };
   }
 
   /**
