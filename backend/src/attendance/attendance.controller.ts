@@ -140,6 +140,7 @@ export class AttendanceController {
     @Request() req: any,
     @Query('year') year: string,
     @Query('month') month: string,
+    @Query(new ValidationPipe({ transform: true, whitelist: true })) pagination: PaginationDto,
   ) {
     const { role, companyId, userId } = req.user;
     if (!['admin', 'owner', 'manager'].includes(role)) {
@@ -148,7 +149,7 @@ export class AttendanceController {
     const y = parseInt(year) || new Date().getFullYear();
     const m = parseInt(month) || new Date().getMonth() + 1;
     const managerId = role === 'manager' ? userId : undefined;
-    return this.attendanceService.getMonthlyReport(companyId, y, m, managerId);
+    return this.attendanceService.getMonthlyReport(companyId, y, m, managerId, pagination);
   }
 
   /**

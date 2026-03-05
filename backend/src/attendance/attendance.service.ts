@@ -847,12 +847,14 @@ export class AttendanceService {
   /**
    * Returns full monthly attendance records with late statistics.
    * Optionally scoped to a manager's employees when managerId is provided.
+   * pagination controls which slice of records is returned; stats always reflect the full month.
    */
   async getMonthlyReport(
     companyId: string,
     year: number,
     month: number,
     managerId?: string,
+    pagination: PaginationDto = new PaginationDto(),
   ): Promise<Record<string, unknown>> {
     const client = this.supabase.getClient();
 
@@ -892,6 +894,9 @@ export class AttendanceService {
             missingCheckoutCount: 0,
             lateRate: 0,
           },
+          total: 0,
+          page: pagination.page ?? 1,
+          limit: pagination.limit ?? 20,
         };
       }
 
@@ -926,6 +931,9 @@ export class AttendanceService {
           missingCheckoutCount: 0,
           lateRate: 0,
         },
+        total: 0,
+        page: pagination.page ?? 1,
+        limit: pagination.limit ?? 20,
       };
     }
 
@@ -957,6 +965,12 @@ export class AttendanceService {
     }
 
     const reportRecords = data ?? [];
+    const page = pagination.page ?? 1;
+    const limit = pagination.limit ?? 20;
+
+    // Slice records for the requested page; stats always reflect the full dataset
+    const pagedRecords = reportRecords.slice((page - 1) * limit, page * limit);
+
     const total = reportRecords.length;
     const lateCount = reportRecords.filter(
       (r: Record<string, unknown>) => r.check_in_status === 'late',
@@ -973,7 +987,7 @@ export class AttendanceService {
     const lateRate = total > 0 ? Math.round((lateCount / total) * 1000) / 10 : 0;
 
     return {
-      records: reportRecords,
+      records: pagedRecords,
       stats: {
         total,
         lateCount,
@@ -982,6 +996,9 @@ export class AttendanceService {
         missingCheckoutCount,
         lateRate,
       },
+      total,
+      page,
+      limit,
     };
   }
 
@@ -996,7 +1013,11 @@ export class AttendanceService {
     managerId?: string,
   ): Promise<string> {
     try {
-      const report = await this.getMonthlyReport(companyId, year, month, managerId);
+      // Use a large limit to ensure exportCsv always fetches all records in one call.
+      // The @Max(100) constraint on PaginationDto only applies at the HTTP layer (ValidationPipe);
+      // internal callers can exceed it by constructing the DTO directly.
+      const exportPagination = Object.assign(new PaginationDto(), { page: 1, limit: 100000 });
+      const report = await this.getMonthlyReport(companyId, year, month, managerId, exportPagination);
       const csvRecords = report.records as Record<string, unknown>[];
 
       const escapeValue = (val: unknown): string => {
