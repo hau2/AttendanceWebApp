@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { AttendanceRecordWithUser, acknowledgeRecord, acknowledgeRemote } from '@/lib/api/attendance';
 import { AdjustAttendanceModal } from './AdjustAttendanceModal';
+import { StatusBadge, RemoteBadge } from '@/components/ui/status-badge';
 
 interface Props {
   record: AttendanceRecordWithUser | null;
@@ -19,17 +20,6 @@ function formatTime(isoStr: string | null): string {
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr + 'T00:00:00');
   return d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-}
-
-function statusBadge(status: string | null) {
-  const map: Record<string, string> = {
-    'on-time': 'bg-green-100 text-green-800',
-    'within-grace': 'bg-yellow-100 text-yellow-800',
-    'late': 'bg-red-100 text-red-800',
-    'early': 'bg-orange-100 text-orange-800',
-  };
-  if (!status) return null;
-  return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${map[status] || 'bg-gray-100 text-gray-600'}`}>{status}</span>;
 }
 
 export function AttendanceRecordDetail({ record, onClose, onAdjusted, userRole }: Props) {
@@ -80,12 +70,12 @@ export function AttendanceRecordDetail({ record, onClose, onAdjusted, userRole }
           <div>
             <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Check-in</h3>
             {localRecord?.is_remote && (
-              <span className="inline-block mb-2 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Remote Work</span>
+              <span className="inline-block mb-2"><RemoteBadge /></span>
             )}
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-700 font-medium">{formatTime(record.check_in_at)}</span>
-                {statusBadge(record.check_in_status)}
+                <StatusBadge status={record.check_in_status} />
                 {record.minutes_late > 0 && (
                   <span className="text-xs text-red-600">+{record.minutes_late} min late</span>
                 )}
@@ -163,7 +153,7 @@ export function AttendanceRecordDetail({ record, onClose, onAdjusted, userRole }
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <span className="text-sm text-gray-700 font-medium">{formatTime(record.check_out_at)}</span>
-                {statusBadge(record.check_out_status)}
+                <StatusBadge status={record.check_out_status} />
                 {record.minutes_early > 0 && (
                   <span className="text-xs text-orange-600">-{record.minutes_early} min early</span>
                 )}

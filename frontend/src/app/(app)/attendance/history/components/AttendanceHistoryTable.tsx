@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { AttendanceRecord } from '@/lib/api/attendance';
+import { StatusBadge, RemoteBadge } from '@/components/ui/status-badge';
 
 interface Props {
   records: AttendanceRecord[];
@@ -15,21 +16,6 @@ function formatDate(dateStr: string): string {
 function formatTime(isoStr: string | null): string {
   if (!isoStr) return '—';
   return new Date(isoStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-}
-
-function statusBadge(status: string | null, missing: boolean) {
-  if (missing) return <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Missing checkout</span>;
-  const map: Record<string, string> = {
-    'on-time': 'bg-green-100 text-green-800',
-    'within-grace': 'bg-yellow-100 text-yellow-800',
-    'late': 'bg-red-100 text-red-800',
-    'early': 'bg-orange-100 text-orange-800',
-    'absent': 'bg-gray-100 text-gray-600',
-    'absent_morning': 'bg-purple-100 text-purple-700',
-    'absent_afternoon': 'bg-amber-100 text-amber-700',
-  };
-  if (!status) return null;
-  return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${map[status] || 'bg-gray-100 text-gray-600'}`}>{status}</span>;
 }
 
 export function AttendanceHistoryTable({ records }: Props) {
@@ -71,15 +57,13 @@ export function AttendanceHistoryTable({ records }: Props) {
                       <span className="text-gray-400">—</span>
                     )}
                   </td>
-                  <td className="py-3">{statusBadge(r.check_in_status, r.missing_checkout)}</td>
+                  <td className="py-3"><StatusBadge status={r.check_in_status} missingCheckout={r.missing_checkout} /></td>
                   <td className="py-3">
                     {r.minutes_late > 0 && <span className="text-red-600">+{r.minutes_late} min</span>}
                     {r.minutes_early > 0 && <span className="text-orange-600">-{r.minutes_early} min</span>}
                   </td>
                   <td className="py-3">
-                    {r.is_remote && (
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Remote</span>
-                    )}
+                    {r.is_remote && <RemoteBadge />}
                   </td>
                   <td className="py-3 text-xs text-gray-500">
                     {(r.acknowledged_at || r.remote_acknowledged_at) ? (

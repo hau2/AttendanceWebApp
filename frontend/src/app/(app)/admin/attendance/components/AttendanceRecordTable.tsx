@@ -2,6 +2,7 @@
 
 import { AttendanceRecordWithUser } from '@/lib/api/attendance';
 import { User } from '@/lib/api/users';
+import { StatusBadge, RemoteBadge } from '@/components/ui/status-badge';
 
 interface Props {
   records: AttendanceRecordWithUser[];
@@ -17,20 +18,6 @@ function formatDate(dateStr: string): string {
 function formatTime(isoStr: string | null): string {
   if (!isoStr) return '—';
   return new Date(isoStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
-}
-
-function statusBadge(status: string | null) {
-  const map: Record<string, string> = {
-    'on-time': 'bg-green-100 text-green-800',
-    'within-grace': 'bg-yellow-100 text-yellow-800',
-    'late': 'bg-red-100 text-red-800',
-    'early': 'bg-orange-100 text-orange-800',
-    'absent': 'bg-gray-100 text-gray-600',
-    'absent_morning': 'bg-purple-100 text-purple-700',
-    'absent_afternoon': 'bg-amber-100 text-amber-700',
-  };
-  if (!status) return <span className="text-gray-400">—</span>;
-  return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${map[status] || 'bg-gray-100 text-gray-600'}`}>{status}</span>;
 }
 
 export function AttendanceRecordTable({ records, usersMap, onSelectRecord }: Props) {
@@ -70,11 +57,9 @@ export function AttendanceRecordTable({ records, usersMap, onSelectRecord }: Pro
                 <td className="py-3 px-4 text-gray-600">{managerName}</td>
                 <td className="py-3 px-4 text-gray-700">{formatDate(r.work_date)}</td>
                 <td className="py-3 px-4 text-gray-700">{formatTime(r.check_in_at)}</td>
-                <td className="py-3 px-4">{statusBadge(r.check_in_status)}</td>
+                <td className="py-3 px-4"><StatusBadge status={r.check_in_status} /></td>
                 <td className="py-3 px-4">
-                  {r.is_remote && (
-                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Remote</span>
-                  )}
+                  {r.is_remote && <RemoteBadge />}
                 </td>
                 <td className="py-3 px-4 max-w-xs">
                   {r.late_reason && (
@@ -95,9 +80,9 @@ export function AttendanceRecordTable({ records, usersMap, onSelectRecord }: Pro
                 </td>
                 <td className="py-3 px-4">
                   {r.missing_checkout ? (
-                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">Missing checkout</span>
+                    <StatusBadge status={null} missingCheckout={r.missing_checkout} />
                   ) : (
-                    statusBadge(r.check_out_status)
+                    <StatusBadge status={r.check_out_status} />
                   )}
                 </td>
                 <td className="py-3 px-4">
