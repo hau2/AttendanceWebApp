@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-04T02:48:39.146Z"
+last_updated: "2026-03-05T13:57:16Z"
 progress:
   total_phases: 8
   completed_phases: 8
@@ -22,10 +22,10 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 
 ## Current Position
 
-Phase: Phase 8 - Remote Work + Acknowledgment Flow (Complete)
-Plan: 08-04 (Human verification — complete)
-Status: Phase 8 complete — all 7 requirements (RMOT-01, RMOT-02, ACKN-01 through ACKN-05) human-verified and approved. Remote Work toggle, Remote badge across all views, Manager Acknowledge Late/Early + Acknowledge Remote, Employee acknowledgment status in history — all confirmed working end-to-end.
-Last activity: 2026-03-04 — 08-04 human verification approved
+Phase: Phase 9 - Advanced Monitoring (Complete)
+Plan: 09-02 (Data Refresh Frontend + Status Filters — complete)
+Status: 09-02 complete — triggerRefresh() API function, getCompanySettings() with last_refresh_at, Data Refresh button (admin/owner) with last-refresh timestamp display, status filter dropdown (5 options), extended statusBadge for absent/absent_morning in AttendanceRecordTable. Phase 9 fully delivered.
+Last activity: 2026-03-05 — 09-02 Frontend: Data Refresh UI + status filter dropdown delivered
 
 Progress: [████████████████░░░░] 60% (3/5 v2.0 phases)
 
@@ -179,6 +179,14 @@ Recent decisions affecting current work:
 - Remote toggle resets in openCamera() rather than on submission — prevents stale checkbox state if user cancels mid-flow (08-03)
 - Remote badge color bg-blue-100 text-blue-700 used consistently across all three views (admin table, record detail, employee history) — distinct from all existing status badge colors (08-03)
 - [Phase 08]: Phase 8 human verification passed — all 7 scenarios confirmed with no code changes required post-delivery
+- DataRefreshService is a separate injectable service (not merged into AttendanceService) — keeps refresh logic isolated and independently testable (09-01)
+- handleRefresh reloads records via listRecords() after triggerRefresh() resolves — absent rows inserted by backend become visible immediately without manual page reload (09-02)
+- Status filter dropdown always rendered (not role-gated) — admin and manager both benefit from filtering by late/early/absent statuses (09-02)
+- absent_afternoon filter uses client-side logic: check_in_at !== null && check_out_at === null — no backend query change needed (09-02)
+- absent_morning inserted for today (no check-in yet), absent inserted for yesterday (no record at all) — two distinct temporal windows in runRefresh() (09-01)
+- Upsert with ignoreDuplicates=true makes runRefresh idempotent — second call re-stamps last_refresh_at but does not duplicate absent rows (09-01)
+- Only active, non-deleted employees (is_active=true AND deleted_at IS NULL) are candidates for absent records — soft-deleted employees excluded (09-01)
+- Migration uses DROP CONSTRAINT IF EXISTS + ADD CONSTRAINT to extend the CHECK constraint — standard PostgreSQL pattern for altering check constraints (09-01)
 
 ### Pending Todos
 
@@ -196,6 +204,7 @@ Recent decisions affecting current work:
 - Run 004_divisions_rls.sql RLS policy in Supabase SQL editor AFTER running 007_divisions.sql (Phase 6)
 - Run 008_employee_lifecycle.sql migration in Supabase SQL editor before testing Phase 7 endpoints (adds users.timezone column)
 - Run 010_remote_acknowledgment.sql migration in Supabase SQL editor before testing Phase 8 endpoints (adds is_remote + 4 ack columns)
+- Run 011_data_refresh.sql migration in Supabase SQL editor before testing Phase 9 Data Refresh endpoint (extends check_in_status + adds last_refresh_at to companies)
 
 ### Blockers/Concerns
 
@@ -203,7 +212,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-04
-Stopped at: Completed 08-04-PLAN.md — Phase 8 human verification approved (all 7 scenarios passed)
+Last session: 2026-03-05
+Stopped at: Completed 09-02-PLAN.md — Data Refresh UI (triggerRefresh, last_refresh_at display, status filter dropdown) on Admin Attendance page
 Resume file: None
-Next: 09-advanced-monitoring — Manual Data Refresh job (absent/absent-morning statuses), advanced status filters
+Next: Phase 10 — UI Polish

@@ -182,8 +182,8 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 09-01-PLAN.md — DB migration (011_data_refresh.sql: extend check_in_status constraint + add last_refresh_at to companies) + DataRefreshService + POST /attendance/refresh controller route
-- [ ] 09-02-PLAN.md — Frontend: triggerRefresh() API, getCompanySettings() with last_refresh_at, Data Refresh button + timestamp display, status filter dropdown (5 options)
+- [x] 09-01-PLAN.md — DB migration (011_data_refresh.sql: extend check_in_status constraint + add last_refresh_at to companies) + DataRefreshService + POST /attendance/refresh controller route
+- [x] 09-02-PLAN.md — Frontend: triggerRefresh() API, getCompanySettings() with last_refresh_at, Data Refresh button + timestamp display, status filter dropdown (5 options)
 - [ ] 09-03-PLAN.md — Human verification checkpoint (all 9 requirements: RFSH-01 through RFSH-04, FLTR-01 through FLTR-05)
 
 ### Phase 10: UI Polish
@@ -213,7 +213,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Division Architecture | 6/6 | Complete   | 2026-03-03 |
 | 7. Employee Lifecycle + Per-User Timezone | 5/5 | Complete   | 2026-03-03 |
 | 8. Remote Work + Acknowledgment Flow | 4/4 | Complete    | 2026-03-04 |
-| 9. Advanced Monitoring | 0/3 | In progress | - |
+| 9. Advanced Monitoring | 2/3 | In progress | - |
 | 10. UI Polish | 0/? | Not started | - |
 
 ---

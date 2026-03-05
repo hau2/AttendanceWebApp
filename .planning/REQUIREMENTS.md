@@ -132,18 +132,18 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 ### Data Refresh (RFSH)
 
-- [ ] **RFSH-01**: Admin can manually trigger a Data Refresh job via a button on the Admin Attendance page
-- [ ] **RFSH-02**: Data Refresh marks every active employee with no check-in record for today as "Absent Morning" (intended to run at or after 12:00 PM)
-- [ ] **RFSH-03**: Data Refresh marks every active employee with no attendance record at all for yesterday as "Absent" (full day absent)
-- [ ] **RFSH-04**: Admin can see the date and time of the last Data Refresh run on the attendance page
+- [x] **RFSH-01**: Admin can manually trigger a Data Refresh job via a button on the Admin Attendance page
+- [x] **RFSH-02**: Data Refresh marks every active employee with no check-in record for today as "Absent Morning" (intended to run at or after 12:00 PM)
+- [x] **RFSH-03**: Data Refresh marks every active employee with no attendance record at all for yesterday as "Absent" (full day absent)
+- [x] **RFSH-04**: Admin can see the date and time of the last Data Refresh run on the attendance page
 
 ### Advanced Attendance Filters (FLTR)
 
-- [ ] **FLTR-01**: Admin and Manager can filter the attendance table by "Late" — shows only records where check-in was classified as late
-- [ ] **FLTR-02**: Admin and Manager can filter the attendance table by "Early Leave" — shows only records where check-out was classified as early
-- [ ] **FLTR-03**: Admin and Manager can filter the attendance table by "Absent" — shows only records marked as absent (no show all day)
-- [ ] **FLTR-04**: Admin and Manager can filter the attendance table by "Absent Morning" — shows only records where no check-in was recorded before 12:00 PM
-- [ ] **FLTR-05**: Admin and Manager can filter the attendance table by "Absent Afternoon" — shows only records where check-in exists but no check-out was recorded after 12:00 PM
+- [x] **FLTR-01**: Admin and Manager can filter the attendance table by "Late" — shows only records where check-in was classified as late
+- [x] **FLTR-02**: Admin and Manager can filter the attendance table by "Early Leave" — shows only records where check-out was classified as early
+- [x] **FLTR-03**: Admin and Manager can filter the attendance table by "Absent" — shows only records marked as absent (no show all day)
+- [x] **FLTR-04**: Admin and Manager can filter the attendance table by "Absent Morning" — shows only records where no check-in was recorded before 12:00 PM
+- [x] **FLTR-05**: Admin and Manager can filter the attendance table by "Absent Afternoon" — shows only records where check-in exists but no check-out was recorded after 12:00 PM
 
 ### UI & UX Improvements (UIUX)
 
@@ -267,15 +267,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ACKN-03 | Phase 8 | Complete |
 | ACKN-04 | Phase 8 | Complete |
 | ACKN-05 | Phase 8 | Complete |
-| RFSH-01 | Phase 9 | Pending |
-| RFSH-02 | Phase 9 | Pending |
-| RFSH-03 | Phase 9 | Pending |
-| RFSH-04 | Phase 9 | Pending |
-| FLTR-01 | Phase 9 | Pending |
-| FLTR-02 | Phase 9 | Pending |
-| FLTR-03 | Phase 9 | Pending |
-| FLTR-04 | Phase 9 | Pending |
-| FLTR-05 | Phase 9 | Pending |
+| RFSH-01 | Phase 9 | Complete |
+| RFSH-02 | Phase 9 | Complete |
+| RFSH-03 | Phase 9 | Complete |
+| RFSH-04 | Phase 9 | Complete |
+| FLTR-01 | Phase 9 | Complete |
+| FLTR-02 | Phase 9 | Complete |
+| FLTR-03 | Phase 9 | Complete |
+| FLTR-04 | Phase 9 | Complete |
+| FLTR-05 | Phase 9 | Complete |
 | UIUX-01 | Phase 10 | Pending |
 | UIUX-02 | Phase 10 | Pending |
 | UIUX-03 | Phase 10 | Pending |
