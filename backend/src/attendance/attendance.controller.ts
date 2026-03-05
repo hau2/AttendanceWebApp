@@ -29,6 +29,19 @@ export class AttendanceController {
     private readonly dataRefreshService: DataRefreshService,
   ) {}
 
+  /**
+   * Any authenticated user: pre-check whether their IP is within the company allowlist.
+   * Returns { ip, withinAllowlist, ipMode } without triggering any attendance action.
+   */
+  @Get('ip-check')
+  async ipCheck(@Request() req: any) {
+    const ip =
+      req.headers['x-forwarded-for']?.split(',')[0]?.trim() ||
+      req.socket?.remoteAddress ||
+      'unknown';
+    return this.attendanceService.getIpCheckResult(req.user.companyId, ip);
+  }
+
   @Post('check-in')
   async checkIn(@Request() req: any, @Body() dto: CheckInDto) {
     const ip =

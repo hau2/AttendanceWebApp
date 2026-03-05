@@ -12,6 +12,7 @@ import { CheckInDto } from './dto/check-in.dto';
 import { CheckOutDto } from './dto/check-out.dto';
 import { AdjustRecordDto } from './dto/adjust-record.dto';
 import { PaginationDto, PaginatedResult } from '../common/dto/pagination.dto';
+import { ipInAllowlist } from '../common/ip-restriction.util';
 
 @Injectable()
 export class AttendanceService {
@@ -126,48 +127,11 @@ export class AttendanceService {
   }
 
   /**
-   * Check the caller's IP against the company's allowlist.
-   * Returns { withinAllowlist, blocked }.
-   * Empty allowlist = no restriction (pass-through).
-   */
-  private async checkIP(
-    companyId: string,
-    callerIp: string,
-  ): Promise<{ withinAllowlist: boolean; blocked: boolean }> {
-    const client = this.supabase.getClient();
-    const { data: company, error } = await client
-      .from('companies')
-      .select('ip_mode, ip_allowlist')
-      .eq('id', companyId)
-      .single();
-
-    if (error || !company) {
-      throw new InternalServerErrorException('Failed to fetch company settings');
-    }
-
-    const ipMode: string = company.ip_mode ?? 'log-only';
-    const allowlist: string[] = company.ip_allowlist ?? [];
-
-    // Empty allowlist = no restriction
-    if (!allowlist || allowlist.length === 0) {
-      return { withinAllowlist: true, blocked: false };
-    }
-
-    const withinAllowlist = allowlist.includes(callerIp);
-
-    if (ipMode === 'enforce-block' && !withinAllowlist) {
-      return { withinAllowlist: false, blocked: true };
-    }
-
-    return { withinAllowlist, blocked: false };
-  }
-
-  /**
    * Fetch company timezone and IP settings in one query.
    */
   private async getCompanySettings(
     companyId: string,
-  ): Promise<{ timezone: string; ipMode: string; ipAllowlist: string[] }> {
+  ): Promise<{ timezone: string; ipMode: 'disabled' | 'log-only' | 'enforce-block'; ipAllowlist: Array<{ cidr: string; label?: string }> }> {
     const client = this.supabase.getClient();
     const { data: company, error } = await client
       .from('companies')
@@ -181,9 +145,69 @@ export class AttendanceService {
 
     return {
       timezone: company.timezone ?? 'Asia/Ho_Chi_Minh',
-      ipMode: company.ip_mode ?? 'log-only',
-      ipAllowlist: company.ip_allowlist ?? [],
+      ipMode: (company.ip_mode ?? 'log-only') as 'disabled' | 'log-only' | 'enforce-block',
+      ipAllowlist: (company.ip_allowlist as Array<{ cidr: string; label?: string }>) ?? [],
     };
+  }
+
+  /**
+   * Resolve IP restriction for a check-in/check-out request.
+   * Handles disabled mode, empty allowlist, is_remote bypass, CIDR matching,
+   * enforce-block blocking, and log-only violation flagging.
+   */
+  private async resolveIpRestriction(params: {
+    companyId: string;
+    ip: string;
+    isRemote: boolean;
+  }): Promise<{ blocked: boolean; violation: boolean; withinAllowlist: boolean }> {
+    const { companyId, ip, isRemote } = params;
+    const client = this.supabase.getClient();
+    const { data: company, error } = await client
+      .from('companies')
+      .select('ip_mode, ip_allowlist')
+      .eq('id', companyId)
+      .single();
+
+    if (error || !company) {
+      throw new InternalServerErrorException('Failed to fetch company settings');
+    }
+
+    const ipMode = (company.ip_mode ?? 'log-only') as 'disabled' | 'log-only' | 'enforce-block';
+    const allowlist = (company.ip_allowlist as Array<{ cidr: string; label?: string }>) ?? [];
+
+    // Disabled mode or empty allowlist: no restriction
+    if (ipMode === 'disabled' || allowlist.length === 0) {
+      return { blocked: false, violation: false, withinAllowlist: true };
+    }
+
+    const withinAllowlist = ipInAllowlist(allowlist, ip);
+
+    // Remote bypass: is_remote=true always passes through (but still compute withinAllowlist)
+    if (isRemote) {
+      return { blocked: false, violation: false, withinAllowlist };
+    }
+
+    // enforce-block: non-matching IP is blocked
+    if (ipMode === 'enforce-block' && !withinAllowlist) {
+      return { blocked: true, violation: false, withinAllowlist: false };
+    }
+
+    // log-only: non-matching IP sets violation flag but does not block
+    if (ipMode === 'log-only' && !withinAllowlist) {
+      return { blocked: false, violation: true, withinAllowlist: false };
+    }
+
+    return { blocked: false, violation: false, withinAllowlist: true };
+  }
+
+  /**
+   * Return IP check result for the authenticated user's company.
+   * Used by frontend to pre-check IP status before check-in/check-out.
+   */
+  async getIpCheckResult(companyId: string, ip: string): Promise<{ ip: string; withinAllowlist: boolean; ipMode: string }> {
+    const { ipMode, ipAllowlist } = await this.getCompanySettings(companyId);
+    const withinAllowlist = ipInAllowlist(ipAllowlist, ip);
+    return { ip, withinAllowlist, ipMode };
   }
 
   /**
@@ -198,8 +222,8 @@ export class AttendanceService {
   ): Promise<Record<string, unknown>> {
     const client = this.supabase.getClient();
 
-    // 1. Fetch company settings
-    const { timezone, ipMode, ipAllowlist } = await this.getCompanySettings(companyId);
+    // 1. Fetch company settings (timezone only; IP check uses resolveIpRestriction)
+    const { timezone } = await this.getCompanySettings(companyId);
 
     // 1b. Fetch user's personal timezone override
     const { data: userRecord, error: userError } = await client
@@ -216,17 +240,12 @@ export class AttendanceService {
     // Apply override: user timezone takes priority; fallback to company timezone
     const effectiveTimezone: string = (userRecord?.timezone as string | null) ?? timezone;
 
-    // 2. IP check
-    const allowlist = ipAllowlist ?? [];
-    let withinAllowlist = true;
-    let blocked = false;
-
-    if (allowlist.length > 0) {
-      withinAllowlist = allowlist.includes(ip);
-      if (ipMode === 'enforce-block' && !withinAllowlist) {
-        blocked = true;
-      }
-    }
+    // 2. IP check (CIDR-aware, with disabled mode and is_remote bypass)
+    const { blocked, violation, withinAllowlist } = await this.resolveIpRestriction({
+      companyId,
+      ip,
+      isRemote: dto.is_remote ?? false,
+    });
 
     if (blocked) {
       throw new ForbiddenException(
@@ -286,6 +305,7 @@ export class AttendanceService {
               check_out_photo_url: dto.photo_url ?? null,
               check_out_ip: ip,
               check_out_ip_within_allowlist: withinAllowlist,
+              ip_violation: violation,
               source: 'employee',
               updated_at: now.toISOString(),
             })
@@ -332,6 +352,7 @@ export class AttendanceService {
           minutes_late: minutesLate,
           late_reason: dto.late_reason ?? null,
           check_in_ip_within_allowlist: withinAllowlist,
+          ip_violation: violation,
           is_remote: dto.is_remote ?? false,
           source: 'employee',
         },
@@ -361,8 +382,8 @@ export class AttendanceService {
   ): Promise<Record<string, unknown>> {
     const client = this.supabase.getClient();
 
-    // 1. Fetch company settings
-    const { timezone, ipMode, ipAllowlist } = await this.getCompanySettings(companyId);
+    // 1. Fetch company settings (timezone only; IP check uses resolveIpRestriction)
+    const { timezone } = await this.getCompanySettings(companyId);
 
     // 1b. Fetch user's personal timezone override
     const { data: userRecord, error: userError } = await client
@@ -379,21 +400,16 @@ export class AttendanceService {
     // Apply override: user timezone takes priority; fallback to company timezone
     const effectiveTimezone: string = (userRecord?.timezone as string | null) ?? timezone;
 
-    // 2. IP check
-    const allowlist = ipAllowlist ?? [];
-    let withinAllowlist = true;
-    let blocked = false;
-
-    if (allowlist.length > 0) {
-      withinAllowlist = allowlist.includes(ip);
-      if (ipMode === 'enforce-block' && !withinAllowlist) {
-        blocked = true;
-      }
-    }
+    // 2. IP check (CIDR-aware, with disabled mode; check-out has no is_remote flag)
+    const { blocked, violation, withinAllowlist } = await this.resolveIpRestriction({
+      companyId,
+      ip,
+      isRemote: false,
+    });
 
     if (blocked) {
       throw new ForbiddenException(
-        "Check-in blocked: your IP address is not in the company allowlist",
+        "Check-out blocked: your IP address is not in the company allowlist",
       );
     }
 
@@ -453,6 +469,7 @@ export class AttendanceService {
         minutes_early: minutesEarly,
         early_note: dto.early_note ?? null,
         check_out_ip_within_allowlist: withinAllowlist,
+        ip_violation: violation,
         updated_at: now.toISOString(),
       })
       .eq('id', record.id)
