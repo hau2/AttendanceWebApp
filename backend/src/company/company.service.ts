@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import { UpdateCompanySettingsDto } from './dto/update-company-settings.dto';
+import { AddIpEntryDto } from './dto/add-ip-entry.dto';
 
 @Injectable()
 export class CompanyService {
@@ -24,7 +25,6 @@ export class CompanyService {
     const updateData: Record<string, unknown> = {};
     if (dto.timezone !== undefined) updateData.timezone = dto.timezone;
     if (dto.ipMode !== undefined) updateData.ip_mode = dto.ipMode;
-    if (dto.ipAllowlist !== undefined) updateData.ip_allowlist = dto.ipAllowlist;
 
     const { data, error } = await this.supabase
       .getClient()
@@ -37,6 +37,60 @@ export class CompanyService {
     if (error) {
       throw new NotFoundException(`Failed to update company: ${error.message}`);
     }
+    return data;
+  }
+
+  async addIpEntry(companyId: string, dto: AddIpEntryDto) {
+    const { data: company, error: fetchError } = await this.supabase
+      .getClient()
+      .from('companies')
+      .select('ip_allowlist')
+      .eq('id', companyId)
+      .single();
+
+    if (fetchError || !company) throw new NotFoundException('Company not found');
+
+    const current: Array<{ cidr: string; label?: string }> = (company.ip_allowlist as Array<{ cidr: string; label?: string }>) ?? [];
+    const entry: { cidr: string; label?: string } = { cidr: dto.cidr };
+    if (dto.label) entry.label = dto.label;
+    const updated = [...current, entry];
+
+    const { data, error } = await this.supabase
+      .getClient()
+      .from('companies')
+      .update({ ip_allowlist: updated })
+      .eq('id', companyId)
+      .select('ip_allowlist')
+      .single();
+
+    if (error) throw new NotFoundException(`Failed to add IP entry: ${error.message}`);
+    return data;
+  }
+
+  async removeIpEntry(companyId: string, index: number) {
+    const { data: company, error: fetchError } = await this.supabase
+      .getClient()
+      .from('companies')
+      .select('ip_allowlist')
+      .eq('id', companyId)
+      .single();
+
+    if (fetchError || !company) throw new NotFoundException('Company not found');
+
+    const current: Array<{ cidr: string; label?: string }> = (company.ip_allowlist as Array<{ cidr: string; label?: string }>) ?? [];
+    if (index < 0 || index >= current.length) throw new NotFoundException('IP entry not found');
+
+    const updated = [...current.slice(0, index), ...current.slice(index + 1)];
+
+    const { data, error } = await this.supabase
+      .getClient()
+      .from('companies')
+      .update({ ip_allowlist: updated })
+      .eq('id', companyId)
+      .select('ip_allowlist')
+      .single();
+
+    if (error) throw new NotFoundException(`Failed to remove IP entry: ${error.message}`);
     return data;
   }
 }

@@ -1,4 +1,4 @@
-import { IsIn, IsOptional, IsString, IsArray } from 'class-validator';
+import { IsIn, IsOptional, IsString } from 'class-validator';
 
 export class UpdateCompanySettingsDto {
   @IsOptional()
@@ -6,11 +6,6 @@ export class UpdateCompanySettingsDto {
   timezone?: string;
 
   @IsOptional()
-  @IsIn(['log-only', 'enforce-block'])
-  ipMode?: 'log-only' | 'enforce-block';
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  ipAllowlist?: string[];
+  @IsIn(['disabled', 'log-only', 'enforce-block'])
+  ipMode?: 'disabled' | 'log-only' | 'enforce-block';
 }
