@@ -18,14 +18,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** Phase 12 - UI Polish (In Progress — plan 12-04 done, 12-05 next)
+**Current focus:** Phase 12 - UI Polish (In Progress — plans 12-01 through 12-04 done, 12-05 next)
 
 ## Current Position
 
 Phase: Phase 12 - UI Polish (In Progress)
-Plan: 12-04 (complete)
-Status: 12-04 complete — Employee Detail page at /admin/employees/[id] with Shadcn Table, month navigation, route guard, inline notes/acknowledgments. Employee name links added in AttendanceRecordTable. UIUX-03 and UIUX-05 satisfied.
-Last activity: 2026-03-06 — 12-04 complete
+Plan: 12-02 (complete — retroactive; was skipped in earlier execution)
+Status: 12-02 complete — Live HH:MM:SS clock on Employee Home dashboard; StatusBadge/RemoteBadge wired into AttendanceHistoryTable, AttendanceRecordTable, AttendanceRecordDetail. UIUX-01 and UIUX-02 satisfied.
+Last activity: 2026-03-06 — 12-02 complete (all plans 12-01..12-04 now done)
 
 Progress: [████████████████████] 96% (48/50 plans complete)
 
@@ -245,6 +245,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-06
-Stopped at: Completed 12-04-PLAN.md — Employee Detail page created at /admin/employees/[id] with Shadcn Table; employee name links added to AttendanceRecordTable. UIUX-03 and UIUX-05 satisfied.
+Stopped at: Completed 12-02-PLAN.md (retroactive) — Live clock on dashboard and StatusBadge/RemoteBadge wired into all three attendance views. Plans 12-01..12-04 all complete.
 Resume file: None
 Next: Phase 12 — UI Polish plan 12-05 (Human verification checkpoint)
