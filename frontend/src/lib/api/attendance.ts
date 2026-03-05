@@ -1,5 +1,12 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export interface AttendanceRecord {
   id: string;
   company_id: string;
@@ -131,13 +138,15 @@ export async function listRecords(
   year: number,
   month: number,
   userId?: string,
-): Promise<AttendanceRecordWithUser[]> {
-  const params = new URLSearchParams({ year: String(year), month: String(month) });
+  page = 1,
+  limit = 20,
+): Promise<PaginatedResult<AttendanceRecordWithUser>> {
+  const params = new URLSearchParams({ year: String(year), month: String(month), page: String(page), limit: String(limit) });
   if (userId) params.set('userId', userId);
   const res = await fetch(`${API_URL}/attendance/records?${params}`, {
     headers: { Authorization: `Bearer ${getToken()}` },
   });
-  if (!res.ok) return [];
+  if (!res.ok) return { data: [], total: 0, page, limit };
   return res.json();
 }
 
@@ -217,11 +226,19 @@ export interface MonthlyReportStats {
 export interface MonthlyReport {
   records: AttendanceRecordWithUser[];
   stats: MonthlyReportStats;
+  total: number;
+  page: number;
+  limit: number;
 }
 
-export async function getMonthlyReport(year: number, month: number): Promise<MonthlyReport> {
+export async function getMonthlyReport(
+  year: number,
+  month: number,
+  page = 1,
+  limit = 20,
+): Promise<MonthlyReport> {
   const res = await fetch(
-    `${API_URL}/attendance/reports/monthly?year=${year}&month=${month}`,
+    `${API_URL}/attendance/reports/monthly?year=${year}&month=${month}&page=${page}&limit=${limit}`,
     { headers: { Authorization: `Bearer ${getToken()}` } },
   );
   if (!res.ok) {

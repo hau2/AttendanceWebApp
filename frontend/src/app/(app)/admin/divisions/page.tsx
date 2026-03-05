@@ -33,9 +33,9 @@ export default function DivisionsPage() {
       return;
     }
     try {
-      const [divs, users] = await Promise.all([listDivisions(token), listUsers(token)]);
+      const [divs, usersResult] = await Promise.all([listDivisions(token), listUsers(token, 1, 1000)]);
       setDivisions(divs);
-      setManagers(users.filter((u) => u.role === 'manager'));
+      setManagers(usersResult.data.filter((u) => u.role === 'manager'));
       setError(null);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to load divisions');

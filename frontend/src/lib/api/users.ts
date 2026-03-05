@@ -1,5 +1,12 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
 export interface User {
   id: string;
   company_id: string;
@@ -37,8 +44,12 @@ export interface UpdateUserData {
   divisionId?: string;
 }
 
-export async function listUsers(token: string): Promise<User[]> {
-  const res = await fetch(`${API_URL}/users`, {
+export async function listUsers(
+  token: string,
+  page = 1,
+  limit = 20,
+): Promise<PaginatedResult<User>> {
+  const res = await fetch(`${API_URL}/users?page=${page}&limit=${limit}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) {
