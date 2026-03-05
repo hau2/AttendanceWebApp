@@ -163,8 +163,8 @@ Requirements for initial release. Each maps to a roadmap phase.
 ### UI & UX Improvements (UIUX)
 
 - [ ] **UIUX-01**: Employee Home page displays a live HH:MM:SS clock showing the current time in the device's local timezone
-- [ ] **UIUX-02**: All attendance status badges use a consistent Lucide icon per state (CheckCircle = On-time, Clock = Late, LogOut = Early Leave, AlertCircle = Missing Checkout, XCircle = Absent, Laptop = Remote)
-- [ ] **UIUX-03**: All new modals, tables, dropdowns, and form components use Shadcn UI components for visual consistency
+- [x] **UIUX-02**: All attendance status badges use a consistent Lucide icon per state (CheckCircle = On-time, Clock = Late, LogOut = Early Leave, AlertCircle = Missing Checkout, XCircle = Absent, Laptop = Remote)
+- [x] **UIUX-03**: All new modals, tables, dropdowns, and form components use Shadcn UI components for visual consistency
 - [ ] **UIUX-04**: Executive can click on any employee row in the dashboard to drill down to that employee's full attendance history (read-only)
 - [ ] **UIUX-05**: Manager has a dedicated Employee Detail page showing one employee's full monthly attendance table with late/early reasons and acknowledgment status
 
@@ -301,8 +301,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | IPRX-04 | Phase 11 | Complete |
 | IPRX-05 | Phase 11 | Complete |
 | UIUX-01 | Phase 12 | Pending |
-| UIUX-02 | Phase 12 | Pending |
-| UIUX-03 | Phase 12 | Pending |
+| UIUX-02 | Phase 12 | Complete |
+| UIUX-03 | Phase 12 | Complete |
 | UIUX-04 | Phase 12 | Pending |
 | UIUX-05 | Phase 12 | Pending |
 

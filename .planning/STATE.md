@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-05T19:01:27.459Z"
+last_updated: "2026-03-05T23:45:59.127Z"
 progress:
-  total_phases: 11
+  total_phases: 12
   completed_phases: 11
-  total_plans: 45
-  completed_plans: 45
+  total_plans: 50
+  completed_plans: 46
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** Phase 12 - UI Polish (next)
+**Current focus:** Phase 12 - UI Polish (In Progress — plan 12-01 done, 12-02 next)
 
 ## Current Position
 
-Phase: Phase 11 - IP Restriction (Complete)
-Plan: 11-04 (complete)
-Status: 11-04 complete — Human E2E verification passed. All 20 verification steps confirmed. All 5 IPRX requirements (IPRX-01 through IPRX-05) verified in live environment. SQL migration 013 applied to Supabase. Phase 11 fully complete.
-Last activity: 2026-03-06 — 11-04 human verification complete; Phase 11 done
+Phase: Phase 12 - UI Polish (In Progress)
+Plan: 12-01 (complete)
+Status: 12-01 complete — Shadcn UI initialized, lucide-react installed, StatusBadge and RemoteBadge shared components created. UIUX-02 and UIUX-03 requirements satisfied.
+Last activity: 2026-03-05 — 12-01 complete
 
-Progress: [████████████████████] 100% (Phase 11 complete)
+Progress: [████████████████████] 92% (46/50 plans complete)
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Progress: [████████████████████] 100% (P
 
 *Updated after each plan completion*
 | Phase 08-remote-work-acknowledgment-flow P04 | 2 | 1 tasks | 0 files |
+| Phase 12-ui-polish P01 | 4 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -208,6 +209,8 @@ Recent decisions affecting current work:
 - IP check failure (network/auth error) falls through to camera — infrastructure failure must not block employees from checking in (11-03)
 - ip-blocked state shows remote work hint inline rather than auto-transitioning — user must explicitly tick checkbox and retry, making bypass intent explicit (11-03)
 - Phase 11 E2E human verification passed — all 20 verification steps confirmed; no code changes required post-delivery (11-04)
+- [Phase 12-ui-polish]: JSX.Element return type replaced with ReactElement from react (imported as type) — jsx: react-jsx tsconfig does not expose global JSX namespace
+- [Phase 12-ui-polish]: ElementType from react used for icon field in StatusConfig instead of React.ElementType — avoids React namespace import while keeping TypeScript strict
 
 ### Pending Todos
 
@@ -233,7 +236,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-06
-Stopped at: Completed 11-04-PLAN.md — Phase 11 IP Restriction fully verified. All 5 IPRX requirements confirmed. Phase 11 complete.
+Last session: 2026-03-05
+Stopped at: Completed 12-01-PLAN.md — Shadcn UI initialized, lucide-react installed, StatusBadge + RemoteBadge components created. UIUX-02 and UIUX-03 satisfied.
 Resume file: None
-Next: Phase 12 — UI Polish (UIUX-01 through UIUX-05)
+Next: Phase 12 — UI Polish plan 12-02
