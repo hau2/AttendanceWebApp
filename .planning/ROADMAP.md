@@ -24,7 +24,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 8: Remote Work + Acknowledgment Flow** - Remote Work check-in option, Manager Acknowledge button for late/early/remote records, Employee sees acknowledgment status (completed 2026-03-04)
 - [ ] **Phase 9: Advanced Monitoring** - Manual Data Refresh job (absent/absent-morning statuses), advanced status filters (5 filter types) in attendance tables
 - [x] **Phase 10: API Pagination** - Offset-based pagination (page/limit) on all high-volume list endpoints; paginated tables in frontend (completed 2026-03-05)
-- [ ] **Phase 11: IP Restriction** - CIDR support, disabled mode, remote-worker bypass, Company Settings UI, frontend pre-check before camera opens
+- [x] **Phase 11: IP Restriction** - CIDR support, disabled mode, remote-worker bypass, Company Settings UI, frontend pre-check before camera opens (completed 2026-03-06)
 - [ ] **Phase 12: UI Polish** - Live clock on Employee Home, Lucide status badge icons, Shadcn component upgrades, Executive drill-down, Manager Employee Detail page
 
 ## Phase Details
@@ -220,7 +220,7 @@ Plans:
 - [x] 11-01-PLAN.md — DB migration 013 (disabled mode, ip_violation column, JSONB allowlist) + CIDR utility + allowlist CRUD endpoints + attendance IP enforcement overhaul + GET /attendance/ip-check
 - [x] 11-02-PLAN.md — Admin Company Settings page (/admin/settings) with IP mode selector and allowlist CRUD; Settings nav link
 - [x] 11-03-PLAN.md — Frontend IP pre-check in CheckInOutCard (blocking error, soft warning with "Continue anyway", remote bypass, disabled passthrough)
-- [ ] 11-04-PLAN.md — Human verification checkpoint (all 5 IPRX requirements end-to-end)
+- [x] 11-04-PLAN.md — Human verification checkpoint (all 5 IPRX requirements end-to-end)
 
 ### Phase 12: UI Polish
 **Goal**: Every role-specific UI surface is visually consistent — the Employee Home has a live clock, all status states carry a recognizable Lucide icon, new modals and tables use Shadcn components, and the Executive and Manager drill-down experiences are complete
@@ -251,7 +251,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Remote Work + Acknowledgment Flow | 4/4 | Complete    | 2026-03-04 |
 | 9. Advanced Monitoring | 3/3 | Complete | 2026-03-05 |
 | 10. API Pagination | 3/3 | Complete    | 2026-03-05 |
-| 11. IP Restriction | 3/4 | In progress | - |
+| 11. IP Restriction | 4/4 | Complete    | 2026-03-06 |
 | 12. UI Polish | 0/? | Not started | - |
 
 ---

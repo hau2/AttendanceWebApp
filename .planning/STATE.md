@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: in-progress
-last_updated: "2026-03-05T18:23:33Z"
+last_updated: "2026-03-06T00:00:00Z"
 progress:
   total_phases: 12
-  completed_phases: 10
+  completed_phases: 11
   total_plans: 45
-  completed_plans: 44
+  completed_plans: 45
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** Phase 11 - IP Restriction (in progress)
+**Current focus:** Phase 12 - UI Polish (next)
 
 ## Current Position
 
-Phase: Phase 11 - IP Restriction (In Progress)
-Plan: 11-03 (complete)
-Status: 11-03 complete — IP pre-check gate in CheckInOutCard: handleActionButton() calls checkIpStatus() before camera opens; enforce-block shows ip-blocked card; log-only shows ip-warning card with "Continue anyway"; remote bypass in enforce-block mode; disabled/empty allowlist passes through. TypeScript compiles cleanly.
-Last activity: 2026-03-05 — 11-03 frontend IP pre-check gate complete
+Phase: Phase 11 - IP Restriction (Complete)
+Plan: 11-04 (complete)
+Status: 11-04 complete — Human E2E verification passed. All 20 verification steps confirmed. All 5 IPRX requirements (IPRX-01 through IPRX-05) verified in live environment. SQL migration 013 applied to Supabase. Phase 11 fully complete.
+Last activity: 2026-03-06 — 11-04 human verification complete; Phase 11 done
 
-Progress: [████████████████████] 80% (11-03 complete)
+Progress: [████████████████████] 100% (Phase 11 complete)
 
 ## Performance Metrics
 
@@ -207,6 +207,7 @@ Recent decisions affecting current work:
 - handleActionButton() replaces direct openCamera() call on main action button — IP check gate sits between user intent and camera opening, so employees see IP status before taking a photo (11-03)
 - IP check failure (network/auth error) falls through to camera — infrastructure failure must not block employees from checking in (11-03)
 - ip-blocked state shows remote work hint inline rather than auto-transitioning — user must explicitly tick checkbox and retry, making bypass intent explicit (11-03)
+- Phase 11 E2E human verification passed — all 20 verification steps confirmed; no code changes required post-delivery (11-04)
 
 ### Pending Todos
 
@@ -232,7 +233,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-05
-Stopped at: Completed 11-03-PLAN.md — Frontend IP pre-check gate in CheckInOutCard (blocking error, soft warning, remote bypass, disabled passthrough)
+Last session: 2026-03-06
+Stopped at: Completed 11-04-PLAN.md — Phase 11 IP Restriction fully verified. All 5 IPRX requirements confirmed. Phase 11 complete.
 Resume file: None
-Next: Phase 11 Plan 04 — Human verification checkpoint (all 5 IPRX requirements end-to-end)
+Next: Phase 12 — UI Polish (UIUX-01 through UIUX-05)
