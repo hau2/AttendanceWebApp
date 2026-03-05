@@ -3,13 +3,15 @@ import { useEffect, useRef, useState } from 'react';
 import {
   AttendanceRecord,
   checkIn,
+  checkIpStatus,
   checkOut,
   getPhotoUploadUrl,
   getTodayRecord,
+  IpCheckResult,
   uploadPhotoBlob,
 } from '@/lib/api/attendance';
 
-type FlowState = 'idle' | 'camera-open' | 'photo-preview' | 'submitting' | 'error';
+type FlowState = 'idle' | 'ip-checking' | 'ip-blocked' | 'ip-warning' | 'camera-open' | 'photo-preview' | 'submitting' | 'error';
 type Action = 'check-in' | 'check-out';
 
 export function CheckInOutCard() {
@@ -24,6 +26,7 @@ export function CheckInOutCard() {
   const [lateReason, setLateReason] = useState('');
   const [earlyNote, setEarlyNote] = useState('');
   const [isRemote, setIsRemote] = useState(false);
+  const [ipCheckResult, setIpCheckResult] = useState<IpCheckResult | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -80,6 +83,47 @@ export function CheckInOutCard() {
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Camera access denied');
       setFlowState('error');
+    }
+  }
+
+  async function handleActionButton() {
+    setError(null);
+    setFlowState('ip-checking');
+    try {
+      const result = await checkIpStatus();
+      setIpCheckResult(result);
+
+      // No restriction when: disabled mode, allowlist is empty (withinAllowlist=true), or IP matches allowlist
+      if (result.ipMode === 'disabled' || result.withinAllowlist) {
+        // Proceed directly to camera
+        await openCamera();
+        return;
+      }
+
+      // IP is outside allowlist
+      if (result.ipMode === 'enforce-block') {
+        // Remote work bypass: if checkbox is already checked, allow through
+        if (action === 'check-in' && isRemote) {
+          await openCamera();
+          return;
+        }
+        // Block
+        setFlowState('ip-blocked');
+        return;
+      }
+
+      if (result.ipMode === 'log-only') {
+        // Show soft warning — let user decide
+        setFlowState('ip-warning');
+        return;
+      }
+
+      // Fallback: proceed
+      await openCamera();
+    } catch {
+      // If IP check fails (e.g. network error), fall through to camera — don't block employee
+      setFlowState('idle');
+      await openCamera();
     }
   }
 
@@ -201,7 +245,7 @@ export function CheckInOutCard() {
             </label>
           )}
           <button
-            onClick={openCamera}
+            onClick={handleActionButton}
             className={
               action === 'check-in'
                 ? 'w-full py-4 px-6 bg-green-600 text-white text-xl font-bold rounded-xl hover:bg-green-700 transition-colors'
@@ -211,6 +255,56 @@ export function CheckInOutCard() {
             {action === 'check-in' ? 'CHECK IN' : 'CHECK OUT'}
           </button>
         </>
+      )}
+
+      {/* IP checking spinner */}
+      {flowState === 'ip-checking' && (
+        <div className="py-8 text-center">
+          <p className="text-sm text-gray-500">Checking network access...</p>
+        </div>
+      )}
+
+      {/* IP warning — log-only mode with IP outside allowlist */}
+      {flowState === 'ip-warning' && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-5 text-left">
+          <p className="text-sm font-semibold text-yellow-800 mb-1">Outside Office Network</p>
+          <p className="text-sm text-yellow-700 mb-4">
+            Your IP address ({ipCheckResult?.ip}) is not in the company allowlist. Your check-in will be
+            flagged as an IP violation. You can continue or cancel.
+          </p>
+          <div className="flex gap-3">
+            <button
+              onClick={async () => { await openCamera(); }}
+              className="px-4 py-2 bg-yellow-600 text-white text-sm font-medium rounded-lg hover:bg-yellow-700"
+            >
+              Continue anyway
+            </button>
+            <button
+              onClick={() => setFlowState('idle')}
+              className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* IP blocked — enforce-block mode with IP outside allowlist and not remote */}
+      {flowState === 'ip-blocked' && (
+        <div className="bg-red-50 border border-red-200 rounded-xl p-5 text-left">
+          <p className="text-sm font-semibold text-red-800 mb-1">Check-in Blocked</p>
+          <p className="text-sm text-red-700 mb-4">
+            Your IP address ({ipCheckResult?.ip}) is not in the company allowlist and IP restriction is
+            enforced. You cannot check in from this network.
+          </p>
+          <p className="text-xs text-gray-500 mb-3">Working remotely? Tick &quot;Working remotely today&quot; above and try again.</p>
+          <button
+            onClick={() => setFlowState('idle')}
+            className="px-4 py-2 border border-gray-300 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-50"
+          >
+            Back
+          </button>
+        </div>
       )}
 
       {/* Camera open */}
