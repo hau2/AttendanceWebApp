@@ -12,7 +12,7 @@ export class DataRefreshService {
    * - Updates companies.last_refresh_at
    * Returns counts of inserted records.
    */
-  async runRefresh(companyId: string): Promise<{ absentMorningCount: number; absentCount: number; lastRefreshAt: string }> {
+  async runRefresh(companyId: string): Promise<{ absentMorningCount: number; absentCount: number; absentAfternoonCount: number; lastRefreshAt: string }> {
     const client = this.supabase.getClient();
 
     // 1. Fetch company timezone
@@ -52,7 +52,7 @@ export class DataRefreshService {
       // No employees — just update last_refresh_at and return
       const now = new Date().toISOString();
       await client.from('companies').update({ last_refresh_at: now }).eq('id', companyId);
-      return { absentMorningCount: 0, absentCount: 0, lastRefreshAt: now };
+      return { absentMorningCount: 0, absentCount: 0, absentAfternoonCount: 0, lastRefreshAt: now };
     }
 
     // 4. Find employees who already have a record for today
@@ -143,6 +143,30 @@ export class DataRefreshService {
       absentCount = (inserted ?? []).length;
     }
 
+    // 7b. Mark yesterday's open records (checked in, no checkout) as absent_afternoon
+    let absentAfternoonCount = 0;
+    const { data: openRecords } = await client
+      .from('attendance_records')
+      .select('id')
+      .eq('company_id', companyId)
+      .eq('work_date', yesterdayStr)
+      .not('check_in_at', 'is', null)
+      .is('check_out_at', null);
+
+    if ((openRecords ?? []).length > 0) {
+      const openIds = (openRecords ?? []).map((r) => (r as Record<string, unknown>).id as string);
+      const { data: updatedOpen, error: openErr } = await client
+        .from('attendance_records')
+        .update({ check_out_status: 'absent_afternoon', updated_at: now })
+        .in('id', openIds)
+        .select('id');
+
+      if (openErr) {
+        throw new InternalServerErrorException(`Failed to mark absent_afternoon records: ${openErr.message}`);
+      }
+      absentAfternoonCount = (updatedOpen ?? []).length;
+    }
+
     // 8. Update companies.last_refresh_at
     const { error: refreshErr } = await client
       .from('companies')
@@ -153,6 +177,6 @@ export class DataRefreshService {
       throw new InternalServerErrorException(`Failed to update last_refresh_at: ${refreshErr.message}`);
     }
 
-    return { absentMorningCount, absentCount, lastRefreshAt: now };
+    return { absentMorningCount, absentCount, absentAfternoonCount, lastRefreshAt: now };
   }
 }

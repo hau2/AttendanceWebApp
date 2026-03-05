@@ -136,7 +136,9 @@ export default function AdminAttendancePage() {
       if (filterStatus === 'early' && r.check_out_status !== 'early') return false;
       if (filterStatus === 'absent' && r.check_in_status !== 'absent') return false;
       if (filterStatus === 'absent_morning' && r.check_in_status !== 'absent_morning') return false;
-      if (filterStatus === 'absent_afternoon' && !(r.check_in_at !== null && r.check_out_at === null)) return false;
+      if (filterStatus === 'absent_afternoon' &&
+          r.check_out_status !== 'absent_afternoon' &&
+          !(r.check_in_at !== null && r.check_out_at === null)) return false;
     }
     return true;
   });

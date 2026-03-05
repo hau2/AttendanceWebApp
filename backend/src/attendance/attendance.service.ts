@@ -54,15 +54,27 @@ export class AttendanceService {
   }
 
   /**
-   * Classify check-in as 'on-time', 'within-grace', or 'late'.
+   * Classify check-in as 'on-time', 'within-grace', 'late', or 'absent_morning'.
    * Returns status and minutes_late.
    */
   private classifyCheckIn(
     checkInAt: Date,
     shift: ShiftAssignmentWithShift,
     timezone: string,
-  ): { status: 'on-time' | 'within-grace' | 'late'; minutesLate: number } {
+  ): { status: 'on-time' | 'within-grace' | 'late' | 'absent_morning'; minutesLate: number } {
     const checkInMinutes = this.getMinutesInTimezone(checkInAt, timezone);
+
+    // Check afternoon_start_time: check-in at or after this time = missed morning
+    if (shift.shifts.afternoon_start_time) {
+      const afternoonStartMinutes = this.parseShiftTimeToMinutes(shift.shifts.afternoon_start_time);
+      if (checkInMinutes >= afternoonStartMinutes) {
+        return {
+          status: 'absent_morning',
+          minutesLate: Math.max(0, checkInMinutes - afternoonStartMinutes),
+        };
+      }
+    }
+
     const shiftStartMinutes = this.parseShiftTimeToMinutes(shift.shifts.start_time);
     const gracePeriod = shift.shifts.grace_period_minutes;
 
@@ -82,15 +94,24 @@ export class AttendanceService {
   }
 
   /**
-   * Classify check-out as 'on-time' or 'early'.
+   * Classify check-out as 'on-time', 'early', or 'absent_afternoon'.
    * Returns status and minutes_early.
    */
   private classifyCheckOut(
     checkOutAt: Date,
     shift: ShiftAssignmentWithShift,
     timezone: string,
-  ): { status: 'on-time' | 'early'; minutesEarly: number } {
+  ): { status: 'on-time' | 'early' | 'absent_afternoon'; minutesEarly: number } {
     const checkOutMinutes = this.getMinutesInTimezone(checkOutAt, timezone);
+
+    // Check morning_end_time: check-out at or before this time = missed afternoon
+    if (shift.shifts.morning_end_time) {
+      const morningEndMinutes = this.parseShiftTimeToMinutes(shift.shifts.morning_end_time);
+      if (checkOutMinutes <= morningEndMinutes) {
+        return { status: 'absent_afternoon', minutesEarly: 0 };
+      }
+    }
+
     const shiftEndMinutes = this.parseShiftTimeToMinutes(shift.shifts.end_time);
 
     if (checkOutMinutes >= shiftEndMinutes) {
@@ -215,12 +236,16 @@ export class AttendanceService {
     // 3. Get work date in effective timezone
     const workDate = this.getWorkDate(effectiveTimezone);
 
-    // 4. Check for existing record (idempotency guard)
+    // 4. Check for existing REAL check-in record (idempotency guard).
+    // Synthetic absent/absent_morning rows inserted by DataRefreshService have
+    // check_in_at = NULL — they are placeholders, not real check-ins.
+    // We only block if a row with an actual check_in_at timestamp already exists.
     const { data: existing, error: existingError } = await client
       .from('attendance_records')
       .select('id')
       .eq('user_id', userId)
       .eq('work_date', workDate)
+      .not('check_in_at', 'is', null)
       .maybeSingle();
 
     if (existingError) {
@@ -237,8 +262,44 @@ export class AttendanceService {
     const now = new Date();
     const shift = await this.shiftAssignmentsService.getActiveShift(companyId, userId);
 
+    // 5b. Post-shift guard: if current time > shift end, treat as checkout on absent_morning
+    if (shift) {
+      const nowMinutes = this.getMinutesInTimezone(now, effectiveTimezone);
+      const shiftEndMinutes = this.parseShiftTimeToMinutes(shift.shifts.end_time);
+      if (nowMinutes > shiftEndMinutes) {
+        // Look for absent_morning placeholder (check_in_at IS NULL)
+        const { data: absentRow } = await client
+          .from('attendance_records')
+          .select('id')
+          .eq('user_id', userId)
+          .eq('work_date', workDate)
+          .is('check_in_at', null)
+          .maybeSingle();
+
+        if (absentRow) {
+          // Perform checkout: update absent_morning record with check_out_at
+          const { data: updated, error: updateErr } = await client
+            .from('attendance_records')
+            .update({
+              check_out_at: now.toISOString(),
+              check_out_photo_url: dto.photo_url ?? null,
+              check_out_ip: ip,
+              check_out_ip_within_allowlist: withinAllowlist,
+              source: 'employee',
+              updated_at: now.toISOString(),
+            })
+            .eq('id', absentRow.id)
+            .select()
+            .single();
+          if (updateErr || !updated) throw new InternalServerErrorException('Failed to record post-shift checkout');
+          return updated as Record<string, unknown>;
+        }
+        throw new BadRequestException('Shift has ended');
+      }
+    }
+
     // 6. Classify check-in
-    let checkInStatus: 'on-time' | 'within-grace' | 'late' = 'on-time';
+    let checkInStatus: 'on-time' | 'within-grace' | 'late' | 'absent_morning' = 'on-time';
     let minutesLate = 0;
 
     if (shift) {
@@ -247,28 +308,34 @@ export class AttendanceService {
       minutesLate = classification.minutesLate;
     }
 
-    // 7. Require late_reason if late
-    if (checkInStatus === 'late' && !dto.late_reason) {
+    // 7. Require late_reason if late (including late arrival to afternoon session)
+    if ((checkInStatus === 'late' || (checkInStatus === 'absent_morning' && minutesLate > 0)) && !dto.late_reason) {
       throw new BadRequestException('Late check-in requires a reason');
     }
 
-    // 8. Insert attendance record
+    // 8. Upsert attendance record.
+    // Using upsert (onConflict: 'user_id,work_date') so that if a synthetic
+    // absent_morning placeholder exists for today it is atomically replaced by
+    // the real check-in data. ignoreDuplicates: false ensures the row IS updated.
     const { data, error } = await client
       .from('attendance_records')
-      .insert({
-        company_id: companyId,
-        user_id: userId,
-        work_date: workDate,
-        check_in_at: now.toISOString(),
-        check_in_photo_url: dto.photo_url ?? null,
-        check_in_ip: ip,
-        check_in_status: checkInStatus,
-        minutes_late: minutesLate,
-        late_reason: dto.late_reason ?? null,
-        check_in_ip_within_allowlist: withinAllowlist,
-        is_remote: dto.is_remote ?? false,
-        source: 'employee',
-      })
+      .upsert(
+        {
+          company_id: companyId,
+          user_id: userId,
+          work_date: workDate,
+          check_in_at: now.toISOString(),
+          check_in_photo_url: dto.photo_url ?? null,
+          check_in_ip: ip,
+          check_in_status: checkInStatus,
+          minutes_late: minutesLate,
+          late_reason: dto.late_reason ?? null,
+          check_in_ip_within_allowlist: withinAllowlist,
+          is_remote: dto.is_remote ?? false,
+          source: 'employee',
+        },
+        { onConflict: 'user_id,work_date', ignoreDuplicates: false },
+      )
       .select()
       .single();
 
@@ -360,7 +427,7 @@ export class AttendanceService {
     const now = new Date();
     const shift = await this.shiftAssignmentsService.getActiveShift(companyId, userId);
 
-    let checkOutStatus: 'on-time' | 'early' = 'on-time';
+    let checkOutStatus: 'on-time' | 'early' | 'absent_afternoon' = 'on-time';
     let minutesEarly = 0;
 
     if (shift) {

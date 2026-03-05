@@ -28,6 +28,8 @@ export interface Shift {
   start_time: string;
   end_time: string;
   grace_period_minutes: number;
+  morning_end_time: string | null;
+  afternoon_start_time: string | null;
   created_at: string;
 }
 
@@ -36,6 +38,8 @@ export interface CreateShiftData {
   startTime: string;
   endTime: string;
   gracePeriodMinutes: number;
+  morningEndTime?: string | null;
+  afternoonStartTime?: string | null;
 }
 
 export async function listShifts(token: string): Promise<Shift[]> {

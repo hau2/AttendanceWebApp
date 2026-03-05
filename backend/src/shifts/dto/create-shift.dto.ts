@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsString, Matches, Max, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsString, Matches, Max, Min } from 'class-validator';
 
 export class CreateShiftDto {
   @IsString()
@@ -17,4 +17,14 @@ export class CreateShiftDto {
   @Min(0)
   @Max(120)
   gracePeriodMinutes: number;
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^\d{2}:\d{2}$/, { message: 'morningEndTime must be in HH:MM format' })
+  morningEndTime?: string;
+
+  @IsOptional()
+  @IsString()
+  @Matches(/^\d{2}:\d{2}$/, { message: 'afternoonStartTime must be in HH:MM format' })
+  afternoonStartTime?: string;
 }

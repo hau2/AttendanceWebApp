@@ -18,6 +18,8 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
   const [startTime, setStartTime] = useState('');
   const [endTime, setEndTime] = useState('');
   const [gracePeriodMinutes, setGracePeriodMinutes] = useState(0);
+  const [morningEndTime, setMorningEndTime] = useState('');
+  const [afternoonStartTime, setAfternoonStartTime] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -28,11 +30,15 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
       setStartTime(shift.start_time.slice(0, 5));
       setEndTime(shift.end_time.slice(0, 5));
       setGracePeriodMinutes(shift.grace_period_minutes);
+      setMorningEndTime(shift.morning_end_time?.slice(0, 5) ?? '');
+      setAfternoonStartTime(shift.afternoon_start_time?.slice(0, 5) ?? '');
     } else {
       setName('');
       setStartTime('');
       setEndTime('');
       setGracePeriodMinutes(0);
+      setMorningEndTime('');
+      setAfternoonStartTime('');
     }
     setError('');
   }, [shift, open]);
@@ -48,10 +54,32 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
       const token = getStoredToken();
       if (!token) throw new Error('Not authenticated');
 
+      // Validate split-day windows: both must be set together or both empty
+      const hasMorningEnd = !!morningEndTime;
+      const hasAfternoonStart = !!afternoonStartTime;
+      if (hasMorningEnd !== hasAfternoonStart) {
+        throw new Error('Morning End and Afternoon Start must both be set or both be empty');
+      }
+      if (hasMorningEnd && hasAfternoonStart) {
+        const [mh, mm] = morningEndTime.split(':').map(Number);
+        const [ah, am] = afternoonStartTime.split(':').map(Number);
+        if (ah * 60 + am <= mh * 60 + mm) {
+          throw new Error('Afternoon Start must be after Morning End');
+        }
+      }
+
       if (isEditMode && shift) {
-        await updateShift(token, shift.id, { name, startTime, endTime, gracePeriodMinutes });
+        await updateShift(token, shift.id, {
+          name, startTime, endTime, gracePeriodMinutes,
+          morningEndTime: morningEndTime || null,
+          afternoonStartTime: afternoonStartTime || null,
+        });
       } else {
-        await createShift(token, { name, startTime, endTime, gracePeriodMinutes });
+        await createShift(token, {
+          name, startTime, endTime, gracePeriodMinutes,
+          morningEndTime: morningEndTime || null,
+          afternoonStartTime: afternoonStartTime || null,
+        });
       }
 
       onSaved();
@@ -141,6 +169,37 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
               onChange={(e) => setGracePeriodMinutes(parseInt(e.target.value, 10) || 0)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
+          </div>
+
+          <div>
+            <p className="text-sm font-medium text-gray-700 mb-2">Split-Day Windows (Optional)</p>
+            <p className="text-xs text-gray-500 mb-3">Set both fields to enable half-day tracking. Check-in after Afternoon Start marks absent morning; check-out before Morning End marks absent afternoon.</p>
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label htmlFor="morning-end-time" className="block text-sm font-medium text-gray-700 mb-1">
+                  Morning End
+                </label>
+                <input
+                  id="morning-end-time"
+                  type="time"
+                  value={morningEndTime}
+                  onChange={(e) => setMorningEndTime(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+              <div>
+                <label htmlFor="afternoon-start-time" className="block text-sm font-medium text-gray-700 mb-1">
+                  Afternoon Start
+                </label>
+                <input
+                  id="afternoon-start-time"
+                  type="time"
+                  value={afternoonStartTime}
+                  onChange={(e) => setAfternoonStartTime(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                />
+              </div>
+            </div>
           </div>
 
           <div className="flex justify-end gap-3 pt-2">

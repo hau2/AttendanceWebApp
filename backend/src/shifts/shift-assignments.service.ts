@@ -21,6 +21,8 @@ export interface ShiftAssignmentWithShift extends ShiftAssignment {
     start_time: string;
     end_time: string;
     grace_period_minutes: number;
+    morning_end_time: string | null;
+    afternoon_start_time: string | null;
   };
 }
 
@@ -111,7 +113,9 @@ export class ShiftAssignmentsService {
           name,
           start_time,
           end_time,
-          grace_period_minutes
+          grace_period_minutes,
+          morning_end_time,
+          afternoon_start_time
         )
       `,
       )
@@ -149,7 +153,9 @@ export class ShiftAssignmentsService {
           name,
           start_time,
           end_time,
-          grace_period_minutes
+          grace_period_minutes,
+          morning_end_time,
+          afternoon_start_time
         )
       `,
       )

@@ -15,7 +15,7 @@ export interface AttendanceRecord {
   check_out_at: string | null;
   check_out_photo_url: string | null;
   check_out_ip: string | null;
-  check_out_status: 'on-time' | 'early' | null;
+  check_out_status: 'on-time' | 'early' | 'absent_afternoon' | null;
   minutes_early: number;
   early_note: string | null;
   check_out_ip_within_allowlist: boolean | null;
@@ -275,6 +275,7 @@ export async function acknowledgeRemote(recordId: string): Promise<AttendanceRec
 export interface RefreshResult {
   absentMorningCount: number;
   absentCount: number;
+  absentAfternoonCount: number;
   lastRefreshAt: string;
 }
 

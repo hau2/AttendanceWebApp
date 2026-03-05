@@ -24,6 +24,9 @@ function statusBadge(status: string | null, missing: boolean) {
     'within-grace': 'bg-yellow-100 text-yellow-800',
     'late': 'bg-red-100 text-red-800',
     'early': 'bg-orange-100 text-orange-800',
+    'absent': 'bg-gray-100 text-gray-600',
+    'absent_morning': 'bg-purple-100 text-purple-700',
+    'absent_afternoon': 'bg-amber-100 text-amber-700',
   };
   if (!status) return null;
   return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${map[status] || 'bg-gray-100 text-gray-600'}`}>{status}</span>;
@@ -60,12 +63,10 @@ export function AttendanceHistoryTable({ records }: Props) {
                   <td className="py-3 text-gray-900">{formatDate(r.work_date)}</td>
                   <td className="py-3 text-gray-700">{formatTime(r.check_in_at)}</td>
                   <td className="py-3">
-                    {r.check_in_at ? (
-                      r.missing_checkout ? (
-                        <span className="text-red-600 font-medium">Missing</span>
-                      ) : (
-                        <span className="text-gray-700">{formatTime(r.check_out_at)}</span>
-                      )
+                    {r.check_out_at ? (
+                      <span className="text-gray-700">{formatTime(r.check_out_at)}</span>
+                    ) : r.check_in_at && r.missing_checkout ? (
+                      <span className="text-red-600 font-medium">Missing</span>
                     ) : (
                       <span className="text-gray-400">—</span>
                     )}

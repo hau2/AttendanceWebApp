@@ -33,6 +33,12 @@ export default function ShiftTable({ shifts, onEdit }: ShiftTableProps) {
             <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Grace Period (minutes)
             </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Morning End
+            </th>
+            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Afternoon Start
+            </th>
             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
               Actions
             </th>
@@ -52,6 +58,12 @@ export default function ShiftTable({ shifts, onEdit }: ShiftTableProps) {
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {shift.grace_period_minutes}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {shift.morning_end_time?.slice(0, 5) ?? '—'}
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {shift.afternoon_start_time?.slice(0, 5) ?? '—'}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                 <button
