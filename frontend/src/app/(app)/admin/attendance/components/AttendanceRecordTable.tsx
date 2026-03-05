@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { AttendanceRecordWithUser } from '@/lib/api/attendance';
 import { User } from '@/lib/api/users';
 import { StatusBadge, RemoteBadge } from '@/components/ui/status-badge';
@@ -51,7 +52,13 @@ export function AttendanceRecordTable({ records, usersMap, onSelectRecord }: Pro
             return (
               <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50">
                 <td className="py-3 px-4 text-gray-900 font-medium">
-                  {r.users?.full_name || user?.full_name || 'Unknown'}
+                  <Link
+                    href={`/admin/employees/${r.user_id}`}
+                    className="hover:text-blue-600 hover:underline transition-colors"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    {r.users?.full_name || user?.full_name || 'Unknown'}
+                  </Link>
                 </td>
                 <td className="py-3 px-4 text-gray-600">{divisionName}</td>
                 <td className="py-3 px-4 text-gray-600">{managerName}</td>
