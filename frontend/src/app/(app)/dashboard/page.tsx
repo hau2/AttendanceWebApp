@@ -4,11 +4,24 @@ import Link from 'next/link';
 import { getStoredUser, AuthUser } from '@/lib/api/auth';
 import { CheckInOutCard } from './components/CheckInOutCard';
 
+function getClockString(): string {
+  return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+}
+
 export default function DashboardPage() {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [clock, setClock] = useState('');
 
   useEffect(() => {
     setUser(getStoredUser());
+  }, []);
+
+  useEffect(() => {
+    setClock(getClockString());
+    const id = setInterval(() => {
+      setClock(getClockString());
+    }, 1000);
+    return () => clearInterval(id);
   }, []);
 
   if (!user) return null;
@@ -28,6 +41,9 @@ export default function DashboardPage() {
             day: 'numeric',
           })}
         </p>
+        {clock && (
+          <p className="text-gray-900 text-3xl font-mono font-semibold mt-1 tabular-nums">{clock}</p>
+        )}
       </div>
 
       {isAttendanceParticipant ? (
