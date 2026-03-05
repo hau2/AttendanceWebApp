@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-05T17:09:41.916Z"
+status: in-progress
+last_updated: "2026-03-06T18:15:00Z"
 progress:
-  total_phases: 10
+  total_phases: 12
   completed_phases: 10
-  total_plans: 41
-  completed_plans: 41
+  total_plans: 45
+  completed_plans: 42
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** Phase 10 - API Pagination (in progress)
+**Current focus:** Phase 11 - IP Restriction (in progress)
 
 ## Current Position
 
-Phase: Phase 10 - API Pagination (In Progress)
-Plan: 10-03 (complete)
-Status: 10-03 complete — PAGI-01, PAGI-02, PAGI-03 wired in frontend. PaginationControls component created. All three admin pages (Attendance Records, User Management, Monthly Reports) now show prev/next pagination. TypeScript compiles cleanly.
-Last activity: 2026-03-06 — 10-03 frontend pagination integration complete
+Phase: Phase 11 - IP Restriction (In Progress)
+Plan: 11-01 (complete)
+Status: 11-01 complete — DB migration 013 (disabled mode, ip_violation, JSONB allowlist), CIDR utility, company allowlist CRUD endpoints, attendance IP enforcement overhaul with resolveIpRestriction() helper, GET /attendance/ip-check. TypeScript compiles cleanly.
+Last activity: 2026-03-06 — 11-01 backend IP restriction infrastructure complete
 
-Progress: [██████████████████░░] 72% (10-03 complete)
+Progress: [███████████████████░] 76% (11-01 complete)
 
 ## Performance Metrics
 
@@ -197,6 +197,11 @@ Recent decisions affecting current work:
 - PaginationControls is a shared dumb component accepting page/limit/total/onPageChange — no API coupling (10-03)
 - listUsers(token, 1, 1000) used for full user list in attendance usersMap and divisions page — avoids separate endpoint (10-03)
 - refreshUsers(p) accepts explicit page param so mutations can reset to page 1 without stale closure (10-03)
+- resolveIpRestriction() private helper centralises all IP logic — disabled mode, empty allowlist, is_remote bypass, CIDR matching, enforce-block, log-only violation — replaces two identical inline blocks (11-01)
+- ip_violation column on attendance_records marks both check-in and check-out violations in log-only mode (11-01)
+- ipAllowlist removed from UpdateCompanySettingsDto — dedicated POST/DELETE endpoints manage entries atomically (11-01)
+- checkOut uses isRemote=false — check-out has no is_remote flag (11-01)
+- Empty allowlist = no restriction (pass-through) — consistent with existing design decision from Phase 3 (11-01)
 
 ### Pending Todos
 
@@ -223,6 +228,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-06
-Stopped at: Completed 10-03-PLAN.md — Frontend pagination integration complete; Phase 10 done
+Stopped at: Completed 11-01-PLAN.md — Backend IP restriction infrastructure complete (migration, CIDR utility, company CRUD endpoints, attendance overhaul)
 Resume file: None
-Next: Phase 11 — UI Polish
+Next: Phase 11 Plan 02 — Admin Company Settings UI with IP mode selector and allowlist CRUD
