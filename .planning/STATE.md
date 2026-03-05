@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
-status: unknown
-last_updated: "2026-03-05T14:21:44.966Z"
+status: in_progress
+last_updated: "2026-03-06T00:00:00.000Z"
 progress:
-  total_phases: 9
+  total_phases: 10
   completed_phases: 9
-  total_plans: 38
-  completed_plans: 38
+  total_plans: 39
+  completed_plans: 39
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** Phase 9 - Advanced Monitoring (next)
+**Current focus:** Phase 10 - API Pagination (in progress)
 
 ## Current Position
 
-Phase: Phase 9 - Advanced Monitoring (Complete)
-Plan: 09-03 (Human Verification — complete)
-Status: 09-03 complete — all 9 Phase 9 requirements (RFSH-01..04, FLTR-01..05) verified end-to-end by human. Phase 9 fully complete.
-Last activity: 2026-03-05 — 09-03 Human verification: all 9 Phase 9 requirements approved
+Phase: Phase 10 - API Pagination (In Progress)
+Plan: 10-01 (complete)
+Status: 10-01 complete — PAGI-01 and PAGI-04 implemented. GET /attendance/records now returns { data, total, page, limit }. TypeScript compiles cleanly.
+Last activity: 2026-03-06 — 10-01 pagination contract and listRecords endpoint paginated
 
-Progress: [████████████████░░░░] 60% (3/5 v2.0 phases)
+Progress: [████████████████░░░░] 62% (10-01 complete)
 
 ## Performance Metrics
 
@@ -187,6 +187,11 @@ Recent decisions affecting current work:
 - Upsert with ignoreDuplicates=true makes runRefresh idempotent — second call re-stamps last_refresh_at but does not duplicate absent rows (09-01)
 - Only active, non-deleted employees (is_active=true AND deleted_at IS NULL) are candidates for absent records — soft-deleted employees excluded (09-01)
 - Migration uses DROP CONSTRAINT IF EXISTS + ADD CONSTRAINT to extend the CHECK constraint — standard PostgreSQL pattern for altering check constraints (09-01)
+- PaginationDto @Transform guards normalise limit=0 to 20 and omitted params to defaults — no 400 rejection for common client omissions (10-01)
+- Default parameter pagination = new PaginationDto() in listRecords service — all existing callers continue to work without modification (10-01)
+- Early-return paths (no divisions, no employees) updated to return paginated shape { data:[], total:0, page, limit } for consistent response contract (10-01)
+- { count: 'exact' } on Supabase select() for total — reflects full filtered month count, not just current page (10-01)
+- Shared DTO pattern: backend/src/common/dto/ for reusable request/response contracts across controllers (10-01)
 
 ### Pending Todos
 
@@ -212,7 +217,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-05
-Stopped at: Completed 09-03-PLAN.md — human verification: all 9 Phase 9 requirements (RFSH-01..04, FLTR-01..05) approved
+Last session: 2026-03-06
+Stopped at: Completed 10-01-PLAN.md — pagination contract + GET /attendance/records paginated
 Resume file: None
-Next: Phase 10 — UI Polish
+Next: Phase 10 — Plan 10-02 (next pagination plan if exists, else Phase 11 UI Polish)

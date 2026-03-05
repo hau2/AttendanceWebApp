@@ -145,6 +145,13 @@ Requirements for initial release. Each maps to a roadmap phase.
 - [x] **FLTR-04**: Admin and Manager can filter the attendance table by "Absent Morning" — shows only records where no check-in was recorded before 12:00 PM
 - [x] **FLTR-05**: Admin and Manager can filter the attendance table by "Absent Afternoon" — shows only records where check-in exists but no check-out was recorded after 12:00 PM
 
+### API Pagination (PAGI)
+
+- [x] **PAGI-01**: GET /attendance/records accepts `page` and `limit` query params and returns `{ data, total, page, limit }` — requesting page 2 returns the correct slice; total reflects the full unfiltered count
+- [ ] **PAGI-02**: GET /attendance/reports/monthly accepts `page` and `limit` and returns paginated rows — the Admin/Manager monthly report table renders page controls and navigates without full reload
+- [ ] **PAGI-03**: GET /users accepts `page` and `limit` and returns paginated results — the User Management table renders page controls
+- [x] **PAGI-04**: All paginated endpoints default to `limit=20` when no params are supplied; supplying `limit=0` or omitting params never crashes the server
+
 ### UI & UX Improvements (UIUX)
 
 - [ ] **UIUX-01**: Employee Home page displays a live HH:MM:SS clock showing the current time in the device's local timezone
@@ -276,11 +283,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FLTR-03 | Phase 9 | Complete |
 | FLTR-04 | Phase 9 | Complete |
 | FLTR-05 | Phase 9 | Complete |
-| UIUX-01 | Phase 10 | Pending |
-| UIUX-02 | Phase 10 | Pending |
-| UIUX-03 | Phase 10 | Pending |
-| UIUX-04 | Phase 10 | Pending |
-| UIUX-05 | Phase 10 | Pending |
+| PAGI-01 | Phase 10 | Complete |
+| PAGI-02 | Phase 10 | Pending |
+| PAGI-03 | Phase 10 | Pending |
+| PAGI-04 | Phase 10 | Complete |
+| UIUX-01 | Phase 11 | Pending |
+| UIUX-02 | Phase 11 | Pending |
+| UIUX-03 | Phase 11 | Pending |
+| UIUX-04 | Phase 11 | Pending |
+| UIUX-05 | Phase 11 | Pending |
 
 **v1 Coverage:**
 - v1 requirements: 53 total
@@ -288,10 +299,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 - Unmapped: 0 ✓
 
 **v2 Coverage:**
-- v2 requirements: 34 total
-- Mapped to phases: 34
+- v2 requirements: 38 total (34 original + 4 PAGI added 2026-03-06)
+- Mapped to phases: 38
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-03-01*
-*Last updated: 2026-03-03 — v2.0 traceability complete; 34 requirements mapped across Phases 6–10*
+*Last updated: 2026-03-06 — PAGI-01–04 added for Phase 10; UIUX moved to Phase 11; 38 v2 requirements mapped across Phases 6–11*

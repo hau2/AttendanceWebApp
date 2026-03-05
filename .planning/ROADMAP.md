@@ -185,7 +185,7 @@ Plans:
 Plans:
 - [x] 09-01-PLAN.md — DB migration (011_data_refresh.sql: extend check_in_status constraint + add last_refresh_at to companies) + DataRefreshService + POST /attendance/refresh controller route
 - [x] 09-02-PLAN.md — Frontend: triggerRefresh() API, getCompanySettings() with last_refresh_at, Data Refresh button + timestamp display, status filter dropdown (5 options)
-- [ ] 09-03-PLAN.md — Human verification checkpoint (all 9 requirements: RFSH-01 through RFSH-04, FLTR-01 through FLTR-05)
+- [x] 09-03-PLAN.md — Human verification checkpoint (all 9 requirements: RFSH-01 through RFSH-04, FLTR-01 through FLTR-05)
 
 ### Phase 10: API Pagination
 **Goal**: Every GET list endpoint that can return unbounded rows is protected by offset-based pagination — the API never returns an uncapped dataset, the frontend renders paginated tables with page controls, and a shared PaginationDto makes the contract consistent across all modules
@@ -199,7 +199,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 10-01-PLAN.md — Shared PaginationDto + PaginatedResult; paginate GET /attendance/records (service + controller)
+- [x] 10-01-PLAN.md — Shared PaginationDto + PaginatedResult; paginate GET /attendance/records (service + controller)
 - [ ] 10-02-PLAN.md — Paginate GET /users (service + controller) + GET /attendance/reports/monthly (service + controller)
 - [ ] 10-03-PLAN.md — Frontend: PaginationControls component + wire all three admin pages (Attendance, Users, Reports)
 
@@ -230,8 +230,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 6. Division Architecture | 6/6 | Complete   | 2026-03-03 |
 | 7. Employee Lifecycle + Per-User Timezone | 5/5 | Complete   | 2026-03-03 |
 | 8. Remote Work + Acknowledgment Flow | 4/4 | Complete    | 2026-03-04 |
-| 9. Advanced Monitoring | 2/3 | In progress | - |
-| 10. API Pagination | 0/3 | Not started | - |
+| 9. Advanced Monitoring | 3/3 | Complete | 2026-03-05 |
+| 10. API Pagination | 1/3 | In progress | - |
 | 11. UI Polish | 0/? | Not started | - |
 
 ---
