@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: in-progress
-last_updated: "2026-03-06T18:20:00Z"
+last_updated: "2026-03-05T18:23:33Z"
 progress:
   total_phases: 12
   completed_phases: 10
   total_plans: 45
-  completed_plans: 43
+  completed_plans: 44
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: Phase 11 - IP Restriction (In Progress)
-Plan: 11-02 (complete)
-Status: 11-02 complete — Admin Company Settings page at /admin/settings with IP mode radio group (disabled/log-only/enforce-block), IP allowlist CRUD (add CIDR+label, delete by index), Settings nav link in layout for admin/owner roles. TypeScript compiles cleanly.
-Last activity: 2026-03-06 — 11-02 frontend Admin Settings UI complete
+Plan: 11-03 (complete)
+Status: 11-03 complete — IP pre-check gate in CheckInOutCard: handleActionButton() calls checkIpStatus() before camera opens; enforce-block shows ip-blocked card; log-only shows ip-warning card with "Continue anyway"; remote bypass in enforce-block mode; disabled/empty allowlist passes through. TypeScript compiles cleanly.
+Last activity: 2026-03-05 — 11-03 frontend IP pre-check gate complete
 
-Progress: [███████████████████░] 78% (11-02 complete)
+Progress: [████████████████████] 80% (11-03 complete)
 
 ## Performance Metrics
 
@@ -204,6 +204,9 @@ Recent decisions affecting current work:
 - Empty allowlist = no restriction (pass-through) — consistent with existing design decision from Phase 3 (11-01)
 - settings state removed from AdminSettingsPage — only ipMode and allowlist needed for rendering; CompanySettings is only used to seed those two states on mount (11-02)
 - ipAllowlist removed from updateCompanySettings() — consistent with backend 11-01 decision that dedicated POST/DELETE endpoints manage entries atomically (11-02)
+- handleActionButton() replaces direct openCamera() call on main action button — IP check gate sits between user intent and camera opening, so employees see IP status before taking a photo (11-03)
+- IP check failure (network/auth error) falls through to camera — infrastructure failure must not block employees from checking in (11-03)
+- ip-blocked state shows remote work hint inline rather than auto-transitioning — user must explicitly tick checkbox and retry, making bypass intent explicit (11-03)
 
 ### Pending Todos
 
@@ -229,7 +232,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-06
-Stopped at: Completed 11-02-PLAN.md — Admin Company Settings UI complete (IP mode selector, allowlist CRUD, Settings nav link)
+Last session: 2026-03-05
+Stopped at: Completed 11-03-PLAN.md — Frontend IP pre-check gate in CheckInOutCard (blocking error, soft warning, remote bypass, disabled passthrough)
 Resume file: None
-Next: Phase 11 Plan 03 — Frontend IP pre-check in CheckInOutCard (blocking error, soft warning, remote bypass, disabled passthrough)
+Next: Phase 11 Plan 04 — Human verification checkpoint (all 5 IPRX requirements end-to-end)

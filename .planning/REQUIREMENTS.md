@@ -156,9 +156,9 @@ Requirements for initial release. Each maps to a roadmap phase.
 
 - [x] **IPRX-01**: Admin can configure IP restriction mode per company: disabled, log-only, or enforce-block — mode persists across sessions
 - [x] **IPRX-02**: Admin can manage a company-wide IP allowlist — add entries as single IPv4 addresses or CIDR ranges (e.g. 192.168.1.0/24) with an optional label; delete individual entries
-- [ ] **IPRX-03**: In enforce-block mode, check-in and check-out are blocked with a clear error message when the employee's IP does not match any allowlist entry; remote workers (is_remote=true) bypass the check
-- [ ] **IPRX-04**: In log-only mode, check-in and check-out proceed but the employee sees a soft warning; the attendance record is flagged with ip_violation=true when the IP does not match
-- [ ] **IPRX-05**: When the allowlist is empty, IP restriction has no effect regardless of mode; the check-in/check-out frontend pre-checks the IP before opening the camera so employees know their status before taking a photo
+- [x] **IPRX-03**: In enforce-block mode, check-in and check-out are blocked with a clear error message when the employee's IP does not match any allowlist entry; remote workers (is_remote=true) bypass the check
+- [x] **IPRX-04**: In log-only mode, check-in and check-out proceed but the employee sees a soft warning; the attendance record is flagged with ip_violation=true when the IP does not match
+- [x] **IPRX-05**: When the allowlist is empty, IP restriction has no effect regardless of mode; the check-in/check-out frontend pre-checks the IP before opening the camera so employees know their status before taking a photo
 
 ### UI & UX Improvements (UIUX)
 
@@ -297,9 +297,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PAGI-04 | Phase 10 | Complete |
 | IPRX-01 | Phase 11 | Complete |
 | IPRX-02 | Phase 11 | Complete |
-| IPRX-03 | Phase 11 | Pending |
-| IPRX-04 | Phase 11 | Pending |
-| IPRX-05 | Phase 11 | Pending |
+| IPRX-03 | Phase 11 | Complete |
+| IPRX-04 | Phase 11 | Complete |
+| IPRX-05 | Phase 11 | Complete |
 | UIUX-01 | Phase 12 | Pending |
 | UIUX-02 | Phase 12 | Pending |
 | UIUX-03 | Phase 12 | Pending |
