@@ -4,7 +4,7 @@
 
 The product is built in five sequential phases, each delivering a complete, verifiable capability. Phase 1 establishes the multi-tenant foundation — companies register, authenticate, and have security enforced at the database layer. Phase 2 gives Admins the tools to configure their workforce: users, roles, and shift definitions. Phase 3 delivers the core product value: employees check in and out with photo evidence, and the system classifies every record accurately. Phase 4 gives Admins the ability to correct records with a full audit trail. Phase 5 closes the loop with visibility: Managers monitor their teams, Executives see the company picture, and everyone can export data. Nothing is added for ceremony — each phase unblocks the next.
 
-v2.0 adds six further phases (6–11): Division Architecture restructures how employees are grouped and how Managers are scoped; Employee Lifecycle and Per-User Timezone fill gaps in employee management; Remote Work and Acknowledgment Flow give Managers explicit confirmation of late/remote events; Advanced Monitoring brings absent statuses and richer filters; API Pagination adds offset-based pagination to all high-volume list endpoints; UI Polish unifies the visual language across all roles.
+v2.0 adds seven further phases (6–12): Division Architecture restructures how employees are grouped and how Managers are scoped; Employee Lifecycle and Per-User Timezone fill gaps in employee management; Remote Work and Acknowledgment Flow give Managers explicit confirmation of late/remote events; Advanced Monitoring brings absent statuses and richer filters; API Pagination adds offset-based pagination to all high-volume list endpoints; IP Restriction completes the office-network enforcement feature with CIDR support, a disabled mode, remote-worker bypass, and an admin settings UI; UI Polish unifies the visual language across all roles.
 
 ## Phases
 
@@ -24,7 +24,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 8: Remote Work + Acknowledgment Flow** - Remote Work check-in option, Manager Acknowledge button for late/early/remote records, Employee sees acknowledgment status (completed 2026-03-04)
 - [ ] **Phase 9: Advanced Monitoring** - Manual Data Refresh job (absent/absent-morning statuses), advanced status filters (5 filter types) in attendance tables
 - [x] **Phase 10: API Pagination** - Offset-based pagination (page/limit) on all high-volume list endpoints; paginated tables in frontend (completed 2026-03-05)
-- [ ] **Phase 11: UI Polish** - Live clock on Employee Home, Lucide status badge icons, Shadcn component upgrades, Executive drill-down, Manager Employee Detail page
+- [ ] **Phase 11: IP Restriction** - CIDR support, disabled mode, remote-worker bypass, Company Settings UI, frontend pre-check before camera opens
+- [ ] **Phase 12: UI Polish** - Live clock on Employee Home, Lucide status badge icons, Shadcn component upgrades, Executive drill-down, Manager Employee Detail page
 
 ## Phase Details
 
@@ -203,7 +204,19 @@ Plans:
 - [x] 10-02-PLAN.md — Paginate GET /users (service + controller) + GET /attendance/reports/monthly (service + controller)
 - [x] 10-03-PLAN.md — Frontend: PaginationControls component + wire all three admin pages (Attendance, Users, Reports)
 
-### Phase 11: UI Polish
+### Phase 11: IP Restriction
+**Goal**: The office-network enforcement feature is fully complete — admins configure a company-wide IP allowlist with CIDR support and choose disabled/log-only/enforce-block mode; remote workers bypass the check; employees see a blocking error or soft warning before the camera opens; violations are flagged on attendance records
+**Depends on**: Phase 10
+**Requirements**: IPRX-01, IPRX-02, IPRX-03, IPRX-04, IPRX-05
+**Success Criteria** (what must be TRUE):
+  1. Admin can set IP restriction mode to disabled, log-only, or enforce-block from the Company Settings page — the setting persists and takes effect immediately
+  2. Admin can add IP allowlist entries as single IPv4 addresses or CIDR ranges (e.g. 192.168.1.0/24) with an optional label, and delete individual entries — the list is displayed on the settings page
+  3. In enforce-block mode, an employee on a non-matching IP sees a blocking error before the camera opens and cannot check in or out; an employee who selects "Remote Work" bypasses the check
+  4. In log-only mode, an employee on a non-matching IP sees a soft warning with a "Continue anyway" option; their check-in succeeds but the attendance record is flagged with ip_violation=true
+  5. When the allowlist is empty, no IP check runs regardless of mode; CIDR ranges match all IPs within the subnet (not just the exact network address)
+**Plans**: TBD
+
+### Phase 12: UI Polish
 **Goal**: Every role-specific UI surface is visually consistent — the Employee Home has a live clock, all status states carry a recognizable Lucide icon, new modals and tables use Shadcn components, and the Executive and Manager drill-down experiences are complete
 **Depends on**: Phase 8, Phase 9
 **Requirements**: UIUX-01, UIUX-02, UIUX-03, UIUX-04, UIUX-05
@@ -218,7 +231,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -232,7 +245,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Remote Work + Acknowledgment Flow | 4/4 | Complete    | 2026-03-04 |
 | 9. Advanced Monitoring | 3/3 | Complete | 2026-03-05 |
 | 10. API Pagination | 3/3 | Complete    | 2026-03-05 |
-| 11. UI Polish | 0/? | Not started | - |
+| 11. IP Restriction | 0/? | Not started | - |
+| 12. UI Polish | 0/? | Not started | - |
 
 ---
 *Roadmap created: 2026-03-01*
@@ -242,9 +256,10 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 *Phase 4 planned: 2026-03-02 — 2 plans, 2 waves*
 *Phase 5 planned: 2026-03-03 — 5 plans, 3 waves*
 *v2.0 roadmap appended: 2026-03-03 — Phases 6–11, 34 requirements mapped (Phase 10 Pagination inserted 2026-03-06, UI Polish renumbered to Phase 11)*
+*2026-03-06 — Phase 11 renamed to IP Restriction (IPRX-01–05); UI Polish moved to Phase 12; 43 v2 requirements mapped across Phases 6–12*
 *Phase 6 planned: 2026-03-03 — 6 plans, 4 waves*
 *Phase 7 planned: 2026-03-03 — 5 plans, 3 waves*
 *Phase 8 planned: 2026-03-04 — 4 plans, 4 waves*
 *Phase 9 planned: 2026-03-04 — 3 plans, 3 waves*
 *Phase 10 planned: 2026-03-06 — 3 plans, 3 waves*
-*v2 Coverage: 34/34 v2 requirements mapped*
+*v2 Coverage: 43/43 v2 requirements mapped*
