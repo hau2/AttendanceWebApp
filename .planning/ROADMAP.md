@@ -214,7 +214,13 @@ Plans:
   3. In enforce-block mode, an employee on a non-matching IP sees a blocking error before the camera opens and cannot check in or out; an employee who selects "Remote Work" bypasses the check
   4. In log-only mode, an employee on a non-matching IP sees a soft warning with a "Continue anyway" option; their check-in succeeds but the attendance record is flagged with ip_violation=true
   5. When the allowlist is empty, no IP check runs regardless of mode; CIDR ranges match all IPs within the subnet (not just the exact network address)
-**Plans**: TBD
+**Plans**: 4 plans
+
+Plans:
+- [ ] 11-01-PLAN.md — DB migration 013 (disabled mode, ip_violation column, JSONB allowlist) + CIDR utility + allowlist CRUD endpoints + attendance IP enforcement overhaul + GET /attendance/ip-check
+- [ ] 11-02-PLAN.md — Admin Company Settings page (/admin/settings) with IP mode selector and allowlist CRUD; Settings nav link
+- [ ] 11-03-PLAN.md — Frontend IP pre-check in CheckInOutCard (blocking error, soft warning with "Continue anyway", remote bypass, disabled passthrough)
+- [ ] 11-04-PLAN.md — Human verification checkpoint (all 5 IPRX requirements end-to-end)
 
 ### Phase 12: UI Polish
 **Goal**: Every role-specific UI surface is visually consistent — the Employee Home has a live clock, all status states carry a recognizable Lucide icon, new modals and tables use Shadcn components, and the Executive and Manager drill-down experiences are complete
@@ -245,7 +251,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Remote Work + Acknowledgment Flow | 4/4 | Complete    | 2026-03-04 |
 | 9. Advanced Monitoring | 3/3 | Complete | 2026-03-05 |
 | 10. API Pagination | 3/3 | Complete    | 2026-03-05 |
-| 11. IP Restriction | 0/? | Not started | - |
+| 11. IP Restriction | 0/4 | Not started | - |
 | 12. UI Polish | 0/? | Not started | - |
 
 ---
@@ -262,4 +268,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 *Phase 8 planned: 2026-03-04 — 4 plans, 4 waves*
 *Phase 9 planned: 2026-03-04 — 3 plans, 3 waves*
 *Phase 10 planned: 2026-03-06 — 3 plans, 3 waves*
+*Phase 11 planned: 2026-03-06 — 4 plans, 3 waves*
 *v2 Coverage: 43/43 v2 requirements mapped*
