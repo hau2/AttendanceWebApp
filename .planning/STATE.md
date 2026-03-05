@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: Phase 10 - API Pagination (In Progress)
-Plan: 10-02 (complete)
-Status: 10-02 complete — PAGI-02, PAGI-03, PAGI-04 implemented. GET /users and GET /attendance/reports/monthly now return paginated shapes. TypeScript compiles cleanly.
-Last activity: 2026-03-06 — 10-02 GET /users and monthly report endpoints paginated
+Plan: 10-03 (complete)
+Status: 10-03 complete — PAGI-01, PAGI-02, PAGI-03 wired in frontend. PaginationControls component created. All three admin pages (Attendance Records, User Management, Monthly Reports) now show prev/next pagination. TypeScript compiles cleanly.
+Last activity: 2026-03-06 — 10-03 frontend pagination integration complete
 
-Progress: [█████████████████░░░] 68% (10-02 complete)
+Progress: [██████████████████░░] 72% (10-03 complete)
 
 ## Performance Metrics
 
@@ -194,6 +194,9 @@ Recent decisions affecting current work:
 - Shared DTO pattern: backend/src/common/dto/ for reusable request/response contracts across controllers (10-01)
 - In-memory slice for getMonthlyReport pagination: fetch all records from DB for stats accuracy, slice array in-memory for page — avoids second DB query (10-02)
 - exportCsv passes limit=100000 internal pagination to bypass @Max(100) HTTP constraint — all records fetched for CSV export without HTTP contract change (10-02)
+- PaginationControls is a shared dumb component accepting page/limit/total/onPageChange — no API coupling (10-03)
+- listUsers(token, 1, 1000) used for full user list in attendance usersMap and divisions page — avoids separate endpoint (10-03)
+- refreshUsers(p) accepts explicit page param so mutations can reset to page 1 without stale closure (10-03)
 
 ### Pending Todos
 
@@ -220,6 +223,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-06
-Stopped at: Completed 10-02-PLAN.md — GET /users and GET /attendance/reports/monthly paginated
+Stopped at: Completed 10-03-PLAN.md — Frontend pagination integration complete; Phase 10 done
 Resume file: None
-Next: Phase 10 — Plan 10-03 (next pagination plan if exists, else Phase 11 UI Polish)
+Next: Phase 11 — UI Polish
