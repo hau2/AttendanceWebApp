@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { getStoredUser, getStoredToken } from '@/lib/api/auth';
-import { listRecords, AttendanceRecordWithUser, getTeamSummary, TeamSummary } from '@/lib/api/attendance';
+import { listRecords, AttendanceRecordWithUser, getTeamSummary, TeamSummary, triggerRefresh } from '@/lib/api/attendance';
+import { getCompanySettings } from '@/lib/api/company';
 import { listUsers, User } from '@/lib/api/users';
 import { AttendanceRecordTable } from './components/AttendanceRecordTable';
 import { AttendanceRecordDetail } from './components/AttendanceRecordDetail';
@@ -31,6 +32,12 @@ export default function AdminAttendancePage() {
   const [searchName, setSearchName] = useState('');
   const [filterDivisionId, setFilterDivisionId] = useState('');
   const [filterManagerId, setFilterManagerId] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+
+  // Data refresh state
+  const [lastRefreshAt, setLastRefreshAt] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+  const [refreshError, setRefreshError] = useState<string | null>(null);
 
   useEffect(() => {
     const user = getStoredUser();
@@ -39,6 +46,9 @@ export default function AdminAttendancePage() {
     setUserRole(user.role);
     const token = getStoredToken();
     if (token) listUsers(token).then(setUsers).catch(() => {});
+    if (token && ['admin', 'owner'].includes(user.role)) {
+      getCompanySettings(token).then((s) => setLastRefreshAt(s.last_refresh_at)).catch(() => {});
+    }
   }, [router]);
 
   useEffect(() => {
@@ -59,6 +69,22 @@ export default function AdminAttendancePage() {
     if (m > 12) { m = 1; y++; }
     setMonth(m);
     setYear(y);
+  }
+
+  async function handleRefresh() {
+    setRefreshing(true);
+    setRefreshError(null);
+    try {
+      const result = await triggerRefresh();
+      setLastRefreshAt(result.lastRefreshAt);
+      // Reload records to show newly inserted absent rows
+      const data = await listRecords(year, month);
+      setRecords(data);
+    } catch (err: unknown) {
+      setRefreshError(err instanceof Error ? err.message : 'Refresh failed');
+    } finally {
+      setRefreshing(false);
+    }
   }
 
   function handleAdjusted(updated: AttendanceRecordWithUser) {
@@ -105,10 +131,17 @@ export default function AdminAttendancePage() {
       const user = usersMap[r.user_id];
       if (!user || user.divisions?.users?.id !== filterManagerId) return false;
     }
+    if (filterStatus) {
+      if (filterStatus === 'late' && r.check_in_status !== 'late') return false;
+      if (filterStatus === 'early' && r.check_out_status !== 'early') return false;
+      if (filterStatus === 'absent' && r.check_in_status !== 'absent') return false;
+      if (filterStatus === 'absent_morning' && r.check_in_status !== 'absent_morning') return false;
+      if (filterStatus === 'absent_afternoon' && !(r.check_in_at !== null && r.check_out_at === null)) return false;
+    }
     return true;
   });
 
-  const hasFilters = searchName || filterDivisionId || filterManagerId;
+  const hasFilters = searchName || filterDivisionId || filterManagerId || filterStatus;
   const monthLabel = `${MONTH_NAMES[month - 1]} ${year}`;
 
   return (
@@ -141,21 +174,42 @@ export default function AdminAttendancePage() {
 
       <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
         <h1 className="text-2xl font-bold text-gray-900">Attendance Records</h1>
-        {/* Month navigation */}
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => navigate(-1)}
-            className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
-          >
-            &#8249;
-          </button>
-          <span className="text-gray-700 font-medium w-36 text-center">{monthLabel}</span>
-          <button
-            onClick={() => navigate(1)}
-            className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
-          >
-            &#8250;
-          </button>
+        <div className="flex items-center gap-4 flex-wrap">
+          {/* Month navigation */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate(-1)}
+              className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
+            >
+              &#8249;
+            </button>
+            <span className="text-gray-700 font-medium w-36 text-center">{monthLabel}</span>
+            <button
+              onClick={() => navigate(1)}
+              className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
+            >
+              &#8250;
+            </button>
+          </div>
+
+          {/* Data Refresh button (admin/owner only) */}
+          {['admin', 'owner'].includes(userRole) && (
+            <div className="flex flex-col items-end gap-1">
+              <button
+                onClick={handleRefresh}
+                disabled={refreshing}
+                className="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              >
+                {refreshing ? 'Refreshing...' : 'Data Refresh'}
+              </button>
+              {lastRefreshAt && (
+                <span className="text-xs text-gray-400">
+                  Last: {new Date(lastRefreshAt).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                </span>
+              )}
+              {refreshError && <span className="text-xs text-red-500">{refreshError}</span>}
+            </div>
+          )}
         </div>
       </div>
 
@@ -198,9 +252,23 @@ export default function AdminAttendancePage() {
           </select>
         )}
 
+        {/* Filter by status */}
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="">All Statuses</option>
+          <option value="late">Late</option>
+          <option value="early">Early Leave</option>
+          <option value="absent">Absent</option>
+          <option value="absent_morning">Absent Morning</option>
+          <option value="absent_afternoon">Absent Afternoon</option>
+        </select>
+
         {hasFilters && (
           <button
-            onClick={() => { setSearchName(''); setFilterDivisionId(''); setFilterManagerId(''); }}
+            onClick={() => { setSearchName(''); setFilterDivisionId(''); setFilterManagerId(''); setFilterStatus(''); }}
             className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50"
           >
             Clear filters

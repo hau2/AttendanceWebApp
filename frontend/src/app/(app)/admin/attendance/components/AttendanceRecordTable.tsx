@@ -25,6 +25,8 @@ function statusBadge(status: string | null) {
     'within-grace': 'bg-yellow-100 text-yellow-800',
     'late': 'bg-red-100 text-red-800',
     'early': 'bg-orange-100 text-orange-800',
+    'absent': 'bg-gray-100 text-gray-600',
+    'absent_morning': 'bg-purple-100 text-purple-700',
   };
   if (!status) return <span className="text-gray-400">—</span>;
   return <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${map[status] || 'bg-gray-100 text-gray-600'}`}>{status}</span>;
