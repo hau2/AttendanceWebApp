@@ -5,6 +5,9 @@ import { Shift, listShifts } from '@/lib/api/shifts';
 import { getStoredToken, getStoredUser } from '@/lib/api/auth';
 import ShiftTable from './components/ShiftTable';
 import ShiftFormModal from './components/ShiftFormModal';
+import { PaginationControls } from '@/components/PaginationControls';
+
+const LIMIT = 20;
 
 export default function ShiftsPage() {
   const [shifts, setShifts] = useState<Shift[]>([]);
@@ -12,6 +15,7 @@ export default function ShiftsPage() {
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingShift, setEditingShift] = useState<Shift | null>(null);
+  const [page, setPage] = useState(1);
 
   const user = getStoredUser();
 
@@ -91,7 +95,14 @@ export default function ShiftsPage() {
       )}
 
       {!loading && !error && (
-        <ShiftTable shifts={shifts} onEdit={handleEdit} />
+        <>
+          <ShiftTable shifts={shifts.slice((page - 1) * LIMIT, page * LIMIT)} onEdit={handleEdit} />
+          {shifts.length > LIMIT && (
+            <div className="mt-2 bg-white rounded-lg shadow-sm">
+              <PaginationControls page={page} limit={LIMIT} total={shifts.length} onPageChange={setPage} />
+            </div>
+          )}
+        </>
       )}
 
       <ShiftFormModal

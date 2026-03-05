@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { getStoredUser } from '@/lib/api/auth';
 import { getHistory, AttendanceRecord } from '@/lib/api/attendance';
 import { AttendanceHistoryTable } from './components/AttendanceHistoryTable';
+import { PaginationControls } from '@/components/PaginationControls';
+
+const LIMIT = 20;
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -17,6 +20,7 @@ export default function AttendanceHistoryPage() {
   const [year, setYear] = useState(now.getFullYear());
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [records, setRecords] = useState<AttendanceRecord[]>([]);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -35,6 +39,7 @@ export default function AttendanceHistoryPage() {
     setLoading(true);
     getHistory(year, month).then((data) => {
       setRecords(data);
+      setPage(1);
       setLoading(false);
     });
   }, [year, month]);
@@ -47,6 +52,8 @@ export default function AttendanceHistoryPage() {
     setMonth(m);
     setYear(y);
   }
+
+  const pagedRecords = records.slice((page - 1) * LIMIT, page * LIMIT);
 
   const monthLabel = `${MONTH_NAMES[month - 1]} ${year}`;
 
@@ -77,7 +84,12 @@ export default function AttendanceHistoryPage() {
             <div className="w-6 h-6 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
-          <AttendanceHistoryTable records={records} />
+          <>
+            <AttendanceHistoryTable records={pagedRecords} />
+            {records.length > LIMIT && (
+              <PaginationControls page={page} limit={LIMIT} total={records.length} onPageChange={setPage} />
+            )}
+          </>
         )}
       </div>
     </div>

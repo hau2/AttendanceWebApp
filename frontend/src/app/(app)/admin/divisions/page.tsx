@@ -7,6 +7,9 @@ import { User, listUsers } from '@/lib/api/users';
 import { DivisionTable } from './components/DivisionTable';
 import { CreateDivisionModal } from './components/CreateDivisionModal';
 import { EditDivisionModal } from './components/EditDivisionModal';
+import { PaginationControls } from '@/components/PaginationControls';
+
+const LIMIT = 20;
 
 export default function DivisionsPage() {
   const [divisions, setDivisions] = useState<Division[]>([]);
@@ -15,6 +18,7 @@ export default function DivisionsPage() {
   const [error, setError] = useState<string | null>(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingDivision, setEditingDivision] = useState<Division | null>(null);
+  const [page, setPage] = useState(1);
 
   // Access guard: admin/owner only
   const currentUser = getStoredUser();
@@ -81,11 +85,16 @@ export default function DivisionsPage() {
           <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
-        <DivisionTable
-          divisions={divisions}
-          onEdit={setEditingDivision}
-          onDelete={handleDelete}
-        />
+        <>
+          <DivisionTable
+            divisions={divisions.slice((page - 1) * LIMIT, page * LIMIT)}
+            onEdit={setEditingDivision}
+            onDelete={handleDelete}
+          />
+          {divisions.length > LIMIT && (
+            <PaginationControls page={page} limit={LIMIT} total={divisions.length} onPageChange={setPage} />
+          )}
+        </>
       )}
 
       <CreateDivisionModal
