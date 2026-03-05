@@ -218,7 +218,7 @@ Plans:
 
 Plans:
 - [x] 11-01-PLAN.md — DB migration 013 (disabled mode, ip_violation column, JSONB allowlist) + CIDR utility + allowlist CRUD endpoints + attendance IP enforcement overhaul + GET /attendance/ip-check
-- [ ] 11-02-PLAN.md — Admin Company Settings page (/admin/settings) with IP mode selector and allowlist CRUD; Settings nav link
+- [x] 11-02-PLAN.md — Admin Company Settings page (/admin/settings) with IP mode selector and allowlist CRUD; Settings nav link
 - [ ] 11-03-PLAN.md — Frontend IP pre-check in CheckInOutCard (blocking error, soft warning with "Continue anyway", remote bypass, disabled passthrough)
 - [ ] 11-04-PLAN.md — Human verification checkpoint (all 5 IPRX requirements end-to-end)
 
@@ -251,7 +251,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Remote Work + Acknowledgment Flow | 4/4 | Complete    | 2026-03-04 |
 | 9. Advanced Monitoring | 3/3 | Complete | 2026-03-05 |
 | 10. API Pagination | 3/3 | Complete    | 2026-03-05 |
-| 11. IP Restriction | 1/4 | In progress | - |
+| 11. IP Restriction | 2/4 | In progress | - |
 | 12. UI Polish | 0/? | Not started | - |
 
 ---

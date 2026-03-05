@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: in-progress
-last_updated: "2026-03-06T18:15:00Z"
+last_updated: "2026-03-06T18:20:00Z"
 progress:
   total_phases: 12
   completed_phases: 10
   total_plans: 45
-  completed_plans: 42
+  completed_plans: 43
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: Phase 11 - IP Restriction (In Progress)
-Plan: 11-01 (complete)
-Status: 11-01 complete — DB migration 013 (disabled mode, ip_violation, JSONB allowlist), CIDR utility, company allowlist CRUD endpoints, attendance IP enforcement overhaul with resolveIpRestriction() helper, GET /attendance/ip-check. TypeScript compiles cleanly.
-Last activity: 2026-03-06 — 11-01 backend IP restriction infrastructure complete
+Plan: 11-02 (complete)
+Status: 11-02 complete — Admin Company Settings page at /admin/settings with IP mode radio group (disabled/log-only/enforce-block), IP allowlist CRUD (add CIDR+label, delete by index), Settings nav link in layout for admin/owner roles. TypeScript compiles cleanly.
+Last activity: 2026-03-06 — 11-02 frontend Admin Settings UI complete
 
-Progress: [███████████████████░] 76% (11-01 complete)
+Progress: [███████████████████░] 78% (11-02 complete)
 
 ## Performance Metrics
 
@@ -202,6 +202,8 @@ Recent decisions affecting current work:
 - ipAllowlist removed from UpdateCompanySettingsDto — dedicated POST/DELETE endpoints manage entries atomically (11-01)
 - checkOut uses isRemote=false — check-out has no is_remote flag (11-01)
 - Empty allowlist = no restriction (pass-through) — consistent with existing design decision from Phase 3 (11-01)
+- settings state removed from AdminSettingsPage — only ipMode and allowlist needed for rendering; CompanySettings is only used to seed those two states on mount (11-02)
+- ipAllowlist removed from updateCompanySettings() — consistent with backend 11-01 decision that dedicated POST/DELETE endpoints manage entries atomically (11-02)
 
 ### Pending Todos
 
@@ -228,6 +230,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-06
-Stopped at: Completed 11-01-PLAN.md — Backend IP restriction infrastructure complete (migration, CIDR utility, company CRUD endpoints, attendance overhaul)
+Stopped at: Completed 11-02-PLAN.md — Admin Company Settings UI complete (IP mode selector, allowlist CRUD, Settings nav link)
 Resume file: None
-Next: Phase 11 Plan 02 — Admin Company Settings UI with IP mode selector and allowlist CRUD
+Next: Phase 11 Plan 03 — Frontend IP pre-check in CheckInOutCard (blocking error, soft warning, remote bypass, disabled passthrough)
