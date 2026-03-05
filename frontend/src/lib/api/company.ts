@@ -10,6 +10,24 @@ function authHeaders() {
   };
 }
 
+export interface CompanySettings {
+  id: string;
+  name: string;
+  timezone: string;
+  ip_mode: string;
+  ip_allowlist: string[];
+  onboarding_complete: boolean;
+  last_refresh_at: string | null;
+}
+
+export async function getCompanySettings(token: string): Promise<CompanySettings> {
+  const res = await fetch(`${API_URL}/company/settings`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!res.ok) throw new Error('Failed to fetch company settings');
+  return res.json();
+}
+
 export async function updateCompanySettings(data: {
   timezone?: string;
   ipMode?: 'log-only' | 'enforce-block';

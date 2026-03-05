@@ -8,7 +8,7 @@ export interface AttendanceRecord {
   check_in_at: string | null;
   check_in_photo_url: string | null;
   check_in_ip: string | null;
-  check_in_status: 'on-time' | 'within-grace' | 'late' | null;
+  check_in_status: 'on-time' | 'within-grace' | 'late' | 'absent' | 'absent_morning' | null;
   minutes_late: number;
   late_reason: string | null;
   check_in_ip_within_allowlist: boolean | null;
@@ -268,6 +268,24 @@ export async function acknowledgeRemote(recordId: string): Promise<AttendanceRec
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.message || 'Failed to acknowledge remote record');
+  }
+  return res.json();
+}
+
+export interface RefreshResult {
+  absentMorningCount: number;
+  absentCount: number;
+  lastRefreshAt: string;
+}
+
+export async function triggerRefresh(): Promise<RefreshResult> {
+  const res = await fetch(`${API_URL}/attendance/refresh`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${getToken()}` },
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error((err as Record<string, unknown>).message as string || 'Data Refresh failed');
   }
   return res.json();
 }
