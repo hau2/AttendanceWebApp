@@ -4,7 +4,7 @@
 
 The product is built in five sequential phases, each delivering a complete, verifiable capability. Phase 1 establishes the multi-tenant foundation — companies register, authenticate, and have security enforced at the database layer. Phase 2 gives Admins the tools to configure their workforce: users, roles, and shift definitions. Phase 3 delivers the core product value: employees check in and out with photo evidence, and the system classifies every record accurately. Phase 4 gives Admins the ability to correct records with a full audit trail. Phase 5 closes the loop with visibility: Managers monitor their teams, Executives see the company picture, and everyone can export data. Nothing is added for ceremony — each phase unblocks the next.
 
-v2.0 adds five further phases (6–10): Division Architecture restructures how employees are grouped and how Managers are scoped; Employee Lifecycle and Per-User Timezone fill gaps in employee management; Remote Work and Acknowledgment Flow give Managers explicit confirmation of late/remote events; Advanced Monitoring brings absent statuses and richer filters; UI Polish unifies the visual language across all roles.
+v2.0 adds six further phases (6–11): Division Architecture restructures how employees are grouped and how Managers are scoped; Employee Lifecycle and Per-User Timezone fill gaps in employee management; Remote Work and Acknowledgment Flow give Managers explicit confirmation of late/remote events; Advanced Monitoring brings absent statuses and richer filters; API Pagination adds offset-based pagination to all high-volume list endpoints; UI Polish unifies the visual language across all roles.
 
 ## Phases
 
@@ -23,7 +23,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Employee Lifecycle + Per-User Timezone** - Delete employee (retain history), edit name/division/timezone, Manager creates employees in their divisions, per-user timezone in classification (completed 2026-03-03)
 - [x] **Phase 8: Remote Work + Acknowledgment Flow** - Remote Work check-in option, Manager Acknowledge button for late/early/remote records, Employee sees acknowledgment status (completed 2026-03-04)
 - [ ] **Phase 9: Advanced Monitoring** - Manual Data Refresh job (absent/absent-morning statuses), advanced status filters (5 filter types) in attendance tables
-- [ ] **Phase 10: UI Polish** - Live clock on Employee Home, Lucide status badge icons, Shadcn component upgrades, Executive drill-down, Manager Employee Detail page
+- [ ] **Phase 10: API Pagination** - Offset-based pagination (page/limit) on all high-volume list endpoints; paginated tables in frontend
+- [ ] **Phase 11: UI Polish** - Live clock on Employee Home, Lucide status badge icons, Shadcn component upgrades, Executive drill-down, Manager Employee Detail page
 
 ## Phase Details
 
@@ -186,7 +187,23 @@ Plans:
 - [x] 09-02-PLAN.md — Frontend: triggerRefresh() API, getCompanySettings() with last_refresh_at, Data Refresh button + timestamp display, status filter dropdown (5 options)
 - [ ] 09-03-PLAN.md — Human verification checkpoint (all 9 requirements: RFSH-01 through RFSH-04, FLTR-01 through FLTR-05)
 
-### Phase 10: UI Polish
+### Phase 10: API Pagination
+**Goal**: Every GET list endpoint that can return unbounded rows is protected by offset-based pagination — the API never returns an uncapped dataset, the frontend renders paginated tables with page controls, and a shared PaginationDto makes the contract consistent across all modules
+**Depends on**: Phase 9
+**Requirements**: PAGI-01, PAGI-02, PAGI-03, PAGI-04
+**Success Criteria** (what must be TRUE):
+  1. GET /attendance/records accepts `page` and `limit` query params and returns `{ data, total, page, limit }` — requesting page 2 returns the correct slice of records and total reflects the full unfiltered count
+  2. GET /attendance/reports/monthly accepts `page` and `limit` and returns paginated rows — the Admin/Manager monthly report table renders page controls and navigates without full reload
+  3. GET /users accepts `page` and `limit` and returns paginated results — the User Management table renders page controls
+  4. All paginated endpoints default to `limit=20` when no params are supplied; supplying `limit=0` or omitting params never crashes the server
+**Plans**: 3 plans
+
+Plans:
+- [ ] 10-01-PLAN.md — Shared PaginationDto + PaginatedResult; paginate GET /attendance/records (service + controller)
+- [ ] 10-02-PLAN.md — Paginate GET /users (service + controller) + GET /attendance/reports/monthly (service + controller)
+- [ ] 10-03-PLAN.md — Frontend: PaginationControls component + wire all three admin pages (Attendance, Users, Reports)
+
+### Phase 11: UI Polish
 **Goal**: Every role-specific UI surface is visually consistent — the Employee Home has a live clock, all status states carry a recognizable Lucide icon, new modals and tables use Shadcn components, and the Executive and Manager drill-down experiences are complete
 **Depends on**: Phase 8, Phase 9
 **Requirements**: UIUX-01, UIUX-02, UIUX-03, UIUX-04, UIUX-05
@@ -201,7 +218,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -214,7 +231,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Employee Lifecycle + Per-User Timezone | 5/5 | Complete   | 2026-03-03 |
 | 8. Remote Work + Acknowledgment Flow | 4/4 | Complete    | 2026-03-04 |
 | 9. Advanced Monitoring | 2/3 | In progress | - |
-| 10. UI Polish | 0/? | Not started | - |
+| 10. API Pagination | 0/3 | Not started | - |
+| 11. UI Polish | 0/? | Not started | - |
 
 ---
 *Roadmap created: 2026-03-01*
@@ -223,9 +241,10 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 *Phase 3 planned: 2026-03-02 — 6 plans, 4 waves*
 *Phase 4 planned: 2026-03-02 — 2 plans, 2 waves*
 *Phase 5 planned: 2026-03-03 — 5 plans, 3 waves*
-*v2.0 roadmap appended: 2026-03-03 — Phases 6–10, 34 requirements mapped*
+*v2.0 roadmap appended: 2026-03-03 — Phases 6–11, 34 requirements mapped (Phase 10 Pagination inserted 2026-03-06, UI Polish renumbered to Phase 11)*
 *Phase 6 planned: 2026-03-03 — 6 plans, 4 waves*
 *Phase 7 planned: 2026-03-03 — 5 plans, 3 waves*
 *Phase 8 planned: 2026-03-04 — 4 plans, 4 waves*
 *Phase 9 planned: 2026-03-04 — 3 plans, 3 waves*
+*Phase 10 planned: 2026-03-06 — 3 plans, 3 waves*
 *v2 Coverage: 34/34 v2 requirements mapped*
