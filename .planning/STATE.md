@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-05T23:45:59.127Z"
+last_updated: "2026-03-06T00:15:00Z"
 progress:
   total_phases: 12
   completed_phases: 11
   total_plans: 50
-  completed_plans: 46
+  completed_plans: 48
 ---
 
 # Project State
@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** Phase 12 - UI Polish (In Progress — plan 12-01 done, 12-02 next)
+**Current focus:** Phase 12 - UI Polish (In Progress — plan 12-04 done, 12-05 next)
 
 ## Current Position
 
 Phase: Phase 12 - UI Polish (In Progress)
-Plan: 12-01 (complete)
-Status: 12-01 complete — Shadcn UI initialized, lucide-react installed, StatusBadge and RemoteBadge shared components created. UIUX-02 and UIUX-03 requirements satisfied.
-Last activity: 2026-03-05 — 12-01 complete
+Plan: 12-04 (complete)
+Status: 12-04 complete — Employee Detail page at /admin/employees/[id] with Shadcn Table, month navigation, route guard, inline notes/acknowledgments. Employee name links added in AttendanceRecordTable. UIUX-03 and UIUX-05 satisfied.
+Last activity: 2026-03-06 — 12-04 complete
 
-Progress: [████████████████████] 92% (46/50 plans complete)
+Progress: [████████████████████] 96% (48/50 plans complete)
 
 ## Performance Metrics
 
@@ -211,6 +211,9 @@ Recent decisions affecting current work:
 - Phase 11 E2E human verification passed — all 20 verification steps confirmed; no code changes required post-delivery (11-04)
 - [Phase 12-ui-polish]: JSX.Element return type replaced with ReactElement from react (imported as type) — jsx: react-jsx tsconfig does not expose global JSX namespace
 - [Phase 12-ui-polish]: ElementType from react used for icon field in StatusConfig instead of React.ElementType — avoids React namespace import while keeping TypeScript strict
+- Employee name fetched from first listRecords() response (users.full_name join) on detail page — no separate users API round-trip needed (12-04)
+- e.stopPropagation() on Link in employee name cell — prevents parent row's onSelectRecord from firing when navigating to employee detail (12-04)
+- Page number resets to 1 when year or month changes on Employee Detail page — avoids stale pagination state (12-04)
 
 ### Pending Todos
 
@@ -236,7 +239,7 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-05
-Stopped at: Completed 12-01-PLAN.md — Shadcn UI initialized, lucide-react installed, StatusBadge + RemoteBadge components created. UIUX-02 and UIUX-03 satisfied.
+Last session: 2026-03-06
+Stopped at: Completed 12-04-PLAN.md — Employee Detail page created at /admin/employees/[id] with Shadcn Table; employee name links added to AttendanceRecordTable. UIUX-03 and UIUX-05 satisfied.
 Resume file: None
-Next: Phase 12 — UI Polish plan 12-02
+Next: Phase 12 — UI Polish plan 12-05 (Human verification checkpoint)

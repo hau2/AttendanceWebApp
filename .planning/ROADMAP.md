@@ -238,7 +238,7 @@ Plans:
 - [ ] 12-01-PLAN.md — Install Shadcn UI + lucide-react; create shared StatusBadge + RemoteBadge component with Lucide icons per UIUX-02 spec
 - [ ] 12-02-PLAN.md — Live HH:MM:SS clock on Employee Home (UIUX-01); wire StatusBadge into AttendanceHistoryTable, AttendanceRecordTable, AttendanceRecordDetail (UIUX-02)
 - [ ] 12-03-PLAN.md — Executive employee history drill-down: EmployeeHistoryModal using Shadcn Dialog + Table; clickable rows on Executive page (UIUX-03, UIUX-04)
-- [ ] 12-04-PLAN.md — Manager Employee Detail page at /admin/employees/[id] using Shadcn Table; employee name link in AttendanceRecordTable (UIUX-03, UIUX-05)
+- [x] 12-04-PLAN.md — Manager Employee Detail page at /admin/employees/[id] using Shadcn Table; employee name link in AttendanceRecordTable (UIUX-03, UIUX-05)
 - [ ] 12-05-PLAN.md — Human E2E verification checkpoint (all 5 UIUX requirements)
 
 ## Progress
@@ -259,7 +259,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 9. Advanced Monitoring | 3/3 | Complete | 2026-03-05 |
 | 10. API Pagination | 3/3 | Complete    | 2026-03-05 |
 | 11. IP Restriction | 4/4 | Complete    | 2026-03-05 |
-| 12. UI Polish | 1/5 | In Progress|  |
+| 12. UI Polish | 4/5 | In Progress|  |
 
 ---
 *Roadmap created: 2026-03-01*
