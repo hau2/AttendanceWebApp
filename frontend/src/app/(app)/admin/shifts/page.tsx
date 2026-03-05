@@ -11,11 +11,12 @@ const LIMIT = 20;
 
 export default function ShiftsPage() {
   const [shifts, setShifts] = useState<Shift[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingShift, setEditingShift] = useState<Shift | null>(null);
-  const [page, setPage] = useState(1);
 
   const user = getStoredUser();
 
@@ -31,14 +32,15 @@ export default function ShiftsPage() {
     );
   }
 
-  async function loadShifts() {
+  async function loadShifts(p = page) {
     setLoading(true);
     setError('');
     try {
       const token = getStoredToken();
       if (!token) throw new Error('Not authenticated');
-      const data = await listShifts(token);
-      setShifts(data);
+      const result = await listShifts(token, p, LIMIT);
+      setShifts(result.data);
+      setTotal(result.total);
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to load shifts');
     } finally {
@@ -47,9 +49,9 @@ export default function ShiftsPage() {
   }
 
   useEffect(() => {
-    loadShifts();
+    loadShifts(page);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [page]);
 
   function handleCreate() {
     setEditingShift(null);
@@ -67,7 +69,7 @@ export default function ShiftsPage() {
   }
 
   async function handleSaved() {
-    await loadShifts();
+    await loadShifts(page);
   }
 
   return (
@@ -96,10 +98,10 @@ export default function ShiftsPage() {
 
       {!loading && !error && (
         <>
-          <ShiftTable shifts={shifts.slice((page - 1) * LIMIT, page * LIMIT)} onEdit={handleEdit} />
-          {shifts.length > LIMIT && (
+          <ShiftTable shifts={shifts} onEdit={handleEdit} />
+          {total > LIMIT && (
             <div className="mt-2 bg-white rounded-lg shadow-sm">
-              <PaginationControls page={page} limit={LIMIT} total={shifts.length} onPageChange={setPage} />
+              <PaginationControls page={page} limit={LIMIT} total={total} onPageChange={setPage} />
             </div>
           )}
         </>

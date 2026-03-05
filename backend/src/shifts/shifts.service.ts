@@ -2,6 +2,7 @@ import { BadRequestException, ConflictException, Injectable, NotFoundException }
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateShiftDto } from './dto/create-shift.dto';
 import { UpdateShiftDto } from './dto/update-shift.dto';
+import { PaginationDto, PaginatedResult } from '../common/dto/pagination.dto';
 
 export interface Shift {
   id: string;
@@ -19,20 +20,23 @@ export interface Shift {
 export class ShiftsService {
   constructor(private readonly supabase: SupabaseService) {}
 
-  async listShifts(companyId: string): Promise<Shift[]> {
+  async listShifts(companyId: string, pagination: PaginationDto = new PaginationDto()): Promise<PaginatedResult<Shift>> {
     const client = this.supabase.getClient();
+    const page = pagination.page ?? 1;
+    const limit = pagination.limit ?? 20;
 
-    const { data, error } = await client
+    const { data, count, error } = await client
       .from('shifts')
-      .select('*')
+      .select('*', { count: 'exact' })
       .eq('company_id', companyId)
-      .order('name', { ascending: true });
+      .order('name', { ascending: true })
+      .range((page - 1) * limit, page * limit - 1);
 
     if (error) {
       throw new ConflictException(`Failed to list shifts: ${error.message}`);
     }
 
-    return (data ?? []) as Shift[];
+    return { data: (data ?? []) as Shift[], total: count ?? 0, page, limit };
   }
 
   async createShift(companyId: string, dto: CreateShiftDto): Promise<Shift> {

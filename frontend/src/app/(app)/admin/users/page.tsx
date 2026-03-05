@@ -48,10 +48,10 @@ export default function UsersPage() {
       return;
     }
     try {
-      const [result, divs] = await Promise.all([listUsers(token, p, LIMIT), listDivisions(token)]);
+      const [result, divsResult] = await Promise.all([listUsers(token, p, LIMIT), listDivisions(token, 1, 1000)]);
       setUsers(result.data);
       setTotal(result.total);
-      setDivisions(divs);
+      setDivisions(divsResult.data);
       setError(null);
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : 'Failed to load users';

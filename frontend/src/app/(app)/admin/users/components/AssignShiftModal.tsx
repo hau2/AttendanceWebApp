@@ -46,13 +46,13 @@ export function AssignShiftModal({
     setEffectiveDate(new Date().toISOString().split('T')[0]);
     setLoadingData(true);
 
-    Promise.all([listShifts(token), getUserShiftInfo(token, user.id)])
-      .then(([shiftList, shiftInfo]) => {
-        setShifts(shiftList);
+    Promise.all([listShifts(token, 1, 1000), getUserShiftInfo(token, user.id)])
+      .then(([shiftResult, shiftInfo]) => {
+        setShifts(shiftResult.data);
         setActiveShift(shiftInfo.activeShift);
         setHistory(shiftInfo.history);
-        if (shiftList.length > 0) {
-          setSelectedShiftId(shiftList[0].id);
+        if (shiftResult.data.length > 0) {
+          setSelectedShiftId(shiftResult.data[0].id);
         }
       })
       .catch((err: unknown) => {

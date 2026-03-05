@@ -7,6 +7,7 @@ import {
 import { SupabaseService } from '../supabase/supabase.service';
 import { CreateDivisionDto } from './dto/create-division.dto';
 import { UpdateDivisionDto } from './dto/update-division.dto';
+import { PaginationDto, PaginatedResult } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class DivisionsService {
@@ -41,19 +42,23 @@ export class DivisionsService {
     }
   }
 
-  async listDivisions(companyId: string): Promise<object[]> {
+  async listDivisions(companyId: string, pagination: PaginationDto = new PaginationDto()): Promise<PaginatedResult<object>> {
     const client = this.supabase.getClient();
-    const { data, error } = await client
+    const page = pagination.page ?? 1;
+    const limit = pagination.limit ?? 20;
+
+    const { data, count, error } = await client
       .from('divisions')
-      .select('*, users!divisions_manager_id_fkey(id, full_name)')
+      .select('*, users!divisions_manager_id_fkey(id, full_name)', { count: 'exact' })
       .eq('company_id', companyId)
-      .order('name', { ascending: true });
+      .order('name', { ascending: true })
+      .range((page - 1) * limit, page * limit - 1);
 
     if (error) {
       throw new BadRequestException(`Failed to list divisions: ${error.message}`);
     }
 
-    return data ?? [];
+    return { data: data ?? [], total: count ?? 0, page, limit };
   }
 
   async updateDivision(companyId: string, divisionId: string, dto: UpdateDivisionDto): Promise<object> {

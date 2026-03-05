@@ -25,8 +25,16 @@ export interface UpdateDivisionData {
   managerId?: string | null;
 }
 
-export async function listDivisions(token: string): Promise<Division[]> {
-  const res = await fetch(`${API_URL}/divisions`, {
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export async function listDivisions(token: string, page = 1, limit = 20): Promise<PaginatedResult<Division>> {
+  const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+  const res = await fetch(`${API_URL}/divisions?${params}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) {

@@ -30,15 +30,18 @@ export default function DivisionsPage() {
     );
   }
 
-  async function refresh() {
+  const [total, setTotal] = useState(0);
+
+  async function refresh(p = page) {
     const token = getStoredToken();
     if (!token) {
       setLoading(false);
       return;
     }
     try {
-      const [divs, usersResult] = await Promise.all([listDivisions(token), listUsers(token, 1, 1000)]);
-      setDivisions(divs);
+      const [divsResult, usersResult] = await Promise.all([listDivisions(token, p, LIMIT), listUsers(token, 1, 1000)]);
+      setDivisions(divsResult.data);
+      setTotal(divsResult.total);
       setManagers(usersResult.data.filter((u) => u.role === 'manager'));
       setError(null);
     } catch (err: unknown) {
@@ -48,8 +51,7 @@ export default function DivisionsPage() {
     }
   }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => { refresh(); }, []);
+  useEffect(() => { refresh(page); }, [page]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function handleDelete(id: string) {
     const token = getStoredToken();
@@ -87,12 +89,12 @@ export default function DivisionsPage() {
       ) : (
         <>
           <DivisionTable
-            divisions={divisions.slice((page - 1) * LIMIT, page * LIMIT)}
+            divisions={divisions}
             onEdit={setEditingDivision}
             onDelete={handleDelete}
           />
-          {divisions.length > LIMIT && (
-            <PaginationControls page={page} limit={LIMIT} total={divisions.length} onPageChange={setPage} />
+          {total > LIMIT && (
+            <PaginationControls page={page} limit={LIMIT} total={total} onPageChange={setPage} />
           )}
         </>
       )}

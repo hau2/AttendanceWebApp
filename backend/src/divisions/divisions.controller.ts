@@ -6,14 +6,17 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
   ForbiddenException,
+  ValidationPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { DivisionsService } from './divisions.service';
 import { CreateDivisionDto } from './dto/create-division.dto';
 import { UpdateDivisionDto } from './dto/update-division.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller('divisions')
 @UseGuards(JwtAuthGuard)
@@ -32,12 +35,15 @@ export class DivisionsController {
 
   /** GET /divisions — list all divisions with manager name (admin/owner/executive) */
   @Get()
-  listDivisions(@Request() req: any) {
+  listDivisions(
+    @Request() req: any,
+    @Query(new ValidationPipe({ transform: true, whitelist: true })) pagination: PaginationDto,
+  ) {
     const { role, companyId } = req.user as { role: string; companyId: string };
     if (!['admin', 'owner', 'executive'].includes(role)) {
       throw new ForbiddenException('Insufficient permissions');
     }
-    return this.divisionsService.listDivisions(companyId);
+    return this.divisionsService.listDivisions(companyId, pagination);
   }
 
   /** PATCH /divisions/:id — update division name or manager (admin/owner only) */

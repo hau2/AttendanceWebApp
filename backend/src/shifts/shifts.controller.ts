@@ -5,13 +5,16 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Request,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ShiftsService } from './shifts.service';
 import { CreateShiftDto } from './dto/create-shift.dto';
 import { UpdateShiftDto } from './dto/update-shift.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller('shifts')
 @UseGuards(JwtAuthGuard)
@@ -20,8 +23,11 @@ export class ShiftsController {
 
   /** GET /shifts — list all shifts in the caller's company */
   @Get()
-  listShifts(@Request() req: { user: { companyId: string } }) {
-    return this.shiftsService.listShifts(req.user.companyId);
+  listShifts(
+    @Request() req: { user: { companyId: string } },
+    @Query(new ValidationPipe({ transform: true, whitelist: true })) pagination: PaginationDto,
+  ) {
+    return this.shiftsService.listShifts(req.user.companyId, pagination);
   }
 
   /** POST /shifts — create a new shift in the caller's company */

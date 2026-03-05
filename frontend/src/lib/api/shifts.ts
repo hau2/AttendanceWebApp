@@ -42,15 +42,23 @@ export interface CreateShiftData {
   afternoonStartTime?: string | null;
 }
 
-export async function listShifts(token: string): Promise<Shift[]> {
-  const res = await fetch(`${API_URL}/shifts`, {
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export async function listShifts(token: string, page = 1, limit = 20): Promise<PaginatedResult<Shift>> {
+  const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+  const res = await fetch(`${API_URL}/shifts?${params}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error((err as { message?: string }).message || 'Failed to list shifts');
   }
-  return res.json() as Promise<Shift[]>;
+  return res.json() as Promise<PaginatedResult<Shift>>;
 }
 
 export async function createShift(token: string, data: CreateShiftData): Promise<Shift> {
