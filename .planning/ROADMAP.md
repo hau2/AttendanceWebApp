@@ -232,7 +232,14 @@ Plans:
   3. All new modals, dropdown selectors, data tables, and form components introduced in v2.0 use Shadcn UI components — no plain HTML tables or custom modal patterns for new UI added in this milestone
   4. Executive can click any employee row in the dashboard to open that employee's full attendance history in a read-only drill-down view
   5. Manager has a dedicated Employee Detail page showing one employee's complete monthly attendance table with late/early reasons and acknowledgment status visible inline
-**Plans**: TBD
+**Plans**: 5 plans
+
+Plans:
+- [ ] 12-01-PLAN.md — Install Shadcn UI + lucide-react; create shared StatusBadge + RemoteBadge component with Lucide icons per UIUX-02 spec
+- [ ] 12-02-PLAN.md — Live HH:MM:SS clock on Employee Home (UIUX-01); wire StatusBadge into AttendanceHistoryTable, AttendanceRecordTable, AttendanceRecordDetail (UIUX-02)
+- [ ] 12-03-PLAN.md — Executive employee history drill-down: EmployeeHistoryModal using Shadcn Dialog + Table; clickable rows on Executive page (UIUX-03, UIUX-04)
+- [ ] 12-04-PLAN.md — Manager Employee Detail page at /admin/employees/[id] using Shadcn Table; employee name link in AttendanceRecordTable (UIUX-03, UIUX-05)
+- [ ] 12-05-PLAN.md — Human E2E verification checkpoint (all 5 UIUX requirements)
 
 ## Progress
 
@@ -252,7 +259,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 9. Advanced Monitoring | 3/3 | Complete | 2026-03-05 |
 | 10. API Pagination | 3/3 | Complete    | 2026-03-05 |
 | 11. IP Restriction | 4/4 | Complete    | 2026-03-05 |
-| 12. UI Polish | 0/? | Not started | - |
+| 12. UI Polish | 0/5 | Not started | - |
 
 ---
 *Roadmap created: 2026-03-01*
@@ -269,4 +276,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 *Phase 9 planned: 2026-03-04 — 3 plans, 3 waves*
 *Phase 10 planned: 2026-03-06 — 3 plans, 3 waves*
 *Phase 11 planned: 2026-03-06 — 4 plans, 3 waves*
+*Phase 12 planned: 2026-03-06 — 5 plans, 3 waves*
 *v2 Coverage: 43/43 v2 requirements mapped*
