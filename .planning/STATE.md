@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: unknown
-last_updated: "2026-03-06T00:15:00Z"
+last_updated: "2026-03-05T23:51:45.017Z"
 progress:
   total_phases: 12
   completed_phases: 11
   total_plans: 50
-  completed_plans: 48
+  completed_plans: 49
 ---
 
 # Project State
@@ -53,6 +53,7 @@ Progress: [████████████████████] 96% (48
 *Updated after each plan completion*
 | Phase 08-remote-work-acknowledgment-flow P04 | 2 | 1 tasks | 0 files |
 | Phase 12-ui-polish P01 | 4 | 2 tasks | 6 files |
+| Phase 12-ui-polish P02 | 2 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -211,9 +212,13 @@ Recent decisions affecting current work:
 - Phase 11 E2E human verification passed — all 20 verification steps confirmed; no code changes required post-delivery (11-04)
 - [Phase 12-ui-polish]: JSX.Element return type replaced with ReactElement from react (imported as type) — jsx: react-jsx tsconfig does not expose global JSX namespace
 - [Phase 12-ui-polish]: ElementType from react used for icon field in StatusConfig instead of React.ElementType — avoids React namespace import while keeping TypeScript strict
+- EmployeeHistoryModal placed at page level above conditional summary block — Dialog must always mount in DOM to avoid animation/state issues (12-03)
+- Shadcn dialog.tsx has implicit peer dependency on button.tsx not declared in install output — discovered via TS2307 compile error, resolved via Rule 3 auto-fix (12-03)
 - Employee name fetched from first listRecords() response (users.full_name join) on detail page — no separate users API round-trip needed (12-04)
 - e.stopPropagation() on Link in employee name cell — prevents parent row's onSelectRecord from firing when navigating to employee detail (12-04)
 - Page number resets to 1 when year or month changes on Employee Detail page — avoids stale pagination state (12-04)
+- [Phase 12-ui-polish]: Clock initialized immediately before setInterval to prevent 1-second blank display on mount
+- [Phase 12-ui-polish]: Separate useEffect for clock tick keeps concerns isolated from user-fetch effect
 
 ### Pending Todos
 
