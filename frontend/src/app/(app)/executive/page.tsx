@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getStoredUser } from '@/lib/api/auth';
 import { getExecutiveSummary, ExecutiveSummary } from '@/lib/api/attendance';
+import { EmployeeHistoryModal } from './components/EmployeeHistoryModal';
 
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -15,6 +16,7 @@ export default function ExecutiveDashboard() {
   const [summary, setSummary] = useState<ExecutiveSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedEmployee, setSelectedEmployee] = useState<{ userId: string; fullName: string } | null>(null);
 
   useEffect(() => {
     const user = getStoredUser();
@@ -55,6 +57,14 @@ export default function ExecutiveDashboard() {
       {loading && <div className="text-gray-500">Loading...</div>}
       {error && <div className="text-red-600">{error}</div>}
 
+      <EmployeeHistoryModal
+        userId={selectedEmployee?.userId ?? null}
+        fullName={selectedEmployee?.fullName ?? ''}
+        year={year}
+        month={month}
+        onClose={() => setSelectedEmployee(null)}
+      />
+
       {summary && (
         <>
           {/* KPI Cards */}
@@ -92,7 +102,11 @@ export default function ExecutiveDashboard() {
                 </thead>
                 <tbody className="divide-y divide-gray-100">
                   {summary.lateRanking.map((row, i) => (
-                    <tr key={row.userId} className="hover:bg-gray-50">
+                    <tr
+                      key={row.userId}
+                      className="hover:bg-gray-50 cursor-pointer"
+                      onClick={() => setSelectedEmployee({ userId: row.userId, fullName: row.fullName })}
+                    >
                       <td className="px-5 py-3 text-gray-500">{i + 1}</td>
                       <td className="px-5 py-3 font-medium text-gray-900">{row.fullName}</td>
                       <td className="px-5 py-3 text-right text-red-600 font-medium">{row.lateCount}</td>
