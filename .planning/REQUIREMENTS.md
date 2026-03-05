@@ -148,8 +148,8 @@ Requirements for initial release. Each maps to a roadmap phase.
 ### API Pagination (PAGI)
 
 - [x] **PAGI-01**: GET /attendance/records accepts `page` and `limit` query params and returns `{ data, total, page, limit }` — requesting page 2 returns the correct slice; total reflects the full unfiltered count
-- [ ] **PAGI-02**: GET /attendance/reports/monthly accepts `page` and `limit` and returns paginated rows — the Admin/Manager monthly report table renders page controls and navigates without full reload
-- [ ] **PAGI-03**: GET /users accepts `page` and `limit` and returns paginated results — the User Management table renders page controls
+- [x] **PAGI-02**: GET /attendance/reports/monthly accepts `page` and `limit` and returns paginated rows — the Admin/Manager monthly report table renders page controls and navigates without full reload
+- [x] **PAGI-03**: GET /users accepts `page` and `limit` and returns paginated results — the User Management table renders page controls
 - [x] **PAGI-04**: All paginated endpoints default to `limit=20` when no params are supplied; supplying `limit=0` or omitting params never crashes the server
 
 ### UI & UX Improvements (UIUX)
@@ -284,8 +284,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FLTR-04 | Phase 9 | Complete |
 | FLTR-05 | Phase 9 | Complete |
 | PAGI-01 | Phase 10 | Complete |
-| PAGI-02 | Phase 10 | Pending |
-| PAGI-03 | Phase 10 | Pending |
+| PAGI-02 | Phase 10 | Complete |
+| PAGI-03 | Phase 10 | Complete |
 | PAGI-04 | Phase 10 | Complete |
 | UIUX-01 | Phase 11 | Pending |
 | UIUX-02 | Phase 11 | Pending |

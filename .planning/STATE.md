@@ -8,7 +8,7 @@ progress:
   total_phases: 10
   completed_phases: 9
   total_plans: 39
-  completed_plans: 39
+  completed_plans: 40
 ---
 
 # Project State
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md (updated 2026-03-01)
 ## Current Position
 
 Phase: Phase 10 - API Pagination (In Progress)
-Plan: 10-01 (complete)
-Status: 10-01 complete — PAGI-01 and PAGI-04 implemented. GET /attendance/records now returns { data, total, page, limit }. TypeScript compiles cleanly.
-Last activity: 2026-03-06 — 10-01 pagination contract and listRecords endpoint paginated
+Plan: 10-02 (complete)
+Status: 10-02 complete — PAGI-02, PAGI-03, PAGI-04 implemented. GET /users and GET /attendance/reports/monthly now return paginated shapes. TypeScript compiles cleanly.
+Last activity: 2026-03-06 — 10-02 GET /users and monthly report endpoints paginated
 
-Progress: [████████████████░░░░] 62% (10-01 complete)
+Progress: [█████████████████░░░] 68% (10-02 complete)
 
 ## Performance Metrics
 
@@ -192,6 +192,8 @@ Recent decisions affecting current work:
 - Early-return paths (no divisions, no employees) updated to return paginated shape { data:[], total:0, page, limit } for consistent response contract (10-01)
 - { count: 'exact' } on Supabase select() for total — reflects full filtered month count, not just current page (10-01)
 - Shared DTO pattern: backend/src/common/dto/ for reusable request/response contracts across controllers (10-01)
+- In-memory slice for getMonthlyReport pagination: fetch all records from DB for stats accuracy, slice array in-memory for page — avoids second DB query (10-02)
+- exportCsv passes limit=100000 internal pagination to bypass @Max(100) HTTP constraint — all records fetched for CSV export without HTTP contract change (10-02)
 
 ### Pending Todos
 
@@ -218,6 +220,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-06
-Stopped at: Completed 10-01-PLAN.md — pagination contract + GET /attendance/records paginated
+Stopped at: Completed 10-02-PLAN.md — GET /users and GET /attendance/reports/monthly paginated
 Resume file: None
-Next: Phase 10 — Plan 10-02 (next pagination plan if exists, else Phase 11 UI Polish)
+Next: Phase 10 — Plan 10-03 (next pagination plan if exists, else Phase 11 UI Polish)
