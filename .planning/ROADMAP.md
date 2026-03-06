@@ -258,7 +258,7 @@ Plans:
 - [ ] 13-01-PLAN.md — Design system foundation: install Shadcn components (Input, Card, Avatar, etc.), BrandLogo component, indigo color scheme, auth pages polish (login + register)
 - [x] 13-02-PLAN.md — User Management + Attendance Records tables redesign (Stitch-exact): role badges, icon actions, avatar initials, styled filters, pagination
 - [ ] 13-03-PLAN.md — Admin tables polish (avatar circles, colored badges), KPI cards with icons/accents, EmptyState component for all tables
-- [ ] 13-04-PLAN.md — Employee portal polish (check-in card redesign, attendance history with expandable photo rows, improved date formatting)
+- [x] 13-04-PLAN.md — Employee portal polish (check-in card redesign, attendance history with expandable photo rows, improved date formatting)
 - [ ] 13-05-PLAN.md — Migrate all modals to Shadcn Dialog, AlertDialog for delete confirmations, onboarding wizard step indicator, final consistency pass (typography, spacing, colors)
 
 ## Progress
@@ -280,7 +280,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 10. API Pagination | 3/3 | Complete    | 2026-03-05 |
 | 11. IP Restriction | 4/4 | Complete    | 2026-03-05 |
 | 12. UI Polish | 5/5 | Complete    | 2026-03-06 |
-| 13. UI Redesign | 2/5 | In Progress | - |
+| 13. UI Redesign | 4/5 | In Progress | - |
 
 ---
 *Roadmap created: 2026-03-01*
