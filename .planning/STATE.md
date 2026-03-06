@@ -18,16 +18,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-01)
 
 **Core value:** Employees check in/out quickly with photo evidence — managers and admins have real-time, accurate attendance data — any company deployed in minutes with no IT support
-**Current focus:** v2.0 milestone COMPLETE — all 12 phases and 50 plans done
+**Current focus:** Phase 13 UI Redesign — matching Stitch HTML design
 
 ## Current Position
 
-Phase: Phase 12 - UI Polish (Complete)
-Plan: 12-05 (complete — human E2E verification; all 31 steps passed)
-Status: 12-05 complete — All 5 UIUX requirements verified. Phase 12 and v2.0 milestone are complete.
-Last activity: 2026-03-06 — 12-05 complete (all 50 plans across all 12 phases now done)
+Phase: Phase 13 - UI Redesign
+Plan: 13-01 (complete — Design System + Auth Pages)
+Status: 13-01 complete — Auth pages redesigned to match Stitch HTML with #4848e5 primary, brand logo, icon inputs
+Last activity: 2026-03-06 — 13-01 complete (design tokens + auth layout + login + register)
 
-Progress: [████████████████████] 100% (50/50 plans complete)
+Progress: [█___________________] 20% (1/5 plans complete in Phase 13)
 
 ## Performance Metrics
 
@@ -54,6 +54,7 @@ Progress: [████████████████████] 100% (5
 | Phase 08-remote-work-acknowledgment-flow P04 | 2 | 1 tasks | 0 files |
 | Phase 12-ui-polish P01 | 4 | 2 tasks | 6 files |
 | Phase 12-ui-polish P02 | 2 | 2 tasks | 4 files |
+| Phase 13-ui-redesign P01 | 2 | 4 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -220,6 +221,9 @@ Recent decisions affecting current work:
 - [Phase 12-ui-polish]: Clock initialized immediately before setInterval to prevent 1-second blank display on mount
 - [Phase 12-ui-polish]: Separate useEffect for clock tick keeps concerns isolated from user-fetch effect
 - Phase 12 E2E human verification passed — all 31 verification steps confirmed; two additional bug fixes (absent_morning upgrade logic, employee name link colour) applied post-delivery
+- [Phase 13-ui-redesign]: Tailwind v4 CSS-based config used (@theme inline block) instead of tailwind.config.ts — project has no JS config file
+- [Phase 13-ui-redesign]: brand-primary (#4848e5) and background-light (#f6f6f8) added as CSS custom properties in @theme
+- [Phase 13-ui-redesign]: Hardcoded #4848e5 in JSX classes for Stitch-exact match (not using Tailwind's indigo-600)
 
 ### Pending Todos
 
@@ -246,6 +250,6 @@ None.
 ## Session Continuity
 
 Last session: 2026-03-06
-Stopped at: Completed 12-05-PLAN.md — Human E2E verification passed (all 31 steps). v2.0 milestone complete.
+Stopped at: Completed 13-01-PLAN.md — Design System + Auth Pages (Stitch-exact)
 Resume file: None
-Next: v2.0 milestone complete — all 12 phases done. Ready for v3.0 planning or production deployment.
+Next: 13-02-PLAN.md
