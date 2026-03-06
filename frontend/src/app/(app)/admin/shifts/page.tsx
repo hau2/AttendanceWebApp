@@ -6,7 +6,7 @@ import { getStoredToken, getStoredUser } from '@/lib/api/auth';
 import ShiftTable from './components/ShiftTable';
 import ShiftFormModal from './components/ShiftFormModal';
 import { PaginationControls } from '@/components/PaginationControls';
-import { Plus } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 
 const LIMIT = 20;
 
@@ -18,6 +18,7 @@ export default function ShiftsPage() {
   const [error, setError] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingShift, setEditingShift] = useState<Shift | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const user = getStoredUser();
 
@@ -77,13 +78,25 @@ export default function ShiftsPage() {
     <div className="max-w-[1200px] mx-auto">
       <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
         <h1 className="text-slate-900 text-2xl font-bold leading-tight tracking-tight">Shift Management</h1>
-        <button
-          onClick={handleCreate}
-          className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-[#4848e5] hover:bg-[#4848e5]/90 text-white text-sm font-medium transition-colors shadow-sm"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Create Shift</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search shifts..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 pr-4 py-2 w-52 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#4848e5]/50 focus:border-[#4848e5] placeholder-slate-400 transition-colors"
+            />
+          </div>
+          <button
+            onClick={handleCreate}
+            className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-[#4848e5] hover:bg-[#4848e5]/90 text-white text-sm font-medium transition-colors shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Create Shift</span>
+          </button>
+        </div>
       </div>
 
       {loading && (
@@ -100,7 +113,7 @@ export default function ShiftsPage() {
 
       {!loading && !error && (
         <>
-          <ShiftTable shifts={shifts} onEdit={handleEdit} />
+          <ShiftTable shifts={searchQuery.trim() ? shifts.filter((s) => s.name.toLowerCase().includes(searchQuery.toLowerCase())) : shifts} onEdit={handleEdit} />
           {total > LIMIT && (
             <div className="mt-2 bg-white rounded-lg shadow-sm">
               <PaginationControls page={page} limit={LIMIT} total={total} onPageChange={setPage} />

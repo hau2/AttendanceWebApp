@@ -8,7 +8,7 @@ import {
   removeIpEntry,
 } from '@/lib/api/company';
 import { getStoredToken, getStoredUser } from '@/lib/api/auth';
-import { Trash2, Plus } from 'lucide-react';
+import { Trash2, Plus, Search, Pencil, Check, X } from 'lucide-react';
 
 type IpMode = 'disabled' | 'log-only' | 'enforce-block';
 
@@ -21,6 +21,10 @@ export default function AdminSettingsPage() {
   const [savedMsg, setSavedMsg] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [addError, setAddError] = useState<string | null>(null);
+  const [ipSearch, setIpSearch] = useState('');
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const [editCidr, setEditCidr] = useState('');
+  const [editLabel, setEditLabel] = useState('');
 
   const user = getStoredUser();
   if (!user || !['admin', 'owner'].includes(user.role)) return null;
@@ -65,8 +69,27 @@ export default function AdminSettingsPage() {
     try {
       const res = await removeIpEntry(index);
       setAllowlist(res.ip_allowlist);
+      if (editingIndex === index) setEditingIndex(null);
     } catch (e: unknown) {
       setError(e instanceof Error ? e.message : 'Failed to remove entry');
+    }
+  }
+
+  function startEdit(index: number) {
+    setEditingIndex(index);
+    setEditCidr(allowlist[index].cidr);
+    setEditLabel(allowlist[index].label || '');
+  }
+
+  async function saveEdit(index: number) {
+    if (!editCidr.trim()) return;
+    try {
+      await removeIpEntry(index);
+      const res = await addIpEntry({ cidr: editCidr.trim(), label: editLabel.trim() || undefined });
+      setAllowlist(res.ip_allowlist);
+      setEditingIndex(null);
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : 'Failed to update entry');
     }
   }
 
@@ -116,10 +139,26 @@ export default function AdminSettingsPage() {
 
       {/* IP Allowlist */}
       <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-        <h2 className="text-lg font-semibold text-slate-900 mb-1">IP Allowlist</h2>
-        <p className="text-sm text-slate-500 mb-4">
-          Add individual IPv4 addresses or CIDR ranges. When the list is empty, no IP check runs regardless of mode.
-        </p>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="text-lg font-semibold text-slate-900 mb-1">IP Allowlist</h2>
+            <p className="text-sm text-slate-500">
+              Add individual IPv4 addresses or CIDR ranges. When the list is empty, no IP check runs regardless of mode.
+            </p>
+          </div>
+          {allowlist.length > 0 && (
+            <div className="relative ml-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400 pointer-events-none" />
+              <input
+                type="text"
+                placeholder="Search IPs..."
+                value={ipSearch}
+                onChange={(e) => setIpSearch(e.target.value)}
+                className="pl-9 pr-4 py-2 w-48 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#4848e5]/50 focus:border-[#4848e5] placeholder-slate-400"
+              />
+            </div>
+          )}
+        </div>
 
         {allowlist.length === 0 ? (
           <p className="text-sm text-slate-400 italic mb-4">No entries -- allowlist is empty.</p>
@@ -134,21 +173,39 @@ export default function AdminSettingsPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-200">
-                {allowlist.map((entry, i) => (
-                  <tr key={i} className="hover:bg-slate-50 transition-colors">
-                    <td className="px-6 py-4 text-sm font-mono text-slate-800">{entry.cidr}</td>
-                    <td className="px-6 py-4 text-sm text-slate-500">{entry.label || '-'}</td>
-                    <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => handleRemoveEntry(i)}
-                        className="text-red-500 hover:text-red-600 text-sm font-medium transition-colors inline-flex items-center gap-1.5"
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                        Delete
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+                {allowlist.map((entry, i) => {
+                  if (ipSearch.trim() && !entry.cidr.toLowerCase().includes(ipSearch.toLowerCase()) && !(entry.label?.toLowerCase().includes(ipSearch.toLowerCase()))) return null;
+                  if (editingIndex === i) {
+                    return (
+                      <tr key={i} className="bg-[#4848e5]/5">
+                        <td className="px-6 py-3">
+                          <input value={editCidr} onChange={(e) => setEditCidr(e.target.value)} className="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-mono focus:ring-2 focus:ring-[#4848e5]/50 focus:border-[#4848e5]" />
+                        </td>
+                        <td className="px-6 py-3">
+                          <input value={editLabel} onChange={(e) => setEditLabel(e.target.value)} placeholder="Label" className="w-full border border-slate-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-[#4848e5]/50 focus:border-[#4848e5]" />
+                        </td>
+                        <td className="px-6 py-3 text-right">
+                          <div className="flex items-center justify-end gap-2">
+                            <button onClick={() => saveEdit(i)} className="text-[#4848e5] hover:text-[#4848e5]/80 transition-colors" title="Save"><Check className="w-4 h-4" /></button>
+                            <button onClick={() => setEditingIndex(null)} className="text-slate-400 hover:text-slate-600 transition-colors" title="Cancel"><X className="w-4 h-4" /></button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  }
+                  return (
+                    <tr key={i} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-6 py-4 text-sm font-mono text-slate-800">{entry.cidr}</td>
+                      <td className="px-6 py-4 text-sm text-slate-500">{entry.label || '-'}</td>
+                      <td className="px-6 py-4 text-right">
+                        <div className="flex items-center justify-end gap-3">
+                          <button onClick={() => startEdit(i)} className="text-[#4848e5] hover:text-[#4848e5]/80 transition-colors" title="Edit"><Pencil className="w-3.5 h-3.5" /></button>
+                          <button onClick={() => handleRemoveEntry(i)} className="text-red-500 hover:text-red-600 transition-colors" title="Delete"><Trash2 className="w-3.5 h-3.5" /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

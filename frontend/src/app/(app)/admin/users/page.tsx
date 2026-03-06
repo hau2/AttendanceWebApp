@@ -16,7 +16,7 @@ import { CsvImportModal } from './components/CsvImportModal';
 import { AssignShiftModal } from './components/AssignShiftModal';
 import { EditUserModal } from './components/EditUserModal';
 import { PaginationControls } from '@/components/PaginationControls';
-import { Upload, Plus } from 'lucide-react';
+import { Upload, Plus, Search } from 'lucide-react';
 
 const LIMIT = 20;
 
@@ -31,6 +31,7 @@ export default function UsersPage() {
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [page, setPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const currentUser = getStoredUser();
   if (currentUser && !['owner', 'admin'].includes(currentUser.role)) {
@@ -139,11 +140,28 @@ export default function UsersPage() {
 
   const managers = users.filter((u) => u.role === 'manager');
 
+  const filteredUsers = searchQuery.trim()
+    ? users.filter((u) => {
+        const q = searchQuery.toLowerCase();
+        return u.full_name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.role.toLowerCase().includes(q);
+      })
+    : users;
+
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
         <h1 className="text-2xl font-bold leading-tight tracking-tight text-slate-900">User Management</h1>
         <div className="flex items-center gap-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              placeholder="Search users..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 pr-4 py-2 w-56 bg-white border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-[#4848e5]/50 focus:border-[#4848e5] placeholder-slate-400 transition-colors"
+            />
+          </div>
           <button
             onClick={() => setShowCsvModal(true)}
             className="flex items-center justify-center rounded-lg h-10 px-4 border border-slate-300 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors gap-2"
@@ -174,7 +192,7 @@ export default function UsersPage() {
       ) : (
         <>
           <UserTable
-            users={users}
+            users={filteredUsers}
             divisions={divisions}
             currentUserRole={currentUser?.role ?? ''}
             onRoleChange={handleRoleChange}
