@@ -5,8 +5,22 @@ import { useRouter } from 'next/navigation';
 import { getStoredUser } from '@/lib/api/auth';
 import { getExecutiveSummary, ExecutiveSummary } from '@/lib/api/attendance';
 import { EmployeeHistoryModal } from './components/EmployeeHistoryModal';
+import { TrendingUp, FileText, AlertTriangle, ArrowUp, ArrowDown, Minus, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function getInitials(fullName: string): string {
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return (parts[0]?.[0] ?? '?').toUpperCase();
+}
+
+function getRankClasses(rank: number): { circle: string; lateText: string } {
+  if (rank === 1) return { circle: 'bg-red-100 text-red-700', lateText: 'text-red-600 font-semibold' };
+  if (rank === 2) return { circle: 'bg-orange-100 text-orange-700', lateText: 'text-orange-600 font-semibold' };
+  if (rank === 3) return { circle: 'bg-amber-100 text-amber-700', lateText: 'text-amber-600 font-semibold' };
+  return { circle: 'bg-slate-100 text-slate-600', lateText: 'text-slate-700 font-medium' };
+}
 
 export default function ExecutiveDashboard() {
   const router = useRouter();
@@ -44,17 +58,27 @@ export default function ExecutiveDashboard() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto py-8 px-4">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Executive Dashboard</h1>
-
-      {/* Month navigation */}
-      <div className="flex items-center gap-4 mb-6">
-        <button onClick={prevMonth} className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">&larr;</button>
-        <span className="font-medium text-gray-700">{MONTH_NAMES[month - 1]} {year}</span>
-        <button onClick={nextMonth} className="px-3 py-1 border border-gray-300 rounded text-sm hover:bg-gray-50">&rarr;</button>
+    <div className="max-w-[1200px] mx-auto py-8 px-4">
+      <div className="flex flex-wrap justify-between gap-3 mb-4">
+        <div className="flex min-w-72 flex-col gap-2">
+          <h1 className="text-slate-900 text-3xl font-bold leading-tight tracking-[-0.033em]">Executive Dashboard</h1>
+          <p className="text-slate-500 text-sm font-medium leading-normal">High-level overview of attendance metrics</p>
+        </div>
+        {/* Month navigation */}
+        <div className="flex items-center gap-2">
+          <div className="flex items-center bg-white rounded-lg border border-slate-200 shadow-sm p-1">
+            <button onClick={prevMonth} className="p-1.5 rounded-md hover:bg-slate-100 text-slate-500 transition-colors">
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <span className="px-4 text-sm font-semibold text-slate-700">{MONTH_NAMES[month - 1]} {year}</span>
+            <button onClick={nextMonth} className="p-1.5 rounded-md hover:bg-slate-100 text-slate-500 transition-colors">
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
       </div>
 
-      {loading && <div className="text-gray-500">Loading...</div>}
+      {loading && <div className="text-slate-500">Loading...</div>}
       {error && <div className="text-red-600">{error}</div>}
 
       <EmployeeHistoryModal
@@ -68,85 +92,124 @@ export default function ExecutiveDashboard() {
       {summary && (
         <>
           {/* KPI Cards */}
-          <div className="grid grid-cols-3 gap-4 mb-8">
-            <div className="bg-white rounded-lg border border-gray-200 p-5 text-center">
-              <div className="text-3xl font-bold text-blue-600">{summary.attendanceRate}%</div>
-              <div className="text-sm text-gray-500 mt-1">Attendance Rate</div>
+          <div className="flex flex-wrap gap-6 mb-8">
+            {/* Attendance Rate */}
+            <div className="flex min-w-[240px] flex-1 flex-col gap-3 rounded-xl p-6 bg-white shadow-sm border border-slate-100">
+              <div className="flex justify-between items-center">
+                <p className="text-slate-500 text-sm font-medium leading-normal uppercase tracking-wider">Attendance Rate</p>
+                <TrendingUp className="w-5 h-5 text-[#4848e5]" />
+              </div>
+              <p className="text-[#4848e5] text-4xl font-bold leading-tight">{summary.attendanceRate}%</p>
+              <p className="text-emerald-600 text-sm font-medium flex items-center gap-1">
+                <ArrowUp className="w-4 h-4" />
+                Overall rate
+              </p>
             </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-5 text-center">
-              <div className="text-3xl font-bold text-gray-900">{summary.totalRecords}</div>
-              <div className="text-sm text-gray-500 mt-1">Total Records</div>
+            {/* Total Records */}
+            <div className="flex min-w-[240px] flex-1 flex-col gap-3 rounded-xl p-6 bg-white shadow-sm border border-slate-100">
+              <div className="flex justify-between items-center">
+                <p className="text-slate-500 text-sm font-medium leading-normal uppercase tracking-wider">Total Records</p>
+                <FileText className="w-5 h-5 text-slate-400" />
+              </div>
+              <p className="text-slate-900 text-4xl font-bold leading-tight">{summary.totalRecords.toLocaleString()}</p>
+              <p className="text-slate-400 text-sm font-medium flex items-center gap-1">
+                <Minus className="w-4 h-4" />
+                This month
+              </p>
             </div>
-            <div className="bg-white rounded-lg border border-gray-200 p-5 text-center">
-              <div className="text-3xl font-bold text-red-600">{summary.lateCount}</div>
-              <div className="text-sm text-gray-500 mt-1">Late Check-ins</div>
+            {/* Late Check-ins */}
+            <div className="flex min-w-[240px] flex-1 flex-col gap-3 rounded-xl p-6 bg-white shadow-sm border border-slate-100">
+              <div className="flex justify-between items-center">
+                <p className="text-slate-500 text-sm font-medium leading-normal uppercase tracking-wider">Late Check-ins</p>
+                <AlertTriangle className="w-5 h-5 text-red-500" />
+              </div>
+              <p className="text-slate-900 text-4xl font-bold leading-tight">{summary.lateCount}</p>
+              <p className="text-red-600 text-sm font-medium flex items-center gap-1">
+                <ArrowDown className="w-4 h-4" />
+                Late this month
+              </p>
             </div>
           </div>
 
           {/* Late Ranking */}
-          <div className="bg-white rounded-lg border border-gray-200 mb-8">
-            <div className="px-5 py-4 border-b border-gray-100">
-              <h2 className="font-semibold text-gray-800">Late Frequency Ranking</h2>
-            </div>
-            {summary.lateRanking.length === 0 ? (
-              <div className="px-5 py-6 text-gray-400 text-sm text-center">No late records this month</div>
-            ) : (
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-5 py-3 text-left font-medium text-gray-500">#</th>
-                    <th className="px-5 py-3 text-left font-medium text-gray-500">Employee</th>
-                    <th className="px-5 py-3 text-right font-medium text-gray-500">Late Days</th>
-                    <th className="px-5 py-3 text-right font-medium text-gray-500">Total Days</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {summary.lateRanking.map((row, i) => (
-                    <tr
-                      key={row.userId}
-                      className="hover:bg-gray-50 cursor-pointer"
-                      onClick={() => setSelectedEmployee({ userId: row.userId, fullName: row.fullName })}
-                    >
-                      <td className="px-5 py-3 text-gray-500">{i + 1}</td>
-                      <td className="px-5 py-3 font-medium text-gray-900">{row.fullName}</td>
-                      <td className="px-5 py-3 text-right text-red-600 font-medium">{row.lateCount}</td>
-                      <td className="px-5 py-3 text-right text-gray-600">{row.totalDays}</td>
+          <div className="mt-8">
+            <h2 className="text-slate-900 text-xl font-semibold leading-tight tracking-[-0.015em] pb-4">Late Frequency Ranking</h2>
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+              {summary.lateRanking.length === 0 ? (
+                <div className="px-6 py-8 text-slate-400 text-sm text-center">No late records this month</div>
+              ) : (
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200">
+                      <th className="px-6 py-4 text-slate-500 text-xs font-semibold uppercase tracking-wider w-24">Rank</th>
+                      <th className="px-6 py-4 text-slate-500 text-xs font-semibold uppercase tracking-wider">Employee</th>
+                      <th className="px-6 py-4 text-slate-500 text-xs font-semibold uppercase tracking-wider w-32">Late Days</th>
+                      <th className="px-6 py-4 text-slate-500 text-xs font-semibold uppercase tracking-wider w-32">Total Days</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {summary.lateRanking.map((row, i) => {
+                      const rank = i + 1;
+                      const rc = getRankClasses(rank);
+                      return (
+                        <tr
+                          key={row.userId}
+                          className="hover:bg-slate-50 transition-colors cursor-pointer"
+                          onClick={() => setSelectedEmployee({ userId: row.userId, fullName: row.fullName })}
+                        >
+                          <td className="px-6 py-4">
+                            <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${rc.circle}`}>
+                              {rank}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-3">
+                              <div className="size-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium text-slate-600">
+                                {getInitials(row.fullName)}
+                              </div>
+                              <span className="text-slate-900 font-medium text-sm">{row.fullName}</span>
+                            </div>
+                          </td>
+                          <td className={`px-6 py-4 text-sm ${rc.lateText}`}>{row.lateCount}</td>
+                          <td className="px-6 py-4 text-slate-500 text-sm">{row.totalDays}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
 
           {/* Monthly Breakdown */}
-          <div className="bg-white rounded-lg border border-gray-200">
-            <div className="px-5 py-4 border-b border-gray-100">
-              <h2 className="font-semibold text-gray-800">Daily Breakdown</h2>
-            </div>
-            {summary.monthlyBreakdown.length === 0 ? (
-              <div className="px-5 py-6 text-gray-400 text-sm text-center">No records this month</div>
-            ) : (
-              <table className="w-full text-sm">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-5 py-3 text-left font-medium text-gray-500">Date</th>
-                    <th className="px-5 py-3 text-right font-medium text-gray-500">Present</th>
-                    <th className="px-5 py-3 text-right font-medium text-gray-500">Late</th>
-                    <th className="px-5 py-3 text-right font-medium text-gray-500">Missing Checkout</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {summary.monthlyBreakdown.map(day => (
-                    <tr key={day.date} className="hover:bg-gray-50">
-                      <td className="px-5 py-3 text-gray-700">{day.date}</td>
-                      <td className="px-5 py-3 text-right text-gray-900">{day.present}</td>
-                      <td className="px-5 py-3 text-right text-red-600">{day.late}</td>
-                      <td className="px-5 py-3 text-right text-orange-600">{day.missingCheckout}</td>
+          <div className="mt-8">
+            <h2 className="text-slate-900 text-xl font-semibold leading-tight tracking-[-0.015em] pb-4">Daily Breakdown</h2>
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+              {summary.monthlyBreakdown.length === 0 ? (
+                <div className="px-6 py-8 text-slate-400 text-sm text-center">No records this month</div>
+              ) : (
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50 border-b border-slate-200">
+                      <th className="px-6 py-4 text-slate-500 text-xs font-semibold uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-4 text-slate-500 text-xs font-semibold uppercase tracking-wider">Present</th>
+                      <th className="px-6 py-4 text-slate-500 text-xs font-semibold uppercase tracking-wider">Late</th>
+                      <th className="px-6 py-4 text-slate-500 text-xs font-semibold uppercase tracking-wider">Missing Checkout</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                  </thead>
+                  <tbody className="divide-y divide-slate-200">
+                    {summary.monthlyBreakdown.map(day => (
+                      <tr key={day.date} className="hover:bg-slate-50 transition-colors">
+                        <td className="px-6 py-4 text-sm text-slate-700">{day.date}</td>
+                        <td className="px-6 py-4 text-sm text-slate-900">{day.present}</td>
+                        <td className="px-6 py-4 text-sm text-red-600">{day.late}</td>
+                        <td className="px-6 py-4 text-sm text-orange-600">{day.missingCheckout}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
           </div>
         </>
       )}
