@@ -28,6 +28,7 @@ export function CheckInOutCard() {
   const [earlyNote, setEarlyNote] = useState('');
   const [isRemote, setIsRemote] = useState(false);
   const [ipCheckResult, setIpCheckResult] = useState<IpCheckResult | null>(null);
+  const [currentIp, setCurrentIp] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -35,6 +36,9 @@ export function CheckInOutCard() {
     getTodayRecord()
       .then((rec) => setTodayRecord(rec))
       .catch(() => setTodayRecord(null));
+    checkIpStatus()
+      .then((result) => setCurrentIp(result.ip))
+      .catch(() => {/* ignore — IP display is informational */});
   }, []);
 
   useEffect(() => {
@@ -222,6 +226,11 @@ export function CheckInOutCard() {
           )}
           {inTime && <p className="text-sm text-slate-500 mt-1">Checked in at {inTime}</p>}
           <p className="text-sm text-slate-500">Checked out at {outTime}</p>
+          {currentIp && (
+            <p className="text-xs text-slate-400 mt-2">
+              Your IP: <span className="font-mono">{currentIp}</span>
+            </p>
+          )}
         </div>
       </div>
     );
@@ -248,6 +257,11 @@ export function CheckInOutCard() {
               <p className="text-sm text-slate-400">
                 Checked in at{' '}
                 {new Date(todayRecord.check_in_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            )}
+            {currentIp && (
+              <p className="text-xs text-slate-400 mt-1">
+                Your IP: <span className="font-mono">{currentIp}</span>
               </p>
             )}
           </div>
