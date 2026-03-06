@@ -143,15 +143,17 @@ export class DataRefreshService {
       absentCount = (inserted ?? []).length;
     }
 
-    // 7b. Upgrade yesterday's absent_morning records (never checked in) → absent
-    // These were inserted when yesterday was "today". Now the day is over — upgrade to absent.
+    // 7b. Upgrade yesterday's absent_morning records → absent, but ONLY if no checkout either.
+    // If the employee checked out (even without checking in), they were present in the afternoon
+    // — keep absent_morning. Only fully absent employees (no check-in AND no check-out) → absent.
     const { data: staleMorningRecords } = await client
       .from('attendance_records')
       .select('id')
       .eq('company_id', companyId)
       .eq('work_date', yesterdayStr)
       .eq('check_in_status', 'absent_morning')
-      .is('check_in_at', null);
+      .is('check_in_at', null)
+      .is('check_out_at', null);
 
     if ((staleMorningRecords ?? []).length > 0) {
       const staleIds = (staleMorningRecords ?? []).map((r) => (r as Record<string, unknown>).id as string);
@@ -159,6 +161,25 @@ export class DataRefreshService {
         .from('attendance_records')
         .update({ check_in_status: 'absent', updated_at: now })
         .in('id', staleIds);
+    }
+
+    // 7b-fix. Correct records incorrectly upgraded to 'absent' when a checkout exists.
+    // Any record with check_in_status='absent', no check_in_at, but a check_out_at was
+    // present when they checked out — upgrade to absent was wrong, revert to absent_morning.
+    const { data: badAbsentRecords } = await client
+      .from('attendance_records')
+      .select('id')
+      .eq('company_id', companyId)
+      .eq('check_in_status', 'absent')
+      .is('check_in_at', null)
+      .not('check_out_at', 'is', null);
+
+    if ((badAbsentRecords ?? []).length > 0) {
+      const badIds = (badAbsentRecords ?? []).map((r) => (r as Record<string, unknown>).id as string);
+      await client
+        .from('attendance_records')
+        .update({ check_in_status: 'absent_morning', updated_at: now })
+        .in('id', badIds);
     }
 
     // 7c. Mark yesterday's open records (checked in, no checkout) as absent_afternoon
