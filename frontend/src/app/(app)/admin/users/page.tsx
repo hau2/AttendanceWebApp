@@ -16,6 +16,7 @@ import { CsvImportModal } from './components/CsvImportModal';
 import { AssignShiftModal } from './components/AssignShiftModal';
 import { EditUserModal } from './components/EditUserModal';
 import { PaginationControls } from '@/components/PaginationControls';
+import { Upload, Plus } from 'lucide-react';
 
 const LIMIT = 20;
 
@@ -140,20 +141,22 @@ export default function UsersPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
-        <div className="flex gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <h1 className="text-2xl font-bold leading-tight tracking-tight text-slate-900">User Management</h1>
+        <div className="flex items-center gap-3">
           <button
             onClick={() => setShowCsvModal(true)}
-            className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="flex items-center justify-center rounded-lg h-10 px-4 border border-slate-300 bg-white text-sm font-semibold text-slate-700 hover:bg-slate-50 transition-colors gap-2"
           >
-            Import CSV
+            <Upload className="w-[18px] h-[18px]" />
+            <span>Import CSV</span>
           </button>
           <button
             onClick={() => setShowCreateModal(true)}
-            className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="flex items-center justify-center rounded-lg h-10 px-4 bg-[#4848e5] text-white text-sm font-semibold hover:bg-[#4848e5]/90 transition-colors shadow-sm gap-2"
           >
-            Add User
+            <Plus className="w-[18px] h-[18px]" />
+            <span>Add User</span>
           </button>
         </div>
       </div>
@@ -166,7 +169,7 @@ export default function UsersPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[#4848e5] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         <>

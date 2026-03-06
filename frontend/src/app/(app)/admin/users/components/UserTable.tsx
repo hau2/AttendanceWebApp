@@ -2,8 +2,7 @@
 
 import { User } from '@/lib/api/users';
 import { Division } from '@/lib/api/divisions';
-
-const ROLE_OPTIONS: User['role'][] = ['owner', 'admin', 'manager', 'employee', 'executive'];
+import { Pencil, CalendarPlus, Trash2 } from 'lucide-react';
 
 interface UserTableProps {
   users: User[];
@@ -18,179 +17,158 @@ interface UserTableProps {
   onDelete: (user: User) => void;
 }
 
+function getRoleBadgeClasses(role: string): string {
+  switch (role) {
+    case 'admin':
+    case 'owner':
+      return 'bg-[#4848e5]/10 text-[#4848e5]';
+    case 'manager':
+      return 'bg-indigo-100 text-indigo-800';
+    case 'executive':
+      return 'bg-amber-100 text-amber-800';
+    default:
+      return 'bg-slate-100 text-slate-800';
+  }
+}
+
+function getDisabledRoleBadgeClasses(): string {
+  return 'bg-slate-100 text-slate-500';
+}
+
 export function UserTable({
   users,
   divisions,
   currentUserRole,
-  onRoleChange,
   onStatusToggle,
-  onManagerChange,
-  onDivisionChange,
   onAssignShift,
   onEdit,
   onDelete,
 }: UserTableProps) {
-  const managers = users.filter((u) => u.role === 'manager');
   const isAdminOrOwner = ['admin', 'owner'].includes(currentUserRole);
 
   function getDivisionName(divisionId: string | null): string {
-    if (!divisionId) return '—';
+    if (!divisionId) return '\u2014';
     const div = divisions.find((d) => d.id === divisionId);
-    return div ? div.name : '—';
+    return div ? div.name : '\u2014';
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-200 rounded-lg">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Name
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Email
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Role
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Division
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Manager
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Status
-            </th>
-            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-200">
-          {users.map((user) => (
-            <tr
-              key={user.id}
-              className={user.is_active ? '' : 'opacity-50 bg-gray-50'}
-            >
-              <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                {user.full_name}
-              </td>
-              <td className="px-4 py-3 text-sm text-gray-600">{user.email}</td>
-              <td className="px-4 py-3 text-sm">
-                {currentUserRole === 'manager' ? (
-                  <span className="text-sm text-gray-600 capitalize">{user.role}</span>
-                ) : (
-                  <select
-                    value={user.role}
-                    disabled={user.role === 'owner'}
-                    onChange={(e) => onRoleChange(user.id, e.target.value)}
-                    className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-60 disabled:cursor-not-allowed"
-                  >
-                    {ROLE_OPTIONS.map((r) => (
-                      <option key={r} value={r}>
-                        {r.charAt(0).toUpperCase() + r.slice(1)}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </td>
-              <td className="px-4 py-3 text-sm text-gray-600">
-                {getDivisionName(user.division_id)}
-              </td>
-              <td className="px-4 py-3 text-sm text-gray-600">
-                {user.divisions?.users?.full_name ?? '—'}
-              </td>
-              <td className="px-4 py-3 text-sm">
-                <span
-                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                    user.is_active
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-gray-200 text-gray-600'
-                  }`}
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-slate-50 border-b border-slate-200">
+              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Name</th>
+              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider hidden sm:table-cell">Email</th>
+              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Role</th>
+              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider hidden md:table-cell">Division</th>
+              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider hidden lg:table-cell">Manager</th>
+              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+              <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-200">
+            {users.map((user) => {
+              const isDisabled = !user.is_active;
+              return (
+                <tr
+                  key={user.id}
+                  className={
+                    isDisabled
+                      ? 'opacity-60 bg-slate-50/50'
+                      : 'hover:bg-slate-50 transition-colors'
+                  }
                 >
-                  {user.is_active ? 'Active' : 'Disabled'}
-                </span>
-                {isAdminOrOwner && (
-                  <button
-                    onClick={() => onStatusToggle(user.id, !user.is_active)}
-                    className="ml-2 text-xs text-blue-600 hover:text-blue-800 underline"
-                  >
-                    {user.is_active ? 'Disable' : 'Enable'}
-                  </button>
-                )}
-              </td>
-              <td className="px-4 py-3 text-sm">
-                <div className="flex flex-col gap-2">
-                  {isAdminOrOwner && (
-                    <>
-                      <select
-                        value={user.manager_id ?? ''}
-                        onChange={(e) =>
-                          onManagerChange(user.id, e.target.value || null)
-                        }
-                        className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="">No manager</option>
-                        {managers.map((mgr) => (
-                          <option key={mgr.id} value={mgr.id}>
-                            {mgr.full_name}
-                          </option>
-                        ))}
-                      </select>
-                      <select
-                        value={user.division_id ?? ''}
-                        onChange={(e) =>
-                          onDivisionChange(user.id, e.target.value || null)
-                        }
-                        className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        <option value="">No division</option>
-                        {divisions.map((div) => (
-                          <option key={div.id} value={div.id}>
-                            {div.name}
-                          </option>
-                        ))}
-                      </select>
-                    </>
-                  )}
-                  <button
-                    onClick={() => onAssignShift(user)}
-                    className="text-xs text-indigo-600 hover:text-indigo-800 underline text-left"
-                  >
-                    Assign Shift
-                  </button>
-                  {isAdminOrOwner && (
-                    <>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className={`text-sm font-semibold ${isDisabled ? 'text-slate-500' : 'text-slate-900'}`}>
+                      {user.full_name}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap hidden sm:table-cell">
+                    <div className={`text-sm ${isDisabled ? 'text-slate-500' : 'text-slate-600'}`}>
+                      {user.email}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        isDisabled ? getDisabledRoleBadgeClasses() : getRoleBadgeClasses(user.role)
+                      }`}
+                    >
+                      {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap hidden md:table-cell">
+                    <div className={`text-sm ${isDisabled ? 'text-slate-500' : 'text-slate-600'}`}>
+                      {getDivisionName(user.division_id)}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap hidden lg:table-cell">
+                    <div className={`text-sm ${isDisabled ? 'text-slate-500' : 'text-slate-600'}`}>
+                      {user.divisions?.users?.full_name ?? '\u2014'}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        user.is_active
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-slate-200 text-slate-600'
+                      }`}
+                    >
+                      {user.is_active ? 'Active' : 'Disabled'}
+                    </span>
+                    {isAdminOrOwner && (
                       <button
-                        onClick={() => onEdit(user)}
-                        className="text-xs text-blue-600 hover:text-blue-800 underline text-left"
+                        onClick={() => onStatusToggle(user.id, !user.is_active)}
+                        className="ml-2 text-xs text-[#4848e5] hover:text-[#4848e5]/80 underline"
                       >
-                        Edit
+                        {user.is_active ? 'Disable' : 'Enable'}
                       </button>
-                      {user.role !== 'owner' && (
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="flex items-center justify-end gap-3">
+                      {isAdminOrOwner && (
                         <button
-                          onClick={() => onDelete(user)}
-                          className="text-xs text-red-600 hover:text-red-800 underline text-left"
+                          onClick={() => onEdit(user)}
+                          className={`${isDisabled ? 'text-slate-400 hover:text-slate-600' : 'text-[#4848e5] hover:text-[#4848e5]/80'} transition-colors`}
+                          title="Edit"
                         >
-                          Delete
+                          <Pencil className="w-[18px] h-[18px]" />
                         </button>
                       )}
-                    </>
-                  )}
-                </div>
-              </td>
-            </tr>
-          ))}
-          {users.length === 0 && (
-            <tr>
-              <td colSpan={7} className="px-4 py-8 text-center text-sm text-gray-500">
-                No users found.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+                      <button
+                        onClick={() => onAssignShift(user)}
+                        className="text-slate-400 hover:text-slate-600 transition-colors"
+                        title="Assign Shift"
+                      >
+                        <CalendarPlus className="w-[18px] h-[18px]" />
+                      </button>
+                      {isAdminOrOwner && user.role !== 'owner' && (
+                        <button
+                          onClick={() => onDelete(user)}
+                          className={`${isDisabled ? 'text-slate-400 hover:text-red-500' : 'text-red-500 hover:text-red-700'} transition-colors`}
+                          title="Delete"
+                        >
+                          <Trash2 className="w-[18px] h-[18px]" />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+            {users.length === 0 && (
+              <tr>
+                <td colSpan={7} className="px-6 py-8 text-center text-sm text-slate-500">
+                  No users found.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
