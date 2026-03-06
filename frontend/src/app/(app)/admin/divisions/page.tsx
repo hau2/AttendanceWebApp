@@ -8,6 +8,7 @@ import { DivisionTable } from './components/DivisionTable';
 import { CreateDivisionModal } from './components/CreateDivisionModal';
 import { EditDivisionModal } from './components/EditDivisionModal';
 import { PaginationControls } from '@/components/PaginationControls';
+import { Plus } from 'lucide-react';
 
 const LIMIT = 20;
 
@@ -65,14 +66,18 @@ export default function DivisionsPage() {
   }
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Division Management</h1>
+    <div className="max-w-[1200px] mx-auto">
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 className="text-slate-900 text-2xl font-bold leading-tight tracking-tight">Division Management</h1>
+          <p className="text-slate-500 text-sm mt-1">Manage organizational divisions and their assigned managers.</p>
+        </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-[#4848e5] text-white text-sm font-medium shadow-sm hover:bg-[#4848e5]/90 transition-colors"
         >
-          Add Division
+          <Plus className="w-4 h-4" />
+          <span>Add Division</span>
         </button>
       </div>
 
@@ -84,7 +89,7 @@ export default function DivisionsPage() {
 
       {loading ? (
         <div className="flex items-center justify-center py-16">
-          <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-4 border-[#4848e5] border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
         <>

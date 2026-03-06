@@ -6,6 +6,7 @@ import { getStoredToken, getStoredUser } from '@/lib/api/auth';
 import ShiftTable from './components/ShiftTable';
 import ShiftFormModal from './components/ShiftFormModal';
 import { PaginationControls } from '@/components/PaginationControls';
+import { Plus } from 'lucide-react';
 
 const LIMIT = 20;
 
@@ -73,20 +74,21 @@ export default function ShiftsPage() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Shift Management</h1>
+    <div className="max-w-[1200px] mx-auto">
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <h1 className="text-slate-900 text-2xl font-bold leading-tight tracking-tight">Shift Management</h1>
         <button
           onClick={handleCreate}
-          className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="flex items-center justify-center gap-2 rounded-lg h-10 px-5 bg-[#4848e5] hover:bg-[#4848e5]/90 text-white text-sm font-medium transition-colors shadow-sm"
         >
-          Create Shift
+          <Plus className="w-4 h-4" />
+          <span>Create Shift</span>
         </button>
       </div>
 
       {loading && (
-        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-          <p className="text-gray-500">Loading shifts...</p>
+        <div className="rounded-xl border border-slate-200 bg-white shadow-sm p-8 text-center">
+          <p className="text-slate-500">Loading shifts...</p>
         </div>
       )}
 
