@@ -22,6 +22,12 @@ const TIMEZONES = [
 
 type Step = 1 | 2 | 3;
 
+const STEP_LABELS: Record<Step, string> = {
+  1: 'Company Settings',
+  2: 'Create Shift',
+  3: 'Add Employee',
+};
+
 export default function OnboardingPage() {
   const router = useRouter();
   const [step, setStep] = useState<Step>(1);
@@ -90,47 +96,58 @@ export default function OnboardingPage() {
     }
   }
 
-  const stepTitles: Record<Step, string> = {
-    1: 'Step 1 of 3 — Company Settings',
-    2: 'Step 2 of 3 — Create your first shift',
-    3: 'Step 3 of 3 — Add your first employee',
-  };
+  const inputCls = 'w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]';
+  const labelCls = 'block text-sm font-medium text-slate-700 mb-1.5';
 
   return (
     <div className="max-w-lg mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Welcome! Let's set up your company.</h1>
-        <p className="text-gray-500 mt-1 text-sm">{stepTitles[step]}</p>
-        {/* Progress bar */}
-        <div className="mt-3 h-2 bg-gray-200 rounded-full">
-          <div
-            className="h-2 bg-[#4848e5] rounded-full transition-all"
-            style={{ width: `${(step / 3) * 100}%` }}
-          />
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-slate-900">Welcome! Let&apos;s set up your company.</h1>
+
+        {/* Step indicator with numbered circles */}
+        <div className="mt-6 flex items-center justify-between">
+          {([1, 2, 3] as Step[]).map((s) => (
+            <div key={s} className="flex items-center gap-2">
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
+                  s < step
+                    ? 'bg-[#4848e5] text-white'
+                    : s === step
+                    ? 'bg-[#4848e5] text-white ring-4 ring-[#4848e5]/20'
+                    : 'bg-slate-200 text-slate-500'
+                }`}
+              >
+                {s < step ? '\u2713' : s}
+              </div>
+              <span className={`text-sm font-medium ${s === step ? 'text-[#4848e5]' : 'text-slate-500'}`}>
+                {STEP_LABELS[s]}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded text-sm">
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
           {error}
         </div>
       )}
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
         {/* STEP 1: Timezone + IP mode */}
         {step === 1 && (
           <form onSubmit={handleStep1} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className={labelCls}>
                 Company Timezone <span className="text-red-500">*</span>
               </label>
-              <p className="text-xs text-gray-400 mb-2">
+              <p className="text-xs text-slate-400 mb-2">
                 Used for all late/early calculations. Must be set before attendance tracking begins.
               </p>
               <select
                 value={timezone}
                 onChange={(e) => setTimezone(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
+                className={inputCls}
                 required
               >
                 {TIMEZONES.map((tz) => (
@@ -140,10 +157,10 @@ export default function OnboardingPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className={labelCls}>
                 IP Restriction Mode
               </label>
-              <p className="text-xs text-gray-400 mb-2">
+              <p className="text-xs text-slate-400 mb-2">
                 Controls behavior when employees check in from outside the IP allowlist.
               </p>
               <div className="space-y-2">
@@ -154,10 +171,10 @@ export default function OnboardingPage() {
                     value="log-only"
                     checked={ipMode === 'log-only'}
                     onChange={() => setIpMode('log-only')}
-                    className="mt-0.5"
+                    className="mt-0.5 text-[#4848e5] focus:ring-[#4848e5]"
                   />
                   <span className="text-sm">
-                    <strong>Log-only</strong> — Record the IP but allow check-in (recommended for most companies)
+                    <strong>Log-only</strong> -- Record the IP but allow check-in (recommended for most companies)
                   </span>
                 </label>
                 <label className="flex items-start gap-3 cursor-pointer">
@@ -167,10 +184,10 @@ export default function OnboardingPage() {
                     value="enforce-block"
                     checked={ipMode === 'enforce-block'}
                     onChange={() => setIpMode('enforce-block')}
-                    className="mt-0.5"
+                    className="mt-0.5 text-[#4848e5] focus:ring-[#4848e5]"
                   />
                   <span className="text-sm">
-                    <strong>Enforce-block</strong> — Reject check-ins from outside the allowlist
+                    <strong>Enforce-block</strong> -- Reject check-ins from outside the allowlist
                   </span>
                 </label>
               </div>
@@ -179,7 +196,7 @@ export default function OnboardingPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#4848e5] text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-[#4848e5]/90 disabled:opacity-50 transition-colors"
+              className="w-full bg-[#4848e5] text-white rounded-lg h-10 px-4 text-sm font-semibold hover:bg-[#4848e5]/90 disabled:opacity-50 transition-colors"
             >
               {loading ? 'Saving...' : 'Continue'}
             </button>
@@ -190,46 +207,46 @@ export default function OnboardingPage() {
         {step === 2 && (
           <form onSubmit={handleStep2} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Shift Name</label>
+              <label className={labelCls}>Shift Name</label>
               <input
                 type="text"
                 required
                 value={shiftName}
                 onChange={(e) => setShiftName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
+                className={inputCls}
                 placeholder="Morning Shift"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Start Time</label>
+                <label className={labelCls}>Start Time</label>
                 <input
                   type="time"
                   required
                   value={shiftStartTime}
                   onChange={(e) => setShiftStartTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
+                  className={inputCls}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">End Time</label>
+                <label className={labelCls}>End Time</label>
                 <input
                   type="time"
                   required
                   value={shiftEndTime}
                   onChange={(e) => setShiftEndTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
+                  className={inputCls}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className={labelCls}>
                 Grace Period (minutes)
               </label>
-              <p className="text-xs text-gray-400 mb-2">
-                How many minutes after shift start before a check-in is classified as "late".
+              <p className="text-xs text-slate-400 mb-2">
+                How many minutes after shift start before a check-in is classified as &quot;late&quot;.
               </p>
               <input
                 type="number"
@@ -238,7 +255,7 @@ export default function OnboardingPage() {
                 required
                 value={gracePeriodMinutes}
                 onChange={(e) => setGracePeriodMinutes(parseInt(e.target.value, 10))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
+                className={inputCls}
               />
             </div>
 
@@ -246,13 +263,13 @@ export default function OnboardingPage() {
               <button
                 type="button"
                 onClick={() => setStep(1)}
-                className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
+                className="flex-1 border border-slate-300 text-slate-700 rounded-lg h-10 px-4 text-sm font-semibold hover:bg-slate-50 transition-colors"
               >
                 Back
               </button>
               <button
                 type="submit"
-                className="flex-1 bg-[#4848e5] text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-[#4848e5]/90 transition-colors"
+                className="flex-1 bg-[#4848e5] text-white rounded-lg h-10 px-4 text-sm font-semibold hover:bg-[#4848e5]/90 transition-colors"
               >
                 Continue
               </button>
@@ -263,40 +280,40 @@ export default function OnboardingPage() {
         {/* STEP 3: First employee */}
         {step === 3 && (
           <form onSubmit={handleStep3} className="space-y-5">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-slate-500">
               Add your first employee. You can add more users later from the admin panel.
             </p>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+              <label className={labelCls}>Full Name</label>
               <input
                 type="text"
                 required
                 value={firstUserFullName}
                 onChange={(e) => setFirstUserFullName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
+                className={inputCls}
                 placeholder="Employee Name"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+              <label className={labelCls}>Email</label>
               <input
                 type="email"
                 required
                 value={firstUserEmail}
                 onChange={(e) => setFirstUserEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
+                className={inputCls}
                 placeholder="employee@company.com"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+              <label className={labelCls}>Password</label>
               <input
                 type="password"
                 required
                 minLength={8}
                 value={firstUserPassword}
                 onChange={(e) => setFirstUserPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
+                className={inputCls}
                 placeholder="Min. 8 characters"
               />
             </div>
@@ -305,14 +322,14 @@ export default function OnboardingPage() {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="flex-1 border border-gray-300 text-gray-700 py-2 px-4 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors"
+                className="flex-1 border border-slate-300 text-slate-700 rounded-lg h-10 px-4 text-sm font-semibold hover:bg-slate-50 transition-colors"
               >
                 Back
               </button>
               <button
                 type="submit"
                 disabled={loading}
-                className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-green-700 disabled:opacity-50 transition-colors"
+                className="flex-1 bg-green-600 text-white rounded-lg h-10 px-4 text-sm font-semibold hover:bg-green-700 disabled:opacity-50 transition-colors"
               >
                 {loading ? 'Completing setup...' : 'Finish Setup'}
               </button>

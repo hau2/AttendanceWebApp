@@ -35,7 +35,7 @@ const STATUS_MAP: Record<string, StatusConfig> = {
   },
   absent: {
     icon: XCircle,
-    cls: 'bg-gray-100 text-gray-600',
+    cls: 'bg-slate-100 text-slate-600',
     label: 'Absent',
   },
   absent_morning: {
@@ -53,7 +53,7 @@ const STATUS_MAP: Record<string, StatusConfig> = {
 export function StatusBadge({ status, missingCheckout }: StatusBadgeProps): ReactElement | null {
   if (missingCheckout) {
     return (
-      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600">
         <AlertCircle className="w-3 h-3" />
         Missing Checkout
       </span>
