@@ -10,6 +10,7 @@ import { listUsers, User } from '@/lib/api/users';
 import { AttendanceRecordTable } from './components/AttendanceRecordTable';
 import { AttendanceRecordDetail } from './components/AttendanceRecordDetail';
 import { PaginationControls } from '@/components/PaginationControls';
+import { ChevronRight, RefreshCw, Search, ChevronDown } from 'lucide-react';
 
 const MONTH_NAMES = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -104,9 +105,6 @@ export default function AdminAttendancePage() {
   users.forEach((u) => { usersMap[u.id] = u; });
 
   // Extract unique divisions and managers from users who appear in *records*
-  // (not from all users). This automatically scopes the dropdowns:
-  // - Admin sees only divisions/managers with records this month
-  // - Manager sees only their own divisions (backend already scoped records)
   const divisionOptions: { id: string; name: string }[] = [];
   const managerOptions: { id: string; full_name: string }[] = [];
   const seenDivisions = new Set<string>();
@@ -154,48 +152,55 @@ export default function AdminAttendancePage() {
   const monthLabel = `${MONTH_NAMES[month - 1]} ${year}`;
 
   return (
-    <div className="max-w-6xl mx-auto">
-      {/* Navigation links */}
-      <div className="flex items-center gap-4 mb-4 text-sm text-gray-500">
-        <Link href="/admin/users" className="hover:text-gray-700">Users</Link>
-        <span>/</span>
-        <Link href="/admin/shifts" className="hover:text-gray-700">Shifts</Link>
-        <span>/</span>
-        <span className="text-gray-900 font-medium">Attendance Records</span>
+    <div className="max-w-[1152px] mx-auto">
+      {/* Breadcrumb */}
+      <div className="flex flex-wrap gap-2 py-6">
+        <Link href="/admin/users" className="text-slate-500 hover:text-[#4848e5] transition-colors text-sm font-medium leading-normal flex items-center gap-1">
+          Users
+        </Link>
+        <ChevronRight className="w-4 h-4 text-slate-400" />
+        <Link href="/admin/shifts" className="text-slate-500 hover:text-[#4848e5] transition-colors text-sm font-medium leading-normal flex items-center gap-1">
+          Shifts
+        </Link>
+        <ChevronRight className="w-4 h-4 text-slate-400" />
+        <span className="text-slate-900 text-sm font-medium leading-normal flex items-center gap-1">
+          Attendance Records
+        </span>
       </div>
 
       {userRole === 'manager' && teamSummary && (
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-            <div className="text-2xl font-bold text-gray-900">{teamSummary.total}</div>
-            <div className="text-sm text-gray-500 mt-1">Total Records</div>
+          <div className="rounded-xl p-6 bg-white shadow-sm border border-slate-100 text-center">
+            <div className="text-4xl font-bold text-slate-900">{teamSummary.total}</div>
+            <div className="text-sm font-medium text-slate-500 uppercase tracking-wider mt-1">Total Records</div>
           </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{teamSummary.late}</div>
-            <div className="text-sm text-gray-500 mt-1">Late Check-ins</div>
+          <div className="rounded-xl p-6 bg-white shadow-sm border border-slate-100 text-center">
+            <div className="text-4xl font-bold text-red-600">{teamSummary.late}</div>
+            <div className="text-sm font-medium text-slate-500 uppercase tracking-wider mt-1">Late Check-ins</div>
           </div>
-          <div className="bg-white rounded-lg border border-gray-200 p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{teamSummary.punctualityRate}%</div>
-            <div className="text-sm text-gray-500 mt-1">Punctuality Rate</div>
+          <div className="rounded-xl p-6 bg-white shadow-sm border border-slate-100 text-center">
+            <div className="text-4xl font-bold text-green-600">{teamSummary.punctualityRate}%</div>
+            <div className="text-sm font-medium text-slate-500 uppercase tracking-wider mt-1">Punctuality Rate</div>
           </div>
         </div>
       )}
 
-      <div className="flex items-center justify-between mb-4 flex-wrap gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">Attendance Records</h1>
+      {/* Title + Refresh + Month Nav */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pb-4">
+        <p className="text-slate-900 tracking-tight text-3xl font-bold leading-tight">Attendance Records</p>
         <div className="flex items-center gap-4 flex-wrap">
           {/* Month navigation */}
           <div className="flex items-center gap-2">
             <button
               onClick={() => navigate(-1)}
-              className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
+              className="px-3 py-1 rounded border border-slate-200 hover:bg-slate-50 text-slate-600 font-medium text-sm"
             >
               &#8249;
             </button>
-            <span className="text-gray-700 font-medium w-36 text-center">{monthLabel}</span>
+            <span className="text-slate-700 font-medium w-36 text-center text-sm">{monthLabel}</span>
             <button
               onClick={() => navigate(1)}
-              className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
+              className="px-3 py-1 rounded border border-slate-200 hover:bg-slate-50 text-slate-600 font-medium text-sm"
             >
               &#8250;
             </button>
@@ -207,12 +212,13 @@ export default function AdminAttendancePage() {
               <button
                 onClick={handleRefresh}
                 disabled={refreshing}
-                className="px-4 py-1.5 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                className="flex items-center gap-2 cursor-pointer justify-center overflow-hidden rounded-lg h-10 px-5 bg-[#4848e5] hover:bg-[#4848e5]/90 text-white text-sm font-medium leading-normal transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {refreshing ? 'Refreshing...' : 'Data Refresh'}
+                <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+                <span>{refreshing ? 'Refreshing...' : 'Data Refresh'}</span>
               </button>
               {lastRefreshAt && (
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-slate-400">
                   Last: {new Date(lastRefreshAt).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
                 </span>
               )}
@@ -223,72 +229,84 @@ export default function AdminAttendancePage() {
       </div>
 
       {/* Filter bar */}
-      <div className="flex flex-wrap items-center gap-3 mb-5">
-        {/* Search by name */}
-        <input
-          type="text"
-          placeholder="Search employee..."
-          value={searchName}
-          onChange={(e) => setSearchName(e.target.value)}
-          className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
-        />
+      <div className="flex flex-wrap items-center justify-between gap-4 py-3">
+        <div className="flex flex-wrap gap-3 w-full md:w-auto">
+          {/* Search by name */}
+          <div className="relative w-full md:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+            <input
+              type="text"
+              placeholder="Search employee..."
+              value={searchName}
+              onChange={(e) => setSearchName(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4848e5]/50 focus:border-[#4848e5] text-slate-900 placeholder-slate-400"
+            />
+          </div>
 
-        {/* Filter by division */}
-        {divisionOptions.length > 0 && (
-          <select
-            value={filterDivisionId}
-            onChange={(e) => { setFilterDivisionId(e.target.value); setFilterManagerId(''); }}
-            className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">All Divisions</option>
-            {divisionOptions.map((d) => (
-              <option key={d.id} value={d.id}>{d.name}</option>
-            ))}
-          </select>
-        )}
+          {/* Filter by division */}
+          <div className="relative">
+            <select
+              value={filterDivisionId}
+              onChange={(e) => { setFilterDivisionId(e.target.value); setFilterManagerId(''); }}
+              className="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4848e5]/50 focus:border-[#4848e5] text-slate-700 cursor-pointer min-w-[140px]"
+            >
+              <option value="">Division</option>
+              {divisionOptions.map((d) => (
+                <option key={d.id} value={d.id}>{d.name}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none w-5 h-5" />
+          </div>
 
-        {/* Filter by manager (admin/owner only) */}
-        {['admin', 'owner'].includes(userRole) && managerOptions.length > 0 && (
-          <select
-            value={filterManagerId}
-            onChange={(e) => { setFilterManagerId(e.target.value); setFilterDivisionId(''); }}
-            className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">All Managers</option>
-            {managerOptions.map((m) => (
-              <option key={m.id} value={m.id}>{m.full_name}</option>
-            ))}
-          </select>
-        )}
+          {/* Filter by manager (admin/owner only) */}
+          {['admin', 'owner'].includes(userRole) && (
+            <div className="relative">
+              <select
+                value={filterManagerId}
+                onChange={(e) => { setFilterManagerId(e.target.value); setFilterDivisionId(''); }}
+                className="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4848e5]/50 focus:border-[#4848e5] text-slate-700 cursor-pointer min-w-[140px]"
+              >
+                <option value="">Manager</option>
+                {managerOptions.map((m) => (
+                  <option key={m.id} value={m.id}>{m.full_name}</option>
+                ))}
+              </select>
+              <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none w-5 h-5" />
+            </div>
+          )}
 
-        {/* Filter by status */}
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value="">All Statuses</option>
-          <option value="late">Late</option>
-          <option value="early">Early Leave</option>
-          <option value="absent">Absent</option>
-          <option value="absent_morning">Absent Morning</option>
-          <option value="absent_afternoon">Absent Afternoon</option>
-        </select>
+          {/* Filter by status */}
+          <div className="relative">
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="appearance-none pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4848e5]/50 focus:border-[#4848e5] text-slate-700 cursor-pointer min-w-[140px]"
+            >
+              <option value="">Status</option>
+              <option value="late">Late</option>
+              <option value="early">Early Leave</option>
+              <option value="absent">Absent</option>
+              <option value="absent_morning">Absent Morning</option>
+              <option value="absent_afternoon">Absent Afternoon</option>
+            </select>
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none w-5 h-5" />
+          </div>
 
-        {hasFilters && (
-          <button
-            onClick={() => { setSearchName(''); setFilterDivisionId(''); setFilterManagerId(''); setFilterStatus(''); }}
-            className="px-3 py-1.5 text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-50"
-          >
-            Clear filters
-          </button>
-        )}
+          {hasFilters && (
+            <button
+              onClick={() => { setSearchName(''); setFilterDivisionId(''); setFilterManagerId(''); setFilterStatus(''); }}
+              className="px-3 py-2 text-sm text-slate-500 hover:text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50"
+            >
+              Clear filters
+            </button>
+          )}
 
-        {hasFilters && (
-          <span className="text-sm text-gray-400">
-            {filteredRecords.length} of {records.length} records
-          </span>
-        )}
+          {hasFilters && (
+            <span className="text-sm text-slate-400 flex items-center">
+              {filteredRecords.length} of {records.length} records
+            </span>
+          )}
+        </div>
       </div>
 
       {error && (
@@ -297,10 +315,10 @@ export default function AdminAttendancePage() {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#4848e5] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <AttendanceRecordTable
