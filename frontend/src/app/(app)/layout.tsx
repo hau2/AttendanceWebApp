@@ -18,7 +18,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const navLinkClass = (href: string) =>
     `text-sm font-medium px-3 py-1 rounded transition-colors ${
       pathname === href || pathname.startsWith(href + '/')
-        ? 'bg-blue-50 text-blue-700'
+        ? 'bg-[#4848e5]/10 text-[#4848e5]'
         : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
     }`;
 

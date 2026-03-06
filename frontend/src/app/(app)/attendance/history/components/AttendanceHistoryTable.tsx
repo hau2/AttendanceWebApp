@@ -133,8 +133,8 @@ export function AttendanceHistoryTable({ records }: Props) {
                               </div>
                             )}
                             {r.early_note && (
-                              <div className="p-3 bg-blue-50 rounded-md border border-blue-100 text-sm text-slate-700">
-                                <p><strong className="font-medium text-blue-800">Early Note:</strong> {r.early_note}</p>
+                              <div className="p-3 bg-[#4848e5]/10 rounded-md border border-[#4848e5]/20 text-sm text-slate-700">
+                                <p><strong className="font-medium text-[#4848e5]">Early Note:</strong> {r.early_note}</p>
                               </div>
                             )}
                           </div>

@@ -218,7 +218,7 @@ export function CheckInOutCard() {
           <div className="text-[#10b981] text-4xl mb-3">&#10003;</div>
           <p className="text-lg font-semibold text-slate-800">All done for today</p>
           {todayRecord.is_remote && (
-            <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Remote</span>
+            <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[#4848e5]/10 text-[#4848e5]">Remote</span>
           )}
           {inTime && <p className="text-sm text-slate-500 mt-1">Checked in at {inTime}</p>}
           <p className="text-sm text-slate-500">Checked out at {outTime}</p>

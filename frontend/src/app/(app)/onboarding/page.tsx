@@ -104,7 +104,7 @@ export default function OnboardingPage() {
         {/* Progress bar */}
         <div className="mt-3 h-2 bg-gray-200 rounded-full">
           <div
-            className="h-2 bg-blue-600 rounded-full transition-all"
+            className="h-2 bg-[#4848e5] rounded-full transition-all"
             style={{ width: `${(step / 3) * 100}%` }}
           />
         </div>
@@ -130,7 +130,7 @@ export default function OnboardingPage() {
               <select
                 value={timezone}
                 onChange={(e) => setTimezone(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
                 required
               >
                 {TIMEZONES.map((tz) => (
@@ -179,7 +179,7 @@ export default function OnboardingPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 transition-colors"
+              className="w-full bg-[#4848e5] text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-[#4848e5]/90 disabled:opacity-50 transition-colors"
             >
               {loading ? 'Saving...' : 'Continue'}
             </button>
@@ -196,7 +196,7 @@ export default function OnboardingPage() {
                 required
                 value={shiftName}
                 onChange={(e) => setShiftName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
                 placeholder="Morning Shift"
               />
             </div>
@@ -209,7 +209,7 @@ export default function OnboardingPage() {
                   required
                   value={shiftStartTime}
                   onChange={(e) => setShiftStartTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
                 />
               </div>
               <div>
@@ -219,7 +219,7 @@ export default function OnboardingPage() {
                   required
                   value={shiftEndTime}
                   onChange={(e) => setShiftEndTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
                 />
               </div>
             </div>
@@ -238,7 +238,7 @@ export default function OnboardingPage() {
                 required
                 value={gracePeriodMinutes}
                 onChange={(e) => setGracePeriodMinutes(parseInt(e.target.value, 10))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
               />
             </div>
 
@@ -252,7 +252,7 @@ export default function OnboardingPage() {
               </button>
               <button
                 type="submit"
-                className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors"
+                className="flex-1 bg-[#4848e5] text-white py-2 px-4 rounded-lg text-sm font-semibold hover:bg-[#4848e5]/90 transition-colors"
               >
                 Continue
               </button>
@@ -273,7 +273,7 @@ export default function OnboardingPage() {
                 required
                 value={firstUserFullName}
                 onChange={(e) => setFirstUserFullName(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
                 placeholder="Employee Name"
               />
             </div>
@@ -284,7 +284,7 @@ export default function OnboardingPage() {
                 required
                 value={firstUserEmail}
                 onChange={(e) => setFirstUserEmail(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
                 placeholder="employee@company.com"
               />
             </div>
@@ -296,7 +296,7 @@ export default function OnboardingPage() {
                 minLength={8}
                 value={firstUserPassword}
                 onChange={(e) => setFirstUserPassword(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
                 placeholder="Min. 8 characters"
               />
             </div>

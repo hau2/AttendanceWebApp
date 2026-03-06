@@ -101,7 +101,7 @@ export default function EmployeeDetailPage() {
     <div className="max-w-6xl mx-auto">
       {/* Breadcrumb */}
       <div className="flex items-center gap-3 mb-2">
-        <Link href="/admin/attendance" className="text-sm text-blue-600 hover:underline">
+        <Link href="/admin/attendance" className="text-sm text-[#4848e5] hover:underline">
           &larr; Attendance Records
         </Link>
       </div>
@@ -137,7 +137,7 @@ export default function EmployeeDetailPage() {
       <div className="bg-white rounded-xl shadow-md overflow-hidden">
         {loading ? (
           <div className="flex items-center justify-center py-16">
-            <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[#4848e5] border-t-transparent rounded-full animate-spin" />
           </div>
         ) : (
           <Table>

@@ -76,7 +76,7 @@ export function StatusBadge({ status, missingCheckout }: StatusBadgeProps): Reac
 
 export function RemoteBadge(): ReactElement {
   return (
-    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-[#4848e5]/10 text-[#4848e5]">
       <Laptop className="w-3 h-3" />
       Remote
     </span>
