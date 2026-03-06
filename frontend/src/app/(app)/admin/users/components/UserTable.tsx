@@ -53,7 +53,98 @@ export function UserTable({
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+    <>
+      {/* Mobile card view */}
+      <div className="md:hidden space-y-3">
+        {users.map((user) => {
+          const isDisabled = !user.is_active;
+          return (
+            <div
+              key={user.id}
+              className={`rounded-xl border border-slate-200 bg-white p-4 ${isDisabled ? 'opacity-60' : ''}`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <div className={`text-sm font-semibold truncate ${isDisabled ? 'text-slate-500' : 'text-slate-900'}`}>
+                    {user.full_name}
+                  </div>
+                  <div className={`text-xs truncate mt-0.5 ${isDisabled ? 'text-slate-400' : 'text-slate-500'}`}>
+                    {user.email}
+                  </div>
+                </div>
+                <span
+                  className={`shrink-0 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    user.is_active
+                      ? 'bg-green-100 text-green-800'
+                      : 'bg-slate-200 text-slate-600'
+                  }`}
+                >
+                  {user.is_active ? 'Active' : 'Disabled'}
+                </span>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-2">
+                <span
+                  className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                    isDisabled ? getDisabledRoleBadgeClasses() : getRoleBadgeClasses(user.role)
+                  }`}
+                >
+                  {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                </span>
+                {user.division_id && (
+                  <span className="text-xs text-slate-500">
+                    {getDivisionName(user.division_id)}
+                  </span>
+                )}
+              </div>
+
+              <div className="mt-3 flex items-center gap-3 border-t border-slate-100 pt-3">
+                {isAdminOrOwner && (
+                  <button
+                    onClick={() => onEdit(user)}
+                    className={`${isDisabled ? 'text-slate-400 hover:text-slate-600' : 'text-[#4848e5] hover:text-[#4848e5]/80'} transition-colors`}
+                    title="Edit"
+                  >
+                    <Pencil className="w-[18px] h-[18px]" />
+                  </button>
+                )}
+                <button
+                  onClick={() => onAssignShift(user)}
+                  className="text-slate-400 hover:text-slate-600 transition-colors"
+                  title="Assign Shift"
+                >
+                  <CalendarPlus className="w-[18px] h-[18px]" />
+                </button>
+                {isAdminOrOwner && user.role !== 'owner' && (
+                  <button
+                    onClick={() => onDelete(user)}
+                    className={`${isDisabled ? 'text-slate-400 hover:text-red-500' : 'text-red-500 hover:text-red-700'} transition-colors`}
+                    title="Delete"
+                  >
+                    <Trash2 className="w-[18px] h-[18px]" />
+                  </button>
+                )}
+                {isAdminOrOwner && (
+                  <button
+                    onClick={() => onStatusToggle(user.id, !user.is_active)}
+                    className="ml-auto text-xs text-[#4848e5] hover:text-[#4848e5]/80 underline"
+                  >
+                    {user.is_active ? 'Disable' : 'Enable'}
+                  </button>
+                )}
+              </div>
+            </div>
+          );
+        })}
+        {users.length === 0 && (
+          <div className="rounded-xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+            No users found.
+          </div>
+        )}
+      </div>
+
+      {/* Desktop table view */}
+      <div className="hidden md:block overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>
@@ -170,5 +261,6 @@ export function UserTable({
         </table>
       </div>
     </div>
+    </>
   );
 }

@@ -122,7 +122,7 @@ export default function AdminReportsPage() {
           {/* Records table */}
           <div className="flex flex-col gap-4">
             <h3 className="text-slate-900 text-xl font-bold leading-tight tracking-tight">Records</h3>
-            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hidden md:block">
               {report.records.length === 0 ? (
                 <div className="px-6 py-8 text-slate-400 text-sm text-center">No records this month</div>
               ) : (
@@ -167,6 +167,42 @@ export default function AdminReportsPage() {
                     </tbody>
                   </table>
                 </div>
+              )}
+              <PaginationControls page={page} limit={LIMIT} total={total} onPageChange={setPage} />
+            </div>
+            {/* Mobile card list */}
+            <div className="md:hidden flex flex-col gap-3">
+              {report.records.length === 0 ? (
+                <div className="px-6 py-8 text-slate-400 text-sm text-center">No records this month</div>
+              ) : (
+                report.records.map(rec => (
+                  <div key={rec.id} className="bg-white rounded-xl border border-slate-200 p-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-slate-900 text-sm font-semibold">
+                        {(rec as any).users?.full_name || rec.user_id}
+                      </span>
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        rec.check_in_status === 'late' ? 'bg-red-100 text-red-800' :
+                        rec.check_in_status === 'within-grace' ? 'bg-yellow-100 text-yellow-800' :
+                        'bg-green-100 text-green-800'
+                      }`}>
+                        {rec.check_in_status === 'on-time' ? 'On Time' :
+                         rec.check_in_status === 'within-grace' ? 'Within Grace' :
+                         rec.check_in_status === 'late' ? 'Late' :
+                         rec.check_in_status || '--'}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-slate-500">
+                      <span>{rec.work_date}</span>
+                      <span>
+                        {rec.check_in_at ? new Date(rec.check_in_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }) : '--'}
+                      </span>
+                    </div>
+                    {rec.late_reason && (
+                      <p className="mt-2 text-xs text-slate-500 truncate">{rec.late_reason}</p>
+                    )}
+                  </div>
+                ))
               )}
               <PaginationControls page={page} limit={LIMIT} total={total} onPageChange={setPage} />
             </div>

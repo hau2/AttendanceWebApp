@@ -134,7 +134,7 @@ export default function ExecutiveDashboard() {
           {/* Late Ranking */}
           <div className="mt-8">
             <h2 className="text-slate-900 text-xl font-semibold leading-tight tracking-[-0.015em] pb-4">Late Frequency Ranking</h2>
-            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm hidden md:block">
               {summary.lateRanking.length === 0 ? (
                 <div className="px-6 py-8 text-slate-400 text-sm text-center">No late records this month</div>
               ) : (
@@ -179,12 +179,50 @@ export default function ExecutiveDashboard() {
                 </table>
               )}
             </div>
+            {/* Mobile card list */}
+            <div className="md:hidden flex flex-col gap-3">
+              {summary.lateRanking.length === 0 ? (
+                <div className="px-6 py-8 text-slate-400 text-sm text-center">No late records this month</div>
+              ) : (
+                summary.lateRanking.map((row, i) => {
+                  const rank = i + 1;
+                  const rc = getRankClasses(rank);
+                  return (
+                    <div
+                      key={row.userId}
+                      className="bg-white rounded-xl border border-slate-200 p-4 cursor-pointer active:bg-slate-50"
+                      onClick={() => setSelectedEmployee({ userId: row.userId, fullName: row.fullName })}
+                    >
+                      <div className="flex items-center gap-3 mb-3">
+                        <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full font-bold text-sm ${rc.circle}`}>
+                          {rank}
+                        </span>
+                        <div className="size-8 rounded-full bg-slate-200 flex items-center justify-center text-xs font-medium text-slate-600">
+                          {getInitials(row.fullName)}
+                        </div>
+                        <span className="text-slate-900 font-medium text-sm">{row.fullName}</span>
+                      </div>
+                      <div className="flex items-center gap-6 text-sm">
+                        <div>
+                          <span className="text-slate-500">Late Days: </span>
+                          <span className={rc.lateText}>{row.lateCount}</span>
+                        </div>
+                        <div>
+                          <span className="text-slate-500">Total Days: </span>
+                          <span className="text-slate-700 font-medium">{row.totalDays}</span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })
+              )}
+            </div>
           </div>
 
           {/* Monthly Breakdown */}
           <div className="mt-8">
             <h2 className="text-slate-900 text-xl font-semibold leading-tight tracking-[-0.015em] pb-4">Daily Breakdown</h2>
-            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm hidden md:block">
               {summary.monthlyBreakdown.length === 0 ? (
                 <div className="px-6 py-8 text-slate-400 text-sm text-center">No records this month</div>
               ) : (
@@ -208,6 +246,32 @@ export default function ExecutiveDashboard() {
                     ))}
                   </tbody>
                 </table>
+              )}
+            </div>
+            {/* Mobile card list */}
+            <div className="md:hidden flex flex-col gap-3">
+              {summary.monthlyBreakdown.length === 0 ? (
+                <div className="px-6 py-8 text-slate-400 text-sm text-center">No records this month</div>
+              ) : (
+                summary.monthlyBreakdown.map(day => (
+                  <div key={day.date} className="bg-white rounded-xl border border-slate-200 p-4">
+                    <p className="text-slate-900 text-sm font-semibold mb-3">{day.date}</p>
+                    <div className="flex items-center gap-4 text-sm">
+                      <div>
+                        <span className="text-slate-500">Present: </span>
+                        <span className="text-slate-900 font-medium">{day.present}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500">Late: </span>
+                        <span className="text-red-600 font-medium">{day.late}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500">No C/O: </span>
+                        <span className="text-orange-600 font-medium">{day.missingCheckout}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))
               )}
             </div>
           </div>

@@ -77,6 +77,12 @@ export function CheckInOutCard() {
     setCapturedBlob(null);
     setCapturedUrl(null);
     try {
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error(
+          'Camera access is not available. Your browser requires HTTPS to use the camera. ' +
+          'Please access this site via https:// or localhost.'
+        );
+      }
       let stream: MediaStream;
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } });
