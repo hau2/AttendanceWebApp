@@ -25,7 +25,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 9: Advanced Monitoring** - Manual Data Refresh job (absent/absent-morning statuses), advanced status filters (5 filter types) in attendance tables
 - [x] **Phase 10: API Pagination** - Offset-based pagination (page/limit) on all high-volume list endpoints; paginated tables in frontend (completed 2026-03-05)
 - [x] **Phase 11: IP Restriction** - CIDR support, disabled mode, remote-worker bypass, Company Settings UI, frontend pre-check before camera opens (completed 2026-03-06)
-- [ ] **Phase 12: UI Polish** - Live clock on Employee Home, Lucide status badge icons, Shadcn component upgrades, Executive drill-down, Manager Employee Detail page
+- [x] **Phase 12: UI Polish** - Live clock on Employee Home, Lucide status badge icons, Shadcn component upgrades, Executive drill-down, Manager Employee Detail page (completed 2026-03-06)
 
 ## Phase Details
 
@@ -239,7 +239,7 @@ Plans:
 - [x] 12-02-PLAN.md — Live HH:MM:SS clock on Employee Home (UIUX-01); wire StatusBadge into AttendanceHistoryTable, AttendanceRecordTable, AttendanceRecordDetail (UIUX-02)
 - [x] 12-03-PLAN.md — Executive employee history drill-down: EmployeeHistoryModal using Shadcn Dialog + Table; clickable rows on Executive page (UIUX-03, UIUX-04)
 - [x] 12-04-PLAN.md — Manager Employee Detail page at /admin/employees/[id] using Shadcn Table; employee name link in AttendanceRecordTable (UIUX-03, UIUX-05)
-- [ ] 12-05-PLAN.md — Human E2E verification checkpoint (all 5 UIUX requirements)
+- [x] 12-05-PLAN.md — Human E2E verification checkpoint (all 5 UIUX requirements)
 
 ## Progress
 
@@ -259,7 +259,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 9. Advanced Monitoring | 3/3 | Complete | 2026-03-05 |
 | 10. API Pagination | 3/3 | Complete    | 2026-03-05 |
 | 11. IP Restriction | 4/4 | Complete    | 2026-03-05 |
-| 12. UI Polish | 4/5 | In Progress|  |
+| 12. UI Polish | 5/5 | Complete    | 2026-03-06 |
 
 ---
 *Roadmap created: 2026-03-01*
