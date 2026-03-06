@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login - Attendance SaaS</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              colors: {
+                "primary": "#4848e5",
+                "background-light": "#f6f6f8",
+                "background-dark": "#111121",
+                "neutral-50": "#f5f5f9",
+                "neutral-100": "#ebebf4",
+                "neutral-200": "#d6d6e9",
+                "neutral-300": "#c2c2de",
+                "neutral-400": "#9999c8",
+                "neutral-500": "#7070b2",
+                "neutral-600": "#5a5a8e",
+                "neutral-700": "#43436b",
+                "neutral-800": "#2d2d47",
+                "neutral-900": "#161624",
+              },
+              fontFamily: {
+                "display": ['"Geist Sans"', "Inter", "sans-serif"]
+              },
+              borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+            },
+          },
+        }
+      </script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark text-neutral-900 dark:text-neutral-100 min-h-screen flex items-center justify-center">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5 items-center">
+<div class="layout-content-container flex flex-col max-w-[480px] w-full flex-1 justify-center py-10">
+<div class="flex flex-col items-center text-center gap-3 p-4 mb-6">
+<div class="h-12 w-12 rounded-xl bg-primary flex items-center justify-center mb-2 shadow-lg shadow-primary/30 text-white">
+<span class="material-symbols-outlined text-3xl">how_to_reg</span>
+</div>
+<h1 class="text-neutral-900 dark:text-neutral-50 tracking-tight text-[32px] font-bold leading-tight">Attendance SaaS</h1>
+<p class="text-neutral-600 dark:text-neutral-400 text-base font-normal leading-normal">Attendance tracking for your team</p>
+</div>
+<div class="bg-white dark:bg-neutral-900 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-800 p-8 flex flex-col gap-6">
+<div class="flex flex-col gap-1 text-center">
+<h2 class="text-neutral-900 dark:text-neutral-50 text-xl font-bold leading-tight">Sign in to your account</h2>
+<p class="text-neutral-600 dark:text-neutral-400 text-sm font-normal leading-normal">Please enter your credentials to continue.</p>
+</div>
+<form class="flex flex-col gap-4">
+<div class="flex flex-col gap-2">
+<label class="text-neutral-900 dark:text-neutral-200 text-sm font-medium leading-normal" for="email">Email</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-neutral-400 text-xl">mail</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-neutral-900 dark:text-neutral-100 focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 focus:border-primary h-12 placeholder:text-neutral-400 pl-11 pr-4 text-base font-normal leading-normal transition-colors" id="email" placeholder="name@company.com" required="" type="email"/>
+</div>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<label class="text-neutral-900 dark:text-neutral-200 text-sm font-medium leading-normal" for="password">Password</label>
+<a class="text-primary hover:text-primary/80 text-sm font-medium transition-colors" href="#">Forgot password?</a>
+</div>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-neutral-400 text-xl">lock</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-lg text-neutral-900 dark:text-neutral-100 focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 focus:border-primary h-12 placeholder:text-neutral-400 pl-11 pr-4 text-base font-normal leading-normal transition-colors" id="password" placeholder="••••••••" required="" type="password"/>
+</div>
+</div>
+<button class="mt-4 flex w-full cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-5 bg-primary hover:bg-primary/90 text-white text-base font-bold leading-normal tracking-[0.015em] transition-colors shadow-sm shadow-primary/20" type="button">
+<span class="truncate">Sign In</span>
+</button>
+</form>
+<div class="text-center mt-2">
+<p class="text-neutral-600 dark:text-neutral-400 text-sm">
+                                New company? <a class="text-primary hover:text-primary/80 font-medium transition-colors" href="#">Register here</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

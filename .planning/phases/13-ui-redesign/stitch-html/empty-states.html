@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Platform Empty States</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4848e5",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#111121",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1c1c36",
+                        "border-light": "#e2e2ec",
+                        "border-dark": "#2d2d56",
+                        "text-primary-light": "#151522",
+                        "text-primary-dark": "#e8e8f3",
+                        "text-secondary-light": "#6b6b80",
+                        "text-secondary-dark": "#a3a3bd"
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-primary-light dark:text-text-primary-dark font-display min-h-screen antialiased">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-border-light dark:border-border-dark px-10 py-4 bg-surface-light dark:bg-surface-dark sticky top-0 z-10">
+<div class="flex items-center gap-4 text-text-primary-light dark:text-text-primary-dark">
+<div class="size-6 text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[28px]">domain_verification</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Attendance SaaS</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">History</a>
+<a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Users</a>
+<a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Divisions</a>
+<a class="text-text-secondary-light dark:text-text-secondary-dark hover:text-primary transition-colors text-sm font-medium leading-normal" href="#">Reports</a>
+</nav>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-border-light dark:border-border-dark" data-alt="User profile avatar image" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCz1tOpB_2wgRspIDiOnB3khUQK5IT8h_P4blrRmaFX3NEbseedaup2CQA8IjhtyebJZcZ7_RWfgO6lqOGW3n7e21NpfSgAl65u7kTrTlZhNYEbpDLraaCDweN-1Dm_wQwZfiP_nRl71nR18Dn8tt2qOLKB9qeD3I0FdK4aNkqDDNdpZHSJH-H4rbp-AZghIQFDQdbRmbBGHIKHlCZAP_R5aEetio-JETZLDNkFOyI2yUUptLLkhWhM-Ub2yE2axpymTQSExc8csP0");'></div>
+</div>
+</header>
+<main class="px-4 md:px-10 lg:px-20 py-8 flex-1 flex flex-col max-w-[1440px] mx-auto w-full">
+<div class="flex flex-wrap justify-between gap-3 mb-8">
+<div class="flex flex-col gap-2">
+<h1 class="text-3xl font-bold leading-tight tracking-tight">Empty States Showcase</h1>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm font-normal leading-normal">Platform empty states preview for Vietnamese SMB market</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+<div class="flex flex-1 gap-3 rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 items-center shadow-sm">
+<div class="text-primary bg-primary/10 p-2 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined">table_chart</span>
+</div>
+<h2 class="text-sm font-bold leading-tight">History Table</h2>
+</div>
+<div class="flex flex-1 gap-3 rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 items-center shadow-sm">
+<div class="text-primary bg-primary/10 p-2 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined">group</span>
+</div>
+<h2 class="text-sm font-bold leading-tight">User Table</h2>
+</div>
+<div class="flex flex-1 gap-3 rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 items-center shadow-sm">
+<div class="text-primary bg-primary/10 p-2 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined">account_tree</span>
+</div>
+<h2 class="text-sm font-bold leading-tight">Division Table</h2>
+</div>
+<div class="flex flex-1 gap-3 rounded-xl border border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark p-4 items-center shadow-sm">
+<div class="text-primary bg-primary/10 p-2 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined">bar_chart</span>
+</div>
+<h2 class="text-sm font-bold leading-tight">Reports</h2>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<!-- History Table Empty State -->
+<div class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden shadow-sm">
+<div class="px-6 py-4 border-b border-border-light dark:border-border-dark">
+<h3 class="font-bold">History Table Preview</h3>
+</div>
+<div class="p-6">
+<div class="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-border-light dark:border-border-dark bg-background-light/50 dark:bg-background-dark/50 px-6 py-20 min-h-[320px]">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-2">
+<span class="material-symbols-outlined text-3xl">event_busy</span>
+</div>
+<div class="flex max-w-[320px] flex-col items-center gap-2 text-center">
+<p class="text-lg font-bold leading-tight tracking-tight">No records for this month</p>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Your attendance history for this month is currently empty.</p>
+</div>
+<button class="mt-4 flex min-w-[120px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal hover:bg-primary/90 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px] mr-2">add</span>
+<span>Add Record</span>
+</button>
+</div>
+</div>
+</div>
+<!-- User Table Empty State -->
+<div class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden shadow-sm">
+<div class="px-6 py-4 border-b border-border-light dark:border-border-dark">
+<h3 class="font-bold">User Table Preview</h3>
+</div>
+<div class="p-6">
+<div class="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-border-light dark:border-border-dark bg-background-light/50 dark:bg-background-dark/50 px-6 py-20 min-h-[320px]">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-2">
+<span class="material-symbols-outlined text-3xl">person_off</span>
+</div>
+<div class="flex max-w-[320px] flex-col items-center gap-2 text-center">
+<p class="text-lg font-bold leading-tight tracking-tight">No users found</p>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">There are currently no users in the system.</p>
+</div>
+<button class="mt-4 flex min-w-[120px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal hover:bg-primary/90 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px] mr-2">person_add</span>
+<span>Add User</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Division Table Empty State -->
+<div class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden shadow-sm">
+<div class="px-6 py-4 border-b border-border-light dark:border-border-dark">
+<h3 class="font-bold">Division Table Preview</h3>
+</div>
+<div class="p-6">
+<div class="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-border-light dark:border-border-dark bg-background-light/50 dark:bg-background-dark/50 px-6 py-20 min-h-[320px]">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-2">
+<span class="material-symbols-outlined text-3xl">lan</span>
+</div>
+<div class="flex max-w-[320px] flex-col items-center gap-2 text-center">
+<p class="text-lg font-bold leading-tight tracking-tight">No divisions found</p>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Get started by creating your first organizational division.</p>
+</div>
+<button class="mt-4 flex min-w-[120px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-primary text-white text-sm font-bold leading-normal hover:bg-primary/90 transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px] mr-2">add</span>
+<span>Create Division</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Reports Empty State -->
+<div class="flex flex-col bg-surface-light dark:bg-surface-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden shadow-sm">
+<div class="px-6 py-4 border-b border-border-light dark:border-border-dark">
+<h3 class="font-bold">Reports Preview</h3>
+</div>
+<div class="p-6">
+<div class="flex flex-col items-center justify-center gap-4 rounded-xl border-2 border-dashed border-border-light dark:border-border-dark bg-background-light/50 dark:bg-background-dark/50 px-6 py-20 min-h-[320px]">
+<div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-2">
+<span class="material-symbols-outlined text-3xl">query_stats</span>
+</div>
+<div class="flex max-w-[320px] flex-col items-center gap-2 text-center">
+<p class="text-lg font-bold leading-tight tracking-tight">No records this month</p>
+<p class="text-text-secondary-light dark:text-text-secondary-dark text-sm">Not enough data to generate reports for the current period.</p>
+</div>
+<button class="mt-4 flex min-w-[120px] cursor-pointer items-center justify-center rounded-lg h-10 px-4 bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark text-text-primary-light dark:text-text-primary-dark text-sm font-bold leading-normal hover:bg-border-light dark:hover:bg-border-dark transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px] mr-2">download</span>
+<span>Import Data</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

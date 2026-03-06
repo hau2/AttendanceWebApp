@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Attendance History - AttendanceVN</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#4848e5",
+              "background-light": "#f6f6f8",
+              "background-dark": "#111121",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 font-display min-h-screen">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<div class="px-40 flex flex-1 justify-center py-5">
+<div class="layout-content-container flex flex-col max-w-[1200px] flex-1">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-slate-200 dark:border-slate-800 px-10 py-3 bg-white dark:bg-slate-900 rounded-t-xl shadow-sm">
+<div class="flex items-center gap-4 text-slate-900 dark:text-slate-100">
+<div class="size-6 text-primary">
+<span class="material-symbols-outlined text-2xl">event_available</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">AttendanceVN</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="flex items-center gap-9">
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-medium leading-normal text-primary" href="#">History</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Requests</a>
+</div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border border-slate-200 dark:border-slate-700" data-alt="User profile avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDb_6ES9iMEigvDunNo3G71nkUns2iktO0utfyXQ1caSTgMPDDxj5ledmT-FiHLEg84R4cE4zSke0j5mQGfU-lbZDjdXr6e9f97jTLGN8V07Kfa6Ykaxvqs2wkfll27LXIJE4tScjXLxdMyOLcswXBhJjkokeUv9cG7neoxHXxeNHGC2zge0Cb-9pS3iGEi_bRou4zfRN9BvUcESspUxyaS2R4bfBbBA2_OGM680IVjQl4f6rlWPx1ycbNF8Fw4jGsQjIakYG6QJSU");'></div>
+</div>
+</header>
+<div class="flex h-full min-h-[700px] flex-row bg-white dark:bg-slate-900 rounded-b-xl shadow-sm overflow-hidden">
+<!-- Sidebar -->
+<div class="w-64 border-r border-slate-200 dark:border-slate-800 p-4 flex flex-col gap-6 flex-shrink-0 bg-slate-50 dark:bg-slate-800/50">
+<div class="flex gap-3 items-center">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-12 shadow-sm border border-slate-200 dark:border-slate-700" data-alt="User profile picture" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuAlsi0KjfmjBKy-jYDGL_4eYTjPdQlctVZCPiqSqO9OJ8KTMUsk_-LyT1obi-uu-j4AACFOic1lOgQUQPgrGiwssbroGG-HAtBw4PXXQrFBkMUpkccmM8JlJ-Vhiusf1dZM9gyqztmqunWPhJl5i9dWGlT6TveIRjkNiCZdqHyiMf3grno1QUvQu_A8vroON2p5wHYA5n0qFlaRARx2ci-oOjJkzVmDEpWZHKwgo8d3I0JHYBEGPvJPnmJe0ZdWoH65q7bbNEtZigw");'></div>
+<div class="flex flex-col">
+<h1 class="text-base font-semibold leading-normal">Nguyen Van A</h1>
+<p class="text-slate-500 dark:text-slate-400 text-sm font-normal leading-normal">Employee Portal</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-slate-300" href="#">
+<span class="material-symbols-outlined text-xl">home</span>
+<p class="text-sm font-medium leading-normal">Home</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/10 dark:bg-primary/20 text-primary" href="#">
+<span class="material-symbols-outlined text-xl">calendar_month</span>
+<p class="text-sm font-medium leading-normal">My Attendance</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-slate-300" href="#">
+<span class="material-symbols-outlined text-xl">description</span>
+<p class="text-sm font-medium leading-normal">Leave Requests</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors text-slate-700 dark:text-slate-300 mt-auto" href="#">
+<span class="material-symbols-outlined text-xl">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</nav>
+</div>
+<!-- Main Content -->
+<div class="flex-1 flex flex-col overflow-hidden">
+<div class="flex flex-wrap items-center justify-between gap-4 p-6 border-b border-slate-200 dark:border-slate-800">
+<h2 class="text-2xl font-bold leading-tight tracking-[-0.033em]">My Attendance History</h2>
+<div class="flex items-center gap-2">
+<div class="flex gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+<button class="p-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 rounded-md hover:bg-white dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-xl block">chevron_left</span>
+</button>
+<button class="p-1.5 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 rounded-md hover:bg-white dark:hover:bg-slate-700 transition-colors">
+<span class="material-symbols-outlined text-xl block">chevron_right</span>
+</button>
+</div>
+<button class="flex items-center justify-center rounded-lg h-9 bg-primary text-white gap-2 text-sm font-semibold px-4 shadow-sm hover:bg-primary/90 transition-colors">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span>March 2026</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-auto p-6 @container">
+<div class="overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-sm">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800">
+<th class="px-4 py-3 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Date</th>
+<th class="px-4 py-3 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Check-in</th>
+<th class="px-4 py-3 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Check-out</th>
+<th class="px-4 py-3 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Status</th>
+<th class="px-4 py-3 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider">Mins Late/Early</th>
+<th class="px-4 py-3 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider text-center">Remote</th>
+<th class="px-4 py-3 text-slate-600 dark:text-slate-400 text-xs font-semibold uppercase tracking-wider text-center">Ack</th>
+<th class="px-4 py-3 w-10"></th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-slate-800">
+<!-- Row 1 (Expanded) -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors bg-slate-50/50 dark:bg-slate-800/20">
+<td class="px-4 py-4 text-sm font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">Wed, 05 Mar, 2026</td>
+<td class="px-4 py-4 text-sm text-slate-600 dark:text-slate-400">08:10</td>
+<td class="px-4 py-4 text-sm text-slate-600 dark:text-slate-400">17:00</td>
+<td class="px-4 py-4 text-sm">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                                                        Late
+                                                    </span>
+</td>
+<td class="px-4 py-4 text-sm font-medium text-red-600 dark:text-red-400">+10 min</td>
+<td class="px-4 py-4 text-sm text-center">
+<span class="material-symbols-outlined text-slate-400 text-xl">work_outline</span>
+</td>
+<td class="px-4 py-4 text-sm text-center">
+<input checked="" class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-600 dark:bg-slate-700 cursor-pointer" type="checkbox"/>
+</td>
+<td class="px-4 py-4 text-sm text-right">
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+<span class="material-symbols-outlined">expand_less</span>
+</button>
+</td>
+</tr>
+<!-- Detail Row -->
+<tr class="bg-slate-50/50 dark:bg-slate-800/20 border-b border-slate-200 dark:border-slate-800">
+<td class="px-4 pb-4" colspan="8">
+<div class="flex gap-6 p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-700 shadow-sm ml-8">
+<div class="flex flex-col gap-2">
+<span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Check-in Photo</span>
+<div class="w-32 h-24 bg-slate-200 dark:bg-slate-800 rounded-md bg-cover bg-center border border-slate-300 dark:border-slate-600" data-alt="Employee check-in selfie" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDoY1U6ITlSRZpANtwWzi_XIPjXp1K_jnOlwRClxDdi0I-XK9rO8V3k4rp8qlpJT_4EaCF4Bpbi9SXQZF-eR2nMVyC0h34Z2d22iCvycHz6WyFf7k1QMvZyD0-zMtuD1hKhFEC_0PqGF_hn62nfw3whz7ZdbLDD-jCLHfbTGTSctUPvBq_5qxNBySRp_0zpImeO6-8XV9FyN4ea1uLKYKzULKlYnFoCNDiAem5qE1VFVulup3UuqSNHTWQ8Pz_sHcJ2sOfZpO_8oUk');"></div>
+<span class="text-xs text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span> Dist 1, HCMC</span>
+</div>
+<div class="flex flex-col gap-2">
+<span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Check-out Photo</span>
+<div class="w-32 h-24 bg-slate-200 dark:bg-slate-800 rounded-md bg-cover bg-center border border-slate-300 dark:border-slate-600" data-alt="Employee check-out selfie" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuB-U61NHzB9q-rviekSwINqRoj1zUzcpUoV9JUGSegKbFIcyxiiEXSbcnuBf7y7YfyWlav_rhwoe8qcm7C584T5kqW3Kd_s9-YRMjReIc1TtFReWY0vYCMWZe0y3oRWcqV-FN4B_2XLpXwCau8yVA6-k4FmhrOHfh_zo8rIFuHYFA2i0vQopr8C5jMjXUVWTGwSvgIDNUo4N5tqwuKpB3s2pDQ4mzUTPG7swoEhBMT2whRVow44LYbYDuk13Tzlsos4Q-TeXaR0x88');"></div>
+<span class="text-xs text-slate-500 flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">location_on</span> Dist 1, HCMC</span>
+</div>
+<div class="flex flex-col gap-2 flex-1">
+<span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Note / Reason</span>
+<div class="p-3 bg-amber-50 dark:bg-amber-900/10 rounded-md border border-amber-100 dark:border-amber-900/30 text-sm text-slate-700 dark:text-slate-300">
+<p><strong class="font-medium text-amber-800 dark:text-amber-400">Late Reason:</strong> Heavy traffic on Nguyen Huu Canh street due to an accident.</p>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="px-4 py-4 text-sm font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">Tue, 04 Mar, 2026</td>
+<td class="px-4 py-4 text-sm text-slate-600 dark:text-slate-400">07:55</td>
+<td class="px-4 py-4 text-sm text-slate-600 dark:text-slate-400">17:05</td>
+<td class="px-4 py-4 text-sm">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+                                                        On Time
+                                                    </span>
+</td>
+<td class="px-4 py-4 text-sm text-slate-500">0 min</td>
+<td class="px-4 py-4 text-sm text-center">
+<span class="material-symbols-outlined text-primary text-xl" title="Remote Work">home_work</span>
+</td>
+<td class="px-4 py-4 text-sm text-center">
+<input checked="" class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-600 dark:bg-slate-700 cursor-pointer" disabled="" type="checkbox"/>
+</td>
+<td class="px-4 py-4 text-sm text-right">
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="px-4 py-4 text-sm font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">Mon, 03 Mar, 2026</td>
+<td class="px-4 py-4 text-sm text-slate-600 dark:text-slate-400">08:00</td>
+<td class="px-4 py-4 text-sm font-medium text-red-500 dark:text-red-400">Missing</td>
+<td class="px-4 py-4 text-sm">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300">
+                                                        Incomplete
+                                                    </span>
+</td>
+<td class="px-4 py-4 text-sm text-slate-500">-</td>
+<td class="px-4 py-4 text-sm text-center">
+<span class="material-symbols-outlined text-slate-400 text-xl">work_outline</span>
+</td>
+<td class="px-4 py-4 text-sm text-center">
+<input class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-600 dark:bg-slate-700 cursor-pointer" type="checkbox"/>
+</td>
+<td class="px-4 py-4 text-sm text-right">
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
+<td class="px-4 py-4 text-sm font-medium text-slate-900 dark:text-slate-100 whitespace-nowrap">Fri, 28 Feb, 2026</td>
+<td class="px-4 py-4 text-sm text-slate-600 dark:text-slate-400">08:05</td>
+<td class="px-4 py-4 text-sm text-slate-600 dark:text-slate-400">16:00</td>
+<td class="px-4 py-4 text-sm">
+<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300">
+                                                        Early Leave
+                                                    </span>
+</td>
+<td class="px-4 py-4 text-sm font-medium text-blue-600 dark:text-blue-400">-60 min</td>
+<td class="px-4 py-4 text-sm text-center">
+<span class="material-symbols-outlined text-slate-400 text-xl">work_outline</span>
+</td>
+<td class="px-4 py-4 text-sm text-center">
+<input checked="" class="h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary dark:border-slate-600 dark:bg-slate-700 cursor-pointer" disabled="" type="checkbox"/>
+</td>
+<td class="px-4 py-4 text-sm text-right">
+<button class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+<span class="material-symbols-outlined">expand_more</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex items-center justify-between mt-4 text-sm text-slate-500 dark:text-slate-400">
+<p>Showing 1 to 4 of 22 entries</p>
+<div class="flex gap-1">
+<button class="px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50">Prev</button>
+<button class="px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700 bg-primary text-white font-medium">1</button>
+<button class="px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700">2</button>
+<button class="px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700">3</button>
+<button class="px-3 py-1 rounded-md border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700">Next</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body></html>

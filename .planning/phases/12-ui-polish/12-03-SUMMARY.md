@@ -124,6 +124,16 @@ None - no external service configuration required.
 - EmployeeHistoryModal available for reuse in other views if needed
 - Ready for plan 12-04 (next UI polish task)
 
+## Self-Check: PASSED
+
+- FOUND: frontend/src/app/(app)/executive/components/EmployeeHistoryModal.tsx
+- FOUND: frontend/src/components/ui/dialog.tsx
+- FOUND: frontend/src/components/ui/table.tsx
+- FOUND: frontend/src/components/ui/button.tsx
+- FOUND: ae411a7 (chore: install Shadcn Dialog and Table)
+- FOUND: 8dbc57f (feat: EmployeeHistoryModal + executive page update)
+- FOUND: 5151fdd (docs: plan metadata commit)
+
 ---
 *Phase: 12-ui-polish*
 *Completed: 2026-03-05*

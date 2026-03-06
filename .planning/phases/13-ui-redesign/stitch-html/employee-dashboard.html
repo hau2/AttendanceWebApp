@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Employee Dashboard - Check In</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#10b981", // Green primary for 'CHECK IN' focus
+                        "primary-dark": "#059669",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#111121",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#1f2937",
+                        "text-main": "#111827",
+                        "text-muted": "#6b7280",
+                    },
+                    fontFamily: {
+                        "display": ["Geist", "Inter", "sans-serif"]
+                    },
+                    borderRadius: {"DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main dark:text-slate-100 min-h-screen antialiased">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+<div class="layout-container flex h-full grow flex-col">
+<!-- Top Navigation Bar -->
+<header class="flex items-center justify-between whitespace-nowrap border-b border-solid border-gray-200 dark:border-gray-800 bg-surface-light dark:bg-surface-dark px-10 py-4 shadow-sm sticky top-0 z-10">
+<div class="flex items-center gap-4">
+<div class="size-8 text-primary flex items-center justify-center bg-primary/10 rounded-lg">
+<span class="material-symbols-outlined text-xl">how_to_reg</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight">Attendance SaaS</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<nav class="flex items-center gap-8 hidden md:flex">
+<a class="text-sm font-semibold text-primary border-b-2 border-primary pb-1 transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-medium text-text-muted hover:text-text-main dark:hover:text-slate-100 transition-colors" href="#">Attendance History</a>
+</nav>
+<div class="flex items-center gap-4">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10 border-2 border-primary/20 cursor-pointer" data-alt="User profile picture placeholder" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuADd-3RJrBQHxeqrGkr2sw8tjAMzMxqDVYXrMEbAjfHHcg-00ywckkUP7kOPxrDk25aKBsNzT_piymvkC_0JwRYdZvanVLcQxYA-G3sFYTzgZjXR4bRTDT4GtJDDAbjy3oxrxHptArSzm8njEvrnSMpQQgTuRmb7An3iNdWLK0HvJr7TxJzJXxLrXtmXmIJT2nYf6_3FmzUOzY52haGnenWwBzvW5jjHVrNUgvN9Xo3Pfze9_0r9syu41P8L_pilFXTTGOtULUcjek");'></div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex flex-1 justify-center py-10 px-4 sm:px-6 lg:px-8">
+<div class="flex flex-col w-full max-w-2xl gap-8">
+<!-- Welcome Header -->
+<div class="flex flex-col gap-2 text-center md:text-left">
+<h1 class="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight">Welcome, Nguyen</h1>
+<p class="text-text-muted dark:text-gray-400 text-lg font-medium">Monday, October 23, 2023</p>
+</div>
+<!-- Check In Card -->
+<div class="bg-surface-light dark:bg-surface-dark rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 dark:border-gray-800 p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
+<!-- Decorative Background Element -->
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
+<div class="flex flex-col gap-2 z-10">
+<h3 class="text-2xl font-bold">Ready to Check In</h3>
+<p class="text-text-muted dark:text-gray-400 text-base">Please ensure you are at the correct location or select remote work.</p>
+</div>
+<div class="flex flex-col gap-6 z-10 mt-4">
+<!-- Remote Checkbox -->
+<label class="flex items-center gap-x-4 cursor-pointer p-4 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+<input class="h-6 w-6 rounded border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 text-primary checked:bg-primary checked:border-primary focus:ring-primary focus:ring-offset-0 focus:outline-none transition-all" type="checkbox"/>
+<span class="text-base font-semibold">Working remotely today</span>
+</label>
+<!-- Action Button -->
+<button class="w-full flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-16 px-6 bg-primary hover:bg-primary-dark active:scale-[0.98] transition-all text-white text-lg font-bold tracking-wide shadow-lg shadow-primary/30">
+<span class="material-symbols-outlined mr-2">fingerprint</span>
+<span>CHECK IN</span>
+</button>
+</div>
+</div>
+<!-- Footer Links -->
+<div class="flex justify-center mt-4">
+<a class="inline-flex items-center gap-2 text-text-muted hover:text-primary transition-colors font-medium" href="#">
+<span class="material-symbols-outlined text-sm">history</span>
+                        View History
+                    </a>
+</div>
+</div>
+</main>
+</div>
+</div>
+</body></html>

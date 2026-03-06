@@ -26,6 +26,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 10: API Pagination** - Offset-based pagination (page/limit) on all high-volume list endpoints; paginated tables in frontend (completed 2026-03-05)
 - [x] **Phase 11: IP Restriction** - CIDR support, disabled mode, remote-worker bypass, Company Settings UI, frontend pre-check before camera opens (completed 2026-03-06)
 - [x] **Phase 12: UI Polish** - Live clock on Employee Home, Lucide status badge icons, Shadcn component upgrades, Executive drill-down, Manager Employee Detail page (completed 2026-03-06)
+- [ ] **Phase 13: UI Redesign** - Sidebar navigation, indigo color scheme, brand logo, Shadcn Dialog migration, polished auth pages, avatar circles in tables, KPI card icons, empty states, employee portal visual refresh
 
 ## Phase Details
 
@@ -241,10 +242,29 @@ Plans:
 - [x] 12-04-PLAN.md — Manager Employee Detail page at /admin/employees/[id] using Shadcn Table; employee name link in AttendanceRecordTable (UIUX-03, UIUX-05)
 - [x] 12-05-PLAN.md — Human E2E verification checkpoint (all 5 UIUX requirements)
 
+### Phase 13: UI Redesign
+**Goal**: The entire application matches the Stitch design direction — sidebar navigation for admin/manager roles, indigo/purple accent color, brand logo, all modals use Shadcn Dialog, polished auth pages, avatar circles in tables, KPI cards with icons, empty states for all data tables, and a refined employee portal experience
+**Depends on**: Phase 12
+**Requirements**: Design-driven (Stitch project 9050121474855212303)
+**Success Criteria** (what must be TRUE):
+  1. Admin and Manager see a left sidebar navigation with Lucide icons, user profile section, and active state highlighting — Employee and Executive see a polished top header
+  2. Login and Register pages show a brand logo icon, form inputs with left-aligned Lucide icons, and indigo accent buttons — the entire app uses indigo instead of blue as the primary accent
+  3. All admin data tables show avatar circles next to user/employee names, role and status as colored Shadcn Badge components, and an EmptyState component when no data exists
+  4. Executive KPI cards have Lucide icons, colored accent borders, and the late ranking table uses numbered rank circles — Reports page shows summary stat cards with colored accents
+  5. All modals across the app use Shadcn Dialog instead of plain Tailwind overlays, with Shadcn Input/Select/Button components inside — delete confirmations use AlertDialog
+**Plans**: 5 plans
+
+Plans:
+- [ ] 13-01-PLAN.md — Design system foundation: install Shadcn components (Input, Card, Avatar, etc.), BrandLogo component, indigo color scheme, auth pages polish (login + register)
+- [ ] 13-02-PLAN.md — Sidebar navigation for admin/manager/owner; AppHeader for employee/executive; layout overhaul with role-based routing
+- [ ] 13-03-PLAN.md — Admin tables polish (avatar circles, colored badges), KPI cards with icons/accents, EmptyState component for all tables
+- [ ] 13-04-PLAN.md — Employee portal polish (check-in card redesign, attendance history with expandable photo rows, improved date formatting)
+- [ ] 13-05-PLAN.md — Migrate all modals to Shadcn Dialog, AlertDialog for delete confirmations, onboarding wizard step indicator, final consistency pass (typography, spacing, colors)
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -260,6 +280,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 10. API Pagination | 3/3 | Complete    | 2026-03-05 |
 | 11. IP Restriction | 4/4 | Complete    | 2026-03-05 |
 | 12. UI Polish | 5/5 | Complete    | 2026-03-06 |
+| 13. UI Redesign | 0/5 | Planned     | - |
 
 ---
 *Roadmap created: 2026-03-01*
@@ -278,3 +299,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 *Phase 11 planned: 2026-03-06 — 4 plans, 3 waves*
 *Phase 12 planned: 2026-03-06 — 5 plans, 3 waves*
 *v2 Coverage: 43/43 v2 requirements mapped*
+*Phase 13 planned: 2026-03-06 — 5 plans, 3 waves (design-driven from Stitch)*
