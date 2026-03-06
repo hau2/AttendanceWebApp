@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { ChevronUp, ChevronDown } from 'lucide-react';
 import { AttendanceRecord } from '@/lib/api/attendance';
 import { StatusBadge, RemoteBadge } from '@/components/ui/status-badge';
 
@@ -10,110 +11,134 @@ interface Props {
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' });
+  const weekday = d.toLocaleDateString('en-US', { weekday: 'short' });
+  const day = String(d.getDate()).padStart(2, '0');
+  const monthName = d.toLocaleDateString('en-US', { month: 'short' });
+  const year = d.getFullYear();
+  return `${weekday}, ${day} ${monthName}, ${year}`;
 }
 
 function formatTime(isoStr: string | null): string {
-  if (!isoStr) return '—';
-  return new Date(isoStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true });
+  if (!isoStr) return '\u2014';
+  return new Date(isoStr).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
+function getMinsDisplay(r: AttendanceRecord): { text: string; cls: string } {
+  if (r.minutes_late > 0) {
+    return { text: `+${r.minutes_late} min`, cls: 'font-medium text-red-600' };
+  }
+  if (r.minutes_early > 0) {
+    return { text: `-${r.minutes_early} min`, cls: 'font-medium text-amber-600' };
+  }
+  if (r.check_in_status === 'on-time' || r.check_in_status === 'within-grace') {
+    return { text: '0 min', cls: 'text-emerald-600' };
+  }
+  return { text: '\u2014', cls: 'text-slate-500' };
 }
 
 export function AttendanceHistoryTable({ records }: Props) {
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   if (records.length === 0) {
-    return <p className="text-gray-500 text-center py-10">No records for this month.</p>;
+    return (
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm py-10">
+        <p className="text-slate-500 text-center">No records for this month.</p>
+      </div>
+    );
   }
 
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full text-sm">
+    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="border-b border-gray-200 text-left text-gray-500">
-            <th className="pb-3 font-medium">Date</th>
-            <th className="pb-3 font-medium">Check-in</th>
-            <th className="pb-3 font-medium">Check-out</th>
-            <th className="pb-3 font-medium">Status</th>
-            <th className="pb-3 font-medium">Mins Late/Early</th>
-            <th className="pb-3 font-medium">Remote</th>
-            <th className="pb-3 font-medium">Acknowledged</th>
-            <th className="pb-3 font-medium"></th>
+          <tr className="bg-slate-50 border-b border-slate-200">
+            <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
+            <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Check-in</th>
+            <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Check-out</th>
+            <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
+            <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Mins Late/Early</th>
+            <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Remote</th>
+            <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Ack</th>
+            <th className="px-6 py-4 w-10"></th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="divide-y divide-slate-200">
           {records.map((r) => {
             const isExpanded = expandedId === r.id;
+            const mins = getMinsDisplay(r);
             return (
-              <>
-                <tr key={r.id} className="border-b border-gray-100 hover:bg-gray-50">
-                  <td className="py-3 text-gray-900">{formatDate(r.work_date)}</td>
-                  <td className="py-3 text-gray-700">{formatTime(r.check_in_at)}</td>
-                  <td className="py-3">
+              <><tr
+                  key={r.id}
+                  className={`hover:bg-slate-50 transition-colors ${isExpanded ? 'bg-slate-50/50' : ''}`}
+                >
+                  <td className="px-6 py-4 text-sm font-medium text-slate-900 whitespace-nowrap">{formatDate(r.work_date)}</td>
+                  <td className="px-6 py-4 text-sm text-slate-600">{formatTime(r.check_in_at)}</td>
+                  <td className="px-6 py-4 text-sm">
                     {r.check_out_at ? (
-                      <span className="text-gray-700">{formatTime(r.check_out_at)}</span>
+                      <span className="text-slate-600">{formatTime(r.check_out_at)}</span>
                     ) : r.check_in_at && r.missing_checkout ? (
-                      <span className="text-red-600 font-medium">Missing</span>
+                      <span className="font-medium text-red-500">Missing</span>
                     ) : (
-                      <span className="text-gray-400">—</span>
+                      <span className="text-slate-400">{'\u2014'}</span>
                     )}
                   </td>
-                  <td className="py-3"><StatusBadge status={r.check_in_status} missingCheckout={r.missing_checkout} /></td>
-                  <td className="py-3">
-                    {r.minutes_late > 0 && <span className="text-red-600">+{r.minutes_late} min</span>}
-                    {r.minutes_early > 0 && <span className="text-orange-600">-{r.minutes_early} min</span>}
-                  </td>
-                  <td className="py-3">
+                  <td className="px-6 py-4 text-sm"><StatusBadge status={r.check_in_status} missingCheckout={r.missing_checkout} /></td>
+                  <td className={`px-6 py-4 text-sm ${mins.cls}`}>{mins.text}</td>
+                  <td className="px-6 py-4 text-sm text-center">
                     {r.is_remote && <RemoteBadge />}
                   </td>
-                  <td className="py-3 text-xs text-gray-500">
+                  <td className="px-6 py-4 text-sm text-center">
                     {(r.acknowledged_at || r.remote_acknowledged_at) ? (
-                      <span className="text-green-600 font-medium">
-                        {r.acknowledged_at && `Late/Early: ${new Date(r.acknowledged_at).toLocaleDateString()}`}
-                        {r.acknowledged_at && r.remote_acknowledged_at && ' | '}
-                        {r.remote_acknowledged_at && `Remote: ${new Date(r.remote_acknowledged_at).toLocaleDateString()}`}
-                      </span>
+                      <span className="inline-block w-4 h-4 rounded border border-[#4848e5] bg-[#4848e5] text-white text-xs leading-4 text-center">&#10003;</span>
                     ) : (
-                      <span className="text-gray-300">—</span>
+                      <span className="inline-block w-4 h-4 rounded border border-slate-300 bg-white" />
                     )}
                   </td>
-                  <td className="py-3">
+                  <td className="px-6 py-4 text-sm text-right">
                     <button
                       onClick={() => setExpandedId(isExpanded ? null : r.id)}
-                      className="text-gray-400 hover:text-gray-700 transition-colors p-1"
+                      className="text-slate-400 hover:text-slate-600 transition-colors"
                       aria-label="Toggle details"
                     >
-                      <svg className={`w-4 h-4 transition-transform ${isExpanded ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                      </svg>
+                      {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
                     </button>
                   </td>
                 </tr>
                 {isExpanded && (
-                  <tr key={`${r.id}-detail`} className="bg-gray-50 border-b border-gray-100">
-                    <td colSpan={8} className="px-4 py-4">
-                      <div className="flex gap-8 flex-wrap">
-                        <div>
-                          <p className="text-xs text-gray-500 font-medium mb-2">CHECK-IN PHOTO</p>
+                  <tr key={`${r.id}-detail`} className="bg-slate-50/50 border-b border-slate-200">
+                    <td colSpan={8} className="px-6 pb-4">
+                      <div className="flex gap-6 p-4 bg-white rounded-lg border border-slate-200 shadow-sm ml-8 flex-wrap">
+                        <div className="flex flex-col gap-2">
+                          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Check-in Photo</span>
                           {r.check_in_photo_url ? (
-                            <img src={r.check_in_photo_url} alt="Check-in photo" className="w-32 h-24 object-cover rounded" />
+                            <img src={r.check_in_photo_url} alt="Check-in photo" className="w-32 h-24 object-cover rounded-md border border-slate-300" />
                           ) : (
-                            <p className="text-gray-400 text-sm">No photo</p>
-                          )}
-                          {r.late_reason && (
-                            <p className="text-xs text-gray-600 mt-2"><span className="font-medium">Late reason:</span> {r.late_reason}</p>
+                            <div className="w-32 h-24 bg-slate-200 rounded-md border border-slate-300 flex items-center justify-center text-slate-400 text-xs">No photo</div>
                           )}
                         </div>
-                        <div>
-                          <p className="text-xs text-gray-500 font-medium mb-2">CHECK-OUT PHOTO</p>
+                        <div className="flex flex-col gap-2">
+                          <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Check-out Photo</span>
                           {r.check_out_photo_url ? (
-                            <img src={r.check_out_photo_url} alt="Check-out photo" className="w-32 h-24 object-cover rounded" />
+                            <img src={r.check_out_photo_url} alt="Check-out photo" className="w-32 h-24 object-cover rounded-md border border-slate-300" />
                           ) : (
-                            <p className="text-gray-400 text-sm">No photo</p>
-                          )}
-                          {r.early_note && (
-                            <p className="text-xs text-gray-600 mt-2"><span className="font-medium">Early note:</span> {r.early_note}</p>
+                            <div className="w-32 h-24 bg-slate-200 rounded-md border border-slate-300 flex items-center justify-center text-slate-400 text-xs">No photo</div>
                           )}
                         </div>
+                        {(r.late_reason || r.early_note) && (
+                          <div className="flex flex-col gap-2 flex-1 min-w-[200px]">
+                            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Note / Reason</span>
+                            {r.late_reason && (
+                              <div className="p-3 bg-amber-50 rounded-md border border-amber-100 text-sm text-slate-700">
+                                <p><strong className="font-medium text-amber-800">Late Reason:</strong> {r.late_reason}</p>
+                              </div>
+                            )}
+                            {r.early_note && (
+                              <div className="p-3 bg-blue-50 rounded-md border border-blue-100 text-sm text-slate-700">
+                                <p><strong className="font-medium text-blue-800">Early Note:</strong> {r.early_note}</p>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </td>
                   </tr>

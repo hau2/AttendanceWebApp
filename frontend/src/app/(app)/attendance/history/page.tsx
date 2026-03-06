@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { getStoredUser } from '@/lib/api/auth';
 import { getHistory, AttendanceRecord } from '@/lib/api/attendance';
 import { AttendanceHistoryTable } from './components/AttendanceHistoryTable';
@@ -58,40 +59,47 @@ export default function AttendanceHistoryPage() {
   const monthLabel = `${MONTH_NAMES[month - 1]} ${year}`;
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">My Attendance History</h1>
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
-          >
-            &#8249;
-          </button>
-          <span className="text-gray-700 font-medium w-36 text-center">{monthLabel}</span>
-          <button
-            onClick={() => navigate(1)}
-            className="px-3 py-1 rounded border border-gray-300 hover:bg-gray-50 text-gray-600 font-medium"
-          >
-            &#8250;
+    <div className="max-w-5xl mx-auto">
+      {/* Header row */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <h1 className="text-2xl font-bold leading-tight tracking-tight">My Attendance History</h1>
+        <div className="flex items-center gap-2">
+          <div className="flex gap-1 bg-slate-100 rounded-lg p-1">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-1.5 text-slate-600 hover:text-slate-900 rounded-md hover:bg-white transition-colors"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => navigate(1)}
+              className="p-1.5 text-slate-600 hover:text-slate-900 rounded-md hover:bg-white transition-colors"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+          <button className="flex items-center justify-center rounded-lg h-9 bg-[#4848e5] text-white gap-2 text-sm font-semibold px-4 shadow-sm hover:bg-[#4848e5]/90 transition-colors">
+            <Calendar className="w-[18px] h-[18px]" />
+            <span>{monthLabel}</span>
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-md p-6">
-        {loading ? (
-          <div className="flex items-center justify-center py-10">
-            <div className="w-6 h-6 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-          </div>
-        ) : (
-          <>
-            <AttendanceHistoryTable records={pagedRecords} />
-            {records.length > LIMIT && (
+      {/* Table container */}
+      {loading ? (
+        <div className="rounded-xl border border-slate-200 bg-white shadow-sm flex items-center justify-center py-10">
+          <div className="w-6 h-6 border-4 border-[#4848e5] border-t-transparent rounded-full animate-spin" />
+        </div>
+      ) : (
+        <>
+          <AttendanceHistoryTable records={pagedRecords} />
+          {records.length > LIMIT && (
+            <div className="mt-4">
               <PaginationControls page={page} limit={LIMIT} total={records.length} onPageChange={setPage} />
-            )}
-          </>
-        )}
-      </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }
