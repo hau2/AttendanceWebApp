@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
+import { Camera } from 'lucide-react';
 import {
   AttendanceRecord,
   checkIn,
@@ -197,8 +198,8 @@ export function CheckInOutCard() {
   // Loading state while fetching today's record
   if (todayRecord === undefined) {
     return (
-      <div className="bg-white rounded-xl shadow-md p-8 max-w-sm mx-auto text-center">
-        <p className="text-gray-400 text-sm">Loading...</p>
+      <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 p-6 md:p-8 relative overflow-hidden">
+        <p className="text-slate-400 text-sm text-center">Loading...</p>
       </div>
     );
   }
@@ -210,63 +211,87 @@ export function CheckInOutCard() {
       : null;
     const outTime = new Date(todayRecord.check_out_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     return (
-      <div className="bg-white rounded-xl shadow-md p-8 max-w-sm mx-auto text-center">
-        <div className="text-green-600 text-4xl mb-3">&#10003;</div>
-        <p className="text-lg font-semibold text-gray-800">All done for today</p>
-        {todayRecord.is_remote && (
-          <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Remote</span>
-        )}
-        {inTime && <p className="text-sm text-gray-500 mt-1">Checked in at {inTime}</p>}
-        <p className="text-sm text-gray-500">Checked out at {outTime}</p>
+      <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 p-6 md:p-8 relative overflow-hidden text-center">
+        {/* Decorative Background Element */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#10b981]/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+        <div className="relative z-10">
+          <div className="text-[#10b981] text-4xl mb-3">&#10003;</div>
+          <p className="text-lg font-semibold text-slate-800">All done for today</p>
+          {todayRecord.is_remote && (
+            <span className="inline-block mt-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700">Remote</span>
+          )}
+          {inTime && <p className="text-sm text-slate-500 mt-1">Checked in at {inTime}</p>}
+          <p className="text-sm text-slate-500">Checked out at {outTime}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-md p-8 max-w-sm mx-auto text-center">
+    <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-gray-100 p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
+      {/* Decorative Background Element */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-[#10b981]/5 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+
       {/* Idle state */}
       {flowState === 'idle' && (
-        <>
-          {todayRecord?.check_in_at && (
-            <p className="text-sm text-gray-500 mb-4">
-              Checked in at{' '}
-              {new Date(todayRecord.check_in_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        <div className="flex flex-col gap-6 z-10">
+          <div className="flex flex-col gap-2">
+            <h3 className="text-2xl font-bold">
+              {action === 'check-in' ? 'Ready to Check In' : 'Ready to Check Out'}
+            </h3>
+            <p className="text-slate-500 text-base">
+              {action === 'check-in'
+                ? 'Please ensure you are at the correct location or select remote work.'
+                : 'Take a photo to complete your check-out.'}
             </p>
-          )}
-          {action === 'check-in' && (
-            <label className="flex items-center gap-2 mb-4 cursor-pointer justify-center">
-              <input
-                type="checkbox"
-                checked={isRemote}
-                onChange={(e) => setIsRemote(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-600 font-medium">Working remotely today</span>
-            </label>
-          )}
-          <button
-            onClick={handleActionButton}
-            className={
-              action === 'check-in'
-                ? 'w-full py-4 px-6 bg-green-600 text-white text-xl font-bold rounded-xl hover:bg-green-700 transition-colors'
-                : 'w-full py-4 px-6 bg-red-600 text-white text-xl font-bold rounded-xl hover:bg-red-700 transition-colors'
-            }
-          >
-            {action === 'check-in' ? 'CHECK IN' : 'CHECK OUT'}
-          </button>
-        </>
+            {todayRecord?.check_in_at && (
+              <p className="text-sm text-slate-400">
+                Checked in at{' '}
+                {new Date(todayRecord.check_in_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </p>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-6 mt-4">
+            {/* Remote Checkbox */}
+            {action === 'check-in' && (
+              <label className="flex items-center gap-x-4 cursor-pointer p-4 rounded-lg bg-gray-50 border border-gray-200 hover:bg-gray-100 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={isRemote}
+                  onChange={(e) => setIsRemote(e.target.checked)}
+                  className="h-6 w-6 rounded border-gray-300 bg-white text-[#10b981] checked:bg-[#10b981] checked:border-[#10b981] focus:ring-[#10b981] focus:ring-offset-0 focus:outline-none transition-all"
+                />
+                <span className="text-base font-semibold">Working remotely today</span>
+              </label>
+            )}
+
+            {/* Action Button */}
+            <button
+              onClick={handleActionButton}
+              className={
+                action === 'check-in'
+                  ? 'w-full flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-16 px-6 bg-[#10b981] hover:bg-[#059669] active:scale-[0.98] transition-all text-white text-lg font-bold tracking-wide shadow-lg shadow-[#10b981]/30'
+                  : 'w-full flex cursor-pointer items-center justify-center overflow-hidden rounded-xl h-16 px-6 bg-amber-500 hover:bg-amber-600 active:scale-[0.98] transition-all text-white text-lg font-bold tracking-wide shadow-lg shadow-amber-500/30'
+              }
+            >
+              <Camera className="w-5 h-5 mr-2" />
+              <span>{action === 'check-in' ? 'CHECK IN' : 'CHECK OUT'}</span>
+            </button>
+          </div>
+        </div>
       )}
 
       {/* IP checking spinner */}
       {flowState === 'ip-checking' && (
-        <div className="py-8 text-center">
-          <p className="text-sm text-gray-500">Checking network access...</p>
+        <div className="py-8 text-center z-10">
+          <p className="text-sm text-slate-500">Checking network access...</p>
         </div>
       )}
 
       {/* IP warning — log-only mode with IP outside allowlist */}
       {flowState === 'ip-warning' && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-5 text-left">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-5 text-left z-10">
           <p className="text-sm font-semibold text-yellow-800 mb-1">Outside Office Network</p>
           <p className="text-sm text-yellow-700 mb-4">
             Your IP address ({ipCheckResult?.ip}) is not in the company allowlist. Your check-in will be
@@ -291,7 +316,7 @@ export function CheckInOutCard() {
 
       {/* IP blocked — enforce-block mode with IP outside allowlist and not remote */}
       {flowState === 'ip-blocked' && (
-        <div className="bg-red-50 border border-red-200 rounded-xl p-5 text-left">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-5 text-left z-10">
           <p className="text-sm font-semibold text-red-800 mb-1">Check-in Blocked</p>
           <p className="text-sm text-red-700 mb-4">
             Your IP address ({ipCheckResult?.ip}) is not in the company allowlist and IP restriction is
@@ -309,28 +334,28 @@ export function CheckInOutCard() {
 
       {/* Camera open */}
       {flowState === 'camera-open' && (
-        <>
+        <div className="z-10">
           <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden mb-3">
             <video ref={videoRef} autoPlay playsInline className="w-full h-full object-cover" />
           </div>
           <button
             onClick={capturePhoto}
-            className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg mt-1"
+            className="w-full flex items-center justify-center rounded-xl h-16 px-6 bg-[#4848e5] hover:bg-[#4848e5]/90 transition-all text-white text-lg font-bold"
           >
             Capture Photo
           </button>
           <button
             onClick={() => { stopStream(); setFlowState('idle'); }}
-            className="w-full py-2 mt-2 text-sm text-gray-500 hover:text-gray-700"
+            className="w-full py-2 mt-2 text-sm text-slate-500 hover:text-slate-700"
           >
             Cancel
           </button>
-        </>
+        </div>
       )}
 
       {/* Photo preview */}
       {flowState === 'photo-preview' && capturedUrl && (
-        <>
+        <div className="z-10">
           <img
             src={capturedUrl}
             alt="Captured"
@@ -338,28 +363,28 @@ export function CheckInOutCard() {
           />
           {needsLateReason && (
             <div className="mb-3 text-left">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Reason for being late <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={lateReason}
                 onChange={(e) => setLateReason(e.target.value)}
                 rows={2}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4848e5]"
                 placeholder="Please provide a reason..."
               />
             </div>
           )}
           {needsEarlyNote && (
             <div className="mb-3 text-left">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1">
                 Note for early check-out <span className="text-red-500">*</span>
               </label>
               <textarea
                 value={earlyNote}
                 onChange={(e) => setEarlyNote(e.target.value)}
                 rows={2}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#4848e5]"
                 placeholder="Please provide a note..."
               />
             </div>
@@ -371,30 +396,30 @@ export function CheckInOutCard() {
               (needsLateReason && !lateReason.trim()) ||
               (needsEarlyNote && !earlyNote.trim())
             }
-            className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center rounded-xl h-16 px-6 bg-[#4848e5] hover:bg-[#4848e5]/90 transition-all text-white text-lg font-bold disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Submit
           </button>
           <button
             onClick={() => { setCapturedBlob(null); setCapturedUrl(null); setFlowState('idle'); setNeedsLateReason(false); setNeedsEarlyNote(false); }}
-            className="w-full py-2 mt-2 text-sm text-gray-500 hover:text-gray-700"
+            className="w-full py-2 mt-2 text-sm text-slate-500 hover:text-slate-700"
           >
             Retake
           </button>
-        </>
+        </div>
       )}
 
       {/* Submitting */}
       {flowState === 'submitting' && (
-        <div className="py-8">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600 mx-auto" />
-          <p className="text-gray-500 text-sm mt-3">Submitting...</p>
+        <div className="py-8 z-10 text-center">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#4848e5] mx-auto" />
+          <p className="text-slate-500 text-sm mt-3">Submitting...</p>
         </div>
       )}
 
       {/* Error (non-retryable) */}
       {flowState === 'error' && (
-        <>
+        <div className="z-10">
           <p className="text-red-600 text-sm mt-2 mb-4">{error}</p>
           <button
             onClick={() => setFlowState('idle')}
@@ -402,7 +427,7 @@ export function CheckInOutCard() {
           >
             Back
           </button>
-        </>
+        </div>
       )}
     </div>
   );
