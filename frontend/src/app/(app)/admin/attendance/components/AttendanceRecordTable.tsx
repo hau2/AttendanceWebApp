@@ -54,7 +54,7 @@ export function AttendanceRecordTable({ records, usersMap, onSelectRecord }: Pro
                 <td className="py-3 px-4 text-gray-900 font-medium">
                   <Link
                     href={`/admin/employees/${r.user_id}`}
-                    className="hover:text-blue-600 hover:underline transition-colors"
+                    className="text-blue-600 hover:underline transition-colors"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {r.users?.full_name || user?.full_name || 'Unknown'}

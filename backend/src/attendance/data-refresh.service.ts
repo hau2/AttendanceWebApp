@@ -143,7 +143,25 @@ export class DataRefreshService {
       absentCount = (inserted ?? []).length;
     }
 
-    // 7b. Mark yesterday's open records (checked in, no checkout) as absent_afternoon
+    // 7b. Upgrade yesterday's absent_morning records (never checked in) → absent
+    // These were inserted when yesterday was "today". Now the day is over — upgrade to absent.
+    const { data: staleMorningRecords } = await client
+      .from('attendance_records')
+      .select('id')
+      .eq('company_id', companyId)
+      .eq('work_date', yesterdayStr)
+      .eq('check_in_status', 'absent_morning')
+      .is('check_in_at', null);
+
+    if ((staleMorningRecords ?? []).length > 0) {
+      const staleIds = (staleMorningRecords ?? []).map((r) => (r as Record<string, unknown>).id as string);
+      await client
+        .from('attendance_records')
+        .update({ check_in_status: 'absent', updated_at: now })
+        .in('id', staleIds);
+    }
+
+    // 7c. Mark yesterday's open records (checked in, no checkout) as absent_afternoon
     let absentAfternoonCount = 0;
     const { data: openRecords } = await client
       .from('attendance_records')
