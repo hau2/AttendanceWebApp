@@ -3,6 +3,13 @@
 import { useState } from 'react';
 import { CreateUserData, importUsersCSV } from '@/lib/api/users';
 import { getStoredToken } from '@/lib/api/auth';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 interface CsvImportModalProps {
   open: boolean;
@@ -31,8 +38,6 @@ export function CsvImportModal({ open, onClose, onImported }: CsvImportModalProp
   const [parseError, setParseError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ImportResult | null>(null);
-
-  if (!open) return null;
 
   function handleClose() {
     setParsedRows([]);
@@ -129,33 +134,33 @@ export function CsvImportModal({ open, onClose, onImported }: CsvImportModalProp
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-lg mx-4">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Import Users from CSV</h2>
-        </div>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
+      <DialogContent className="sm:max-w-lg" showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle>Import Users from CSV</DialogTitle>
+        </DialogHeader>
 
-        <div className="px-6 py-4 space-y-4">
+        <div className="space-y-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Need a template?</span>
+            <span className="text-sm text-slate-600">Need a template?</span>
             <a
               href={CSV_TEMPLATE_URI}
               download="users-template.csv"
-              className="text-sm text-blue-600 hover:underline"
+              className="text-sm text-[#4848e5] hover:underline"
             >
               Download template
             </a>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Select CSV file
             </label>
             <input
               type="file"
               accept=".csv"
               onChange={handleFileChange}
-              className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+              className="block w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-[#4848e5]/10 file:text-[#4848e5] hover:file:bg-[#4848e5]/20"
             />
           </div>
 
@@ -166,7 +171,7 @@ export function CsvImportModal({ open, onClose, onImported }: CsvImportModalProp
           )}
 
           {parsedRows.length > 0 && !result && (
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+            <div className="p-3 bg-[#4848e5]/10 border border-[#4848e5]/20 rounded-lg text-sm text-[#4848e5]">
               {parsedRows.length} row{parsedRows.length !== 1 ? 's' : ''} parsed and ready to import.
             </div>
           )}
@@ -187,25 +192,25 @@ export function CsvImportModal({ open, onClose, onImported }: CsvImportModalProp
             </div>
           )}
 
-          <div className="flex gap-3 pt-2">
+          <DialogFooter className="pt-2">
+            <button
+              onClick={handleClose}
+              className="border border-slate-300 text-slate-700 rounded-lg h-10 px-4 text-sm font-semibold hover:bg-slate-50 transition-colors"
+            >
+              {result ? 'Close' : 'Cancel'}
+            </button>
             {!result && (
               <button
                 onClick={handleImport}
                 disabled={parsedRows.length === 0 || loading}
-                className="flex-1 bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                className="bg-[#4848e5] hover:bg-[#4848e5]/90 text-white rounded-lg h-10 px-4 text-sm font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {loading ? 'Importing...' : `Import ${parsedRows.length > 0 ? `(${parsedRows.length})` : ''}`}
               </button>
             )}
-            <button
-              onClick={handleClose}
-              className="flex-1 border border-gray-300 text-sm text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              {result ? 'Close' : 'Cancel'}
-            </button>
-          </div>
+          </DialogFooter>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

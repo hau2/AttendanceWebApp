@@ -4,6 +4,13 @@ import { useState } from 'react';
 import { User, CreateUserData, createUser } from '@/lib/api/users';
 import { Division } from '@/lib/api/divisions';
 import { getStoredToken } from '@/lib/api/auth';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 const ROLE_OPTIONS: User['role'][] = ['admin', 'manager', 'employee', 'executive'];
 
@@ -38,8 +45,6 @@ export function CreateUserModal({
   const availableDivisions = currentUserRole === 'manager'
     ? divisions.filter((d) => d.manager_id === currentUserId)
     : divisions;
-
-  if (!open) return null;
 
   function resetForm() {
     setFullName('');
@@ -99,13 +104,13 @@ export function CreateUserModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Add User</h2>
-        </div>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
+      <DialogContent className="sm:max-w-md" showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle>Add User</DialogTitle>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="px-6 py-4 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
               {error}
@@ -113,7 +118,7 @@ export function CreateUserModal({
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Full Name
             </label>
             <input
@@ -121,13 +126,13 @@ export function CreateUserModal({
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
               placeholder="Nguyen Van A"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Email
             </label>
             <input
@@ -135,13 +140,13 @@ export function CreateUserModal({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
               placeholder="user@company.com"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Password
             </label>
             <input
@@ -150,24 +155,24 @@ export function CreateUserModal({
               onChange={(e) => setPassword(e.target.value)}
               required
               minLength={8}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
               placeholder="Min 8 characters"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Role
             </label>
             {currentUserRole === 'manager' ? (
-              <div className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm bg-gray-50 text-gray-600">
+              <div className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm bg-slate-50 text-slate-600 flex items-center">
                 Employee (Managers can only create employees)
               </div>
             ) : (
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
               >
                 {ROLE_OPTIONS.map((r) => (
                   <option key={r} value={r}>
@@ -180,13 +185,13 @@ export function CreateUserModal({
 
           {role === 'employee' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">
                 Manager (optional)
               </label>
               <select
                 value={managerId}
                 onChange={(e) => setManagerId(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
               >
                 <option value="">No manager</option>
                 {managers.map((mgr) => (
@@ -199,13 +204,13 @@ export function CreateUserModal({
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Division (optional)
             </label>
             <select
               value={divisionId}
               onChange={(e) => setDivisionId(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
             >
               <option value="">No division</option>
               {availableDivisions.map((div) => (
@@ -216,24 +221,24 @@ export function CreateUserModal({
             </select>
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Creating...' : 'Create User'}
-            </button>
+          <DialogFooter className="pt-2">
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 border border-gray-300 text-sm text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+              className="border border-slate-300 text-slate-700 rounded-lg h-10 px-4 text-sm font-semibold hover:bg-slate-50 transition-colors"
             >
               Cancel
             </button>
-          </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-[#4848e5] hover:bg-[#4848e5]/90 text-white rounded-lg h-10 px-4 text-sm font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Creating...' : 'Create User'}
+            </button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

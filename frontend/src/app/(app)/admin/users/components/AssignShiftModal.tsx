@@ -10,6 +10,14 @@ import {
   assignShift,
   getUserShiftInfo,
 } from '@/lib/api/shifts';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 interface AssignShiftModalProps {
   open: boolean;
@@ -90,43 +98,31 @@ export function AssignShiftModal({
     }
   }
 
-  if (!open || !user) return null;
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto">
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">Assign Shift</h2>
-            <p className="text-sm text-gray-500 mt-0.5">{user.full_name}</p>
-          </div>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+    <Dialog open={open && !!user} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto" showCloseButton>
+        <DialogHeader>
+          <DialogTitle>Assign Shift</DialogTitle>
+          {user && <DialogDescription>{user.full_name}</DialogDescription>}
+        </DialogHeader>
 
-        <div className="p-6 space-y-6">
+        <div className="space-y-6">
           {/* Current active shift */}
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Current Shift</h3>
+            <h3 className="text-sm font-medium text-slate-700 mb-2">Current Shift</h3>
             {loadingData ? (
-              <div className="text-sm text-gray-400">Loading...</div>
+              <div className="text-sm text-slate-400">Loading...</div>
             ) : activeShift ? (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg px-4 py-3 text-sm text-blue-800">
+              <div className="bg-[#4848e5]/10 border border-[#4848e5]/20 rounded-lg px-4 py-3 text-sm text-[#4848e5]">
                 <span className="font-medium">{activeShift.shifts.name}</span>
                 {' '}
-                ({activeShift.shifts.start_time}–{activeShift.shifts.end_time})
-                <span className="ml-2 text-blue-600 text-xs">
+                ({activeShift.shifts.start_time}--{activeShift.shifts.end_time})
+                <span className="ml-2 text-[#4848e5]/70 text-xs">
                   since {activeShift.effective_date}
                 </span>
               </div>
             ) : (
-              <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-500">
+              <div className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-3 text-sm text-slate-500">
                 No shift assigned
               </div>
             )}
@@ -135,21 +131,21 @@ export function AssignShiftModal({
           {/* Assignment form */}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">
                 Shift
               </label>
               <select
                 value={selectedShiftId}
                 onChange={(e) => setSelectedShiftId(e.target.value)}
                 required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
               >
                 {shifts.length === 0 ? (
                   <option value="">No shifts available</option>
                 ) : (
                   shifts.map((s) => (
                     <option key={s.id} value={s.id}>
-                      {s.name} ({s.start_time}–{s.end_time})
+                      {s.name} ({s.start_time}--{s.end_time})
                     </option>
                   ))
                 )}
@@ -157,7 +153,7 @@ export function AssignShiftModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-slate-700 mb-1.5">
                 Effective Date
               </label>
               <input
@@ -165,7 +161,7 @@ export function AssignShiftModal({
                 value={effectiveDate}
                 onChange={(e) => setEffectiveDate(e.target.value)}
                 required
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
               />
             </div>
 
@@ -175,47 +171,47 @@ export function AssignShiftModal({
               </div>
             )}
 
-            <div className="flex gap-3 pt-2">
+            <DialogFooter className="pt-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="border border-slate-300 text-slate-700 rounded-lg h-10 px-4 text-sm font-semibold hover:bg-slate-50 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={submitting || shifts.length === 0}
-                className="flex-1 px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+                className="bg-[#4848e5] hover:bg-[#4848e5]/90 text-white rounded-lg h-10 px-4 text-sm font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
                 {submitting ? 'Assigning...' : 'Assign Shift'}
               </button>
-            </div>
+            </DialogFooter>
           </form>
 
           {/* Assignment history */}
           {!loadingData && history.length > 0 && (
             <div>
-              <h3 className="text-sm font-medium text-gray-700 mb-2">Assignment History</h3>
+              <h3 className="text-sm font-medium text-slate-700 mb-2">Assignment History</h3>
               <div className="overflow-x-auto">
                 <table className="min-w-full text-sm">
                   <thead>
-                    <tr className="border-b border-gray-200">
-                      <th className="py-2 pr-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <tr className="border-b border-slate-200">
+                      <th className="py-2 pr-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                         Shift Name
                       </th>
-                      <th className="py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                      <th className="py-2 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
                         Effective Date
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100">
+                  <tbody className="divide-y divide-slate-100">
                     {history.map((assignment) => (
                       <tr key={assignment.id}>
-                        <td className="py-2 pr-4 text-gray-900">
+                        <td className="py-2 pr-4 text-slate-900">
                           {assignment.shifts.name}
                         </td>
-                        <td className="py-2 text-gray-600">
+                        <td className="py-2 text-slate-600">
                           {assignment.effective_date}
                         </td>
                       </tr>
@@ -226,7 +222,7 @@ export function AssignShiftModal({
             </div>
           )}
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

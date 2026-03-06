@@ -4,6 +4,13 @@ import { useState } from 'react';
 import { User } from '@/lib/api/users';
 import { CreateDivisionData, createDivision } from '@/lib/api/divisions';
 import { getStoredToken } from '@/lib/api/auth';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 interface CreateDivisionModalProps {
   open: boolean;
@@ -22,8 +29,6 @@ export function CreateDivisionModal({
   const [managerId, setManagerId] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  if (!open) return null;
 
   function resetForm() {
     setName('');
@@ -66,13 +71,13 @@ export function CreateDivisionModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl shadow-xl w-full max-w-md mx-4">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Add Division</h2>
-        </div>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
+      <DialogContent className="sm:max-w-md" showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle>Add Division</DialogTitle>
+        </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="px-6 py-4 space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
               {error}
@@ -80,7 +85,7 @@ export function CreateDivisionModal({
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Division Name
             </label>
             <input
@@ -88,19 +93,19 @@ export function CreateDivisionModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
               placeholder="e.g. Engineering"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Manager (optional)
             </label>
             <select
               value={managerId}
               onChange={(e) => setManagerId(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
             >
               <option value="">No manager</option>
               {managers.map((mgr) => (
@@ -111,24 +116,24 @@ export function CreateDivisionModal({
             </select>
           </div>
 
-          <div className="flex gap-3 pt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="flex-1 bg-blue-600 text-white text-sm font-medium py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Creating...' : 'Create Division'}
-            </button>
+          <DialogFooter className="pt-2">
             <button
               type="button"
               onClick={handleClose}
-              className="flex-1 border border-gray-300 text-sm text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-50 transition-colors"
+              className="border border-slate-300 text-slate-700 rounded-lg h-10 px-4 text-sm font-semibold hover:bg-slate-50 transition-colors"
             >
               Cancel
             </button>
-          </div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="bg-[#4848e5] hover:bg-[#4848e5]/90 text-white rounded-lg h-10 px-4 text-sm font-semibold transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Creating...' : 'Create Division'}
+            </button>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

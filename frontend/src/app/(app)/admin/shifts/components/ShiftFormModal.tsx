@@ -3,6 +3,13 @@
 import { useState, useEffect } from 'react';
 import { Shift, createShift, updateShift } from '@/lib/api/shifts';
 import { getStoredToken } from '@/lib/api/auth';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 interface ShiftFormModalProps {
   open: boolean;
@@ -42,8 +49,6 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
     }
     setError('');
   }, [shift, open]);
-
-  if (!open) return null;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -92,27 +97,21 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-black/50"
-        onClick={onClose}
-      />
-      {/* Modal card */}
-      <div className="relative bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
-          {isEditMode ? 'Edit Shift' : 'Create Shift'}
-        </h2>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <DialogContent className="sm:max-w-md" showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle>{isEditMode ? 'Edit Shift' : 'Create Shift'}</DialogTitle>
+        </DialogHeader>
 
         {error && (
-          <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-            <p className="text-sm text-red-700">{error}</p>
+          <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
+            {error}
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="shift-name" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="shift-name" className="block text-sm font-medium text-slate-700 mb-1.5">
               Shift Name
             </label>
             <input
@@ -121,13 +120,13 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
               placeholder="e.g. Morning Shift"
             />
           </div>
 
           <div>
-            <label htmlFor="start-time" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="start-time" className="block text-sm font-medium text-slate-700 mb-1.5">
               Start Time
             </label>
             <input
@@ -136,12 +135,12 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
               required
               value={startTime}
               onChange={(e) => setStartTime(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
             />
           </div>
 
           <div>
-            <label htmlFor="end-time" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="end-time" className="block text-sm font-medium text-slate-700 mb-1.5">
               End Time
             </label>
             <input
@@ -150,12 +149,12 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
               required
               value={endTime}
               onChange={(e) => setEndTime(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
             />
           </div>
 
           <div>
-            <label htmlFor="grace-period" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="grace-period" className="block text-sm font-medium text-slate-700 mb-1.5">
               Grace Period (minutes)
             </label>
             <input
@@ -167,16 +166,16 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
               placeholder="0"
               value={gracePeriodMinutes}
               onChange={(e) => setGracePeriodMinutes(parseInt(e.target.value, 10) || 0)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
             />
           </div>
 
           <div>
-            <p className="text-sm font-medium text-gray-700 mb-2">Split-Day Windows (Optional)</p>
-            <p className="text-xs text-gray-500 mb-3">Set both fields to enable half-day tracking. Check-in after Afternoon Start marks absent morning; check-out before Morning End marks absent afternoon.</p>
+            <p className="text-sm font-medium text-slate-700 mb-2">Split-Day Windows (Optional)</p>
+            <p className="text-xs text-slate-500 mb-3">Set both fields to enable half-day tracking. Check-in after Afternoon Start marks absent morning; check-out before Morning End marks absent afternoon.</p>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="morning-end-time" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="morning-end-time" className="block text-sm font-medium text-slate-700 mb-1.5">
                   Morning End
                 </label>
                 <input
@@ -184,11 +183,11 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
                   type="time"
                   value={morningEndTime}
                   onChange={(e) => setMorningEndTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
                 />
               </div>
               <div>
-                <label htmlFor="afternoon-start-time" className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="afternoon-start-time" className="block text-sm font-medium text-slate-700 mb-1.5">
                   Afternoon Start
                 </label>
                 <input
@@ -196,30 +195,30 @@ export default function ShiftFormModal({ open, shift, onClose, onSaved }: ShiftF
                   type="time"
                   value={afternoonStartTime}
                   onChange={(e) => setAfternoonStartTime(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
                 />
               </div>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
+          <DialogFooter className="pt-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="border border-slate-300 text-slate-700 rounded-lg h-10 px-4 text-sm font-semibold hover:bg-slate-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-[#4848e5] hover:bg-[#4848e5]/90 text-white rounded-lg h-10 px-4 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? 'Saving...' : isEditMode ? 'Save Changes' : 'Create Shift'}
             </button>
-          </div>
+          </DialogFooter>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

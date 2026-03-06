@@ -2,6 +2,13 @@
 
 import { useState } from 'react';
 import { AttendanceRecordWithUser, adjustRecord } from '@/lib/api/attendance';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 interface Props {
   record: AttendanceRecordWithUser;
@@ -71,24 +78,13 @@ export function AdjustAttendanceModal({ record, onClose, onSaved }: Props) {
   }
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50">
-      <div className="bg-white rounded-xl shadow-xl max-w-md w-full mx-4">
-        {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
-          <h2 className="text-lg font-bold text-gray-900">Adjust Record</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-700 transition-colors p-1"
-            aria-label="Close"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+    <Dialog open={true} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <DialogContent className="sm:max-w-md" showCloseButton>
+        <DialogHeader>
+          <DialogTitle>Adjust Record</DialogTitle>
+        </DialogHeader>
 
-        {/* Body */}
-        <div className="px-6 py-5 space-y-5">
+        <div className="space-y-5">
           {error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
               {error}
@@ -96,31 +92,31 @@ export function AdjustAttendanceModal({ record, onClose, onSaved }: Props) {
           )}
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Check-in Time
             </label>
             <input
               type="datetime-local"
               value={checkInAt}
               onChange={(e) => setCheckInAt(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Check-out Time
             </label>
             <input
               type="datetime-local"
               value={checkOutAt}
               onChange={(e) => setCheckOutAt(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
               Reason <span className="text-red-500">*</span>
             </label>
             <textarea
@@ -129,29 +125,28 @@ export function AdjustAttendanceModal({ record, onClose, onSaved }: Props) {
               placeholder="Explain why this record is being adjusted..."
               rows={3}
               maxLength={500}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+              className="w-full px-4 py-3 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5] resize-none"
             />
-            <p className="text-xs text-gray-400 mt-1 text-right">{reason.length}/500</p>
+            <p className="text-xs text-slate-400 mt-1 text-right">{reason.length}/500</p>
           </div>
         </div>
 
-        {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-200 flex justify-end gap-3">
+        <DialogFooter className="pt-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="border border-slate-300 text-slate-700 rounded-lg h-10 px-4 text-sm font-semibold hover:bg-slate-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={!canSave || saving}
-            className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#4848e5] hover:bg-[#4848e5]/90 text-white rounded-lg h-10 px-4 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? 'Saving...' : 'Save Adjustment'}
           </button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

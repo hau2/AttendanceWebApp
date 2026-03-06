@@ -4,6 +4,13 @@ import { useState, useEffect } from 'react';
 import { getStoredToken } from '@/lib/api/auth';
 import { User, updateUser } from '@/lib/api/users';
 import { Division } from '@/lib/api/divisions';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
 
 interface EditUserModalProps {
   open: boolean;
@@ -29,8 +36,6 @@ export function EditUserModal({ open, user, divisions, onClose, onSaved }: EditU
     }
   }, [user]);
 
-  if (!open || !user) return null;
-
   async function handleSave() {
     const token = getStoredToken();
     if (!token || !user) return;
@@ -52,33 +57,35 @@ export function EditUserModal({ open, user, divisions, onClose, onSaved }: EditU
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Edit Employee</h2>
+    <Dialog open={open && !!user} onOpenChange={(v) => { if (!v) onClose(); }}>
+      <DialogContent className="sm:max-w-md" showCloseButton={false}>
+        <DialogHeader>
+          <DialogTitle>Edit Employee</DialogTitle>
+        </DialogHeader>
 
         {error && (
-          <div className="mb-3 p-2 bg-red-50 border border-red-200 text-red-700 rounded text-sm">
+          <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm">
             {error}
           </div>
         )}
 
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
             <input
               type="text"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Division</label>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">Division</label>
             <select
               value={divisionId}
               onChange={(e) => setDivisionId(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
             >
               <option value="">No division</option>
               {divisions.map((div) => (
@@ -88,13 +95,13 @@ export function EditUserModal({ open, user, divisions, onClose, onSaved }: EditU
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Personal Timezone <span className="text-gray-400 font-normal">(optional — overrides company timezone)</span>
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              Personal Timezone <span className="text-slate-400 font-normal">(optional — overrides company timezone)</span>
             </label>
             <select
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full h-11 px-4 rounded-lg border border-slate-200 text-sm focus:outline-none focus:border-[#4848e5] focus:ring-1 focus:ring-[#4848e5]"
             >
               <option value="">Use company timezone</option>
               <optgroup label="Asia">
@@ -149,22 +156,22 @@ export function EditUserModal({ open, user, divisions, onClose, onSaved }: EditU
           </div>
         </div>
 
-        <div className="flex justify-end gap-3 mt-6">
+        <DialogFooter className="pt-2">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+            className="border border-slate-300 text-slate-700 rounded-lg h-10 px-4 text-sm font-semibold hover:bg-slate-50 transition-colors"
           >
             Cancel
           </button>
           <button
             onClick={handleSave}
             disabled={saving || !fullName.trim()}
-            className="px-4 py-2 text-sm bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-[#4848e5] hover:bg-[#4848e5]/90 text-white rounded-lg h-10 px-4 text-sm font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? 'Saving...' : 'Save Changes'}
           </button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
