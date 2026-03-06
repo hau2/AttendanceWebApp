@@ -255,7 +255,7 @@ Plans:
 **Plans**: 5 plans
 
 Plans:
-- [ ] 13-01-PLAN.md — Design system foundation: install Shadcn components (Input, Card, Avatar, etc.), BrandLogo component, indigo color scheme, auth pages polish (login + register)
+- [x] 13-01-PLAN.md — Design system foundation: install Shadcn components (Input, Card, Avatar, etc.), BrandLogo component, indigo color scheme, auth pages polish (login + register)
 - [x] 13-02-PLAN.md — User Management + Attendance Records tables redesign (Stitch-exact): role badges, icon actions, avatar initials, styled filters, pagination
 - [x] 13-03-PLAN.md — Admin tables polish (avatar circles, colored badges), KPI cards with icons/accents, EmptyState component for all tables
 - [x] 13-04-PLAN.md — Employee portal polish (check-in card redesign, attendance history with expandable photo rows, improved date formatting)
